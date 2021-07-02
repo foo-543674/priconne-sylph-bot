@@ -1,0 +1,35 @@
+{
+	"name": "priconne-sylph-bot",
+	"context": "..",
+	"dockerFile": "./Dockerfile",
+	"settings": {
+		"terminal.integrated.shell.linux": "/bin/bash",
+	},
+	"build": {
+		"args": {
+			"USER": "${localEnv:USER}",
+			"HOME": "/home/usr",
+		}
+	},
+	"runArgs": [
+		"--rm",
+		"--dns=8.8.8.8",
+		"--network=scala-example"
+	],
+	"remoteUser": "${localEnv:USER}",
+	"remoteEnv": {
+		"HOME": "/home/usr",
+		"USER": "${localEnv:USER}"
+	},
+	"mounts": [
+		"source=${localEnv:HOME}/.gitconfig,target=/home/usr/.gitconfig,type=bind,consistency=cached",
+		"source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind,consistency=cached",
+		"source=${localEnv:HOME}/.aws,target=/home/usr/.aws,type=bind,consistency=cached",
+		"source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind,consistency=cached",
+	],
+	// Add the IDs of extensions you want installed when the container is created.
+	"extensions": [
+		"ms-python.python",
+		"kevinrose.vsc-python-indent"
+	],
+}
