@@ -9,7 +9,13 @@ RUN apk add --update --no-cache \
         bash \
         openssh-client \
         ca-certificates \
-        su-exec
+        sudo
+
+RUN apk add --no-cache \
+        gcc \
+        musl-dev \
+ && pip3 install -U discord.py
+
 
 RUN adduser -S ${USER} -h ${HOME} \
  && echo "${USER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
