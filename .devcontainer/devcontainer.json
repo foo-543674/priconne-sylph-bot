@@ -14,7 +14,7 @@
 	"runArgs": [
 		"--rm",
 		"--dns=8.8.8.8",
-		"--network=scala-example"
+		"--network=sylph"
 	],
 	"remoteUser": "${localEnv:USER}",
 	"remoteEnv": {
