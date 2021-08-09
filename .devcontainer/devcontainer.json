@@ -6,17 +6,13 @@
 		"terminal.integrated.shell.linux": "/bin/bash",
 	},
 	"build": {
-		"args": {
-			"USER": "${localEnv:USER}",
-			"HOME": "/home/usr",
-		}
 	},
 	"runArgs": [
 		"--rm",
 		"--dns=8.8.8.8",
 		"--network=sylph"
 	],
-	"remoteUser": "${localEnv:USER}",
+	//"remoteUser": "${localEnv:USER}",
 	"remoteEnv": {
 		"HOME": "/home/usr",
 		"USER": "${localEnv:USER}"
@@ -30,6 +26,11 @@
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
 		"ms-python.python",
-		"kevinrose.vsc-python-indent"
+		"kevinrose.vsc-python-indent",
+		"bmewburn.vscode-intelephense-client",
+		"junstyle.php-cs-fixer",
+		"neilbrayfield.php-docblocker",
+		"coenraads.bracket-pair-colorizer",
+		"mikestead.dotenv"
 	],
 }

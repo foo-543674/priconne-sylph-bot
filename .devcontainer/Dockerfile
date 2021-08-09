@@ -1,9 +1,9 @@
-FROM python:3.8.11-alpine3.14
+FROM ubuntu:20.04
 
-ARG USER
-ARG HOME
-
-RUN apk add --update --no-cache \
+RUN apt update \
+# gitより先にtzdataインストールしとかないとタイムゾーン選択で止まってしまう
+ && apt install -y tzdata \
+ && apt install -y \
         git \
         curl \
         bash \
@@ -11,13 +11,21 @@ RUN apk add --update --no-cache \
         ca-certificates \
         sudo
 
-RUN apk add --no-cache \
-        gcc \
-        musl-dev \
- && pip3 install -U discord.py
+RUN apt install language-pack-ja \
+ && export LANG=ja_JP.UTF-8
+ && export LANGUAGE=ja_JP:
 
+# Environment for bot
+RUN apt install -y python3-pip \
+ && python3 -m pip install -U discord.py \
+ && pip3 install pyyaml
 
-RUN adduser -S ${USER} -h ${HOME} \
- && echo "${USER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+# Environment for api
+RUN apt-get install -y software-properties-common \
+ && add-apt-repository -y ppa:ondrej/php \
+ && apt update
+RUN apt install -y \
+        php8.0 \
+        php8.0-pgsql
 
-USER ${USER}
+COPY --from=composer /usr/bin/composer /usr/bin/composer
