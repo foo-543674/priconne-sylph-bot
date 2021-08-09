@@ -3,11 +3,10 @@
 	"context": "..",
 	"dockerFile": "./Dockerfile",
 	"settings": {
-		"terminal.integrated.shell.linux": "/bin/bash",
+		"terminal.integrated.defaultProfile.linux": "bash",
 	},
 	"build": {
 		"args": {
-			"HOME": "/home/usr",
 			"USER": "${localEnv:USER}"
 		}
 	},
@@ -16,7 +15,7 @@
 		"--dns=8.8.8.8",
 		"--network=sylph"
 	],
-	//"remoteUser": "${localEnv:USER}",
+	"remoteUser": "${localEnv:USER}",
 	"remoteEnv": {
 		"HOME": "/home/usr",
 		"USER": "${localEnv:USER}"

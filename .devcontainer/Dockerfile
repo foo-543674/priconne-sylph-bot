@@ -1,7 +1,6 @@
 FROM ubuntu:20.04
 
 ARG USER
-ARG HOME
 
 RUN apt update \
 # gitより先にtzdataインストールしとかないとタイムゾーン選択で止まってしまう
@@ -14,9 +13,12 @@ RUN apt update \
         ca-certificates \
         sudo
 
-RUN apt install language-pack-ja \
- && export LANG=ja_JP.UTF-8 \
- && export LANGUAGE=ja_JP:
+RUN apt-get install -y \
+        language-pack-ja-base \
+        language-pack-ja \
+        locales \
+ && locale-gen ja_JP.UTF-8
+ENV LANG ja_JP.UTF-8
 
 # Environment for bot
 RUN apt install -y python3-pip \
@@ -33,7 +35,7 @@ RUN apt install -y \
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
-RUN adduser -S ${USER} -h ${HOME} \
+RUN adduser ${USER} \
  && echo "${USER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 USER ${USER}
