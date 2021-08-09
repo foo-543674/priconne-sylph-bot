@@ -6,6 +6,10 @@
 		"terminal.integrated.shell.linux": "/bin/bash",
 	},
 	"build": {
+		"args": {
+			"HOME": "/home/usr",
+			"USER": "${localEnv:USER}"
+		}
 	},
 	"runArgs": [
 		"--rm",

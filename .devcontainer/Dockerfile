@@ -1,5 +1,8 @@
 FROM ubuntu:20.04
 
+ARG USER
+ARG HOME
+
 RUN apt update \
 # gitより先にtzdataインストールしとかないとタイムゾーン選択で止まってしまう
  && apt install -y tzdata \
@@ -29,3 +32,8 @@ RUN apt install -y \
         php8.0-pgsql
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
+
+RUN adduser -S ${USER} -h ${HOME} \
+ && echo "${USER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+USER ${USER}
