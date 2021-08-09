@@ -1,0 +1,13 @@
+phrases:
+  create_challenge_report: 凸報告場所を作って
+  challenge_report_guide: |-
+    凸をしたら回数に応じてスタンプを押してね。
+    持ち越しを持ったら1回目は青、2回目は緑のチェックマークにスタンプを押してね。
+    タスキルを使ったら黄色い警告スタンプを押してね。
+  days_unit: '{0}日目'
+  first_challenge_stamp: 1️⃣
+  second_challenge_stamp: 2️⃣
+  third_challenge_stamp: 3️⃣
+  first_carry_over_stamp: ☑️
+  second_carry_over_stamp: ✅
+  task_kill_stamp: ⚠️

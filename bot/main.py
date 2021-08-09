@@ -1,17 +1,14 @@
-import discord
+from repository import YamlPhraseRepository
+from message_command import CreateChallengeReportCommand
 import os
+from sylph import Sylph
 
-class MyClient(discord.Client):
-    async def on_ready(self):
-        print('Logged on as', self.user)
 
-    async def on_message(self, message):
-        # don't respond to ourselves
-        if message.author == self.user:
-            return
+client = Sylph()
 
-        if message.content == 'ping':
-            await message.channel.send('pong')
+phraseRepository = YamlPhraseRepository(f'{os.path.dirname(os.path.abspath(__file__))}/config.yaml')
+createChallengeReportCommand = CreateChallengeReportCommand(phraseRepository)
 
-client = MyClient()
+client.add_message_command(createChallengeReportCommand)
+
 client.run(os.environ.get('DISCORD_TOKEN'))
