@@ -15,7 +15,7 @@ RUN apt update \
         sudo
 
 RUN apt install language-pack-ja \
- && export LANG=ja_JP.UTF-8
+ && export LANG=ja_JP.UTF-8 \
  && export LANGUAGE=ja_JP:
 
 # Environment for bot
