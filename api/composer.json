@@ -1,5 +1,5 @@
 {
-    "name": "laravel/laravel",
+    "name": "foo-543674/priconne-sylph-bot",
     "type": "project",
     "description": "The Laravel Framework.",
     "keywords": ["framework", "laravel"],
@@ -10,7 +10,8 @@
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.40",
-        "laravel/tinker": "^2.5"
+        "laravel/tinker": "^2.5",
+        "robinvdvleuten/ulid": "^5.0"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
@@ -23,6 +24,7 @@
     "autoload": {
         "psr-4": {
             "App\\": "app/",
+            "Sylph\\": "package/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         }
