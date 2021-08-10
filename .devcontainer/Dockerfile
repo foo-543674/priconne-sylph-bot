@@ -11,7 +11,8 @@ RUN apt update \
         bash \
         openssh-client \
         ca-certificates \
-        sudo
+        sudo \
+        p7zip-full
 
 RUN apt-get install -y \
         language-pack-ja-base \
@@ -31,7 +32,10 @@ RUN apt-get install -y software-properties-common \
  && apt update
 RUN apt install -y \
         php8.0 \
-        php8.0-pgsql
+        php8.0-pgsql \
+        php8.0-mbstring \
+        php8.0-dom \
+        php8.0-zip
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
