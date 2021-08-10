@@ -34,6 +34,6 @@
 		"neilbrayfield.php-docblocker",
 		"coenraads.bracket-pair-colorizer",
 		"mikestead.dotenv",
-		"damianbal.vs-phpclassgen"
+		"damianbal.php-class-generator-composer-psr-4"
 	],
 }
