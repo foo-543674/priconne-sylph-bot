@@ -24,6 +24,7 @@
 		"source=${localEnv:HOME}/.ssh,target=/home/${localEnv:USER}/.ssh,type=bind,consistency=cached",
 		"source=${localEnv:HOME}/.aws,target=/home/${localEnv:USER}/.aws,type=bind,consistency=cached",
 		"source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind,consistency=cached",
+		"source=${localWorkspaceFolder}/.devcontainer/phpconf.d/99-xdebug.ini,target=/etc/php/8.0/cli/conf.d/99-xdebug.ini,type=bind,consistency=cached",
 	],
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
@@ -34,6 +35,8 @@
 		"neilbrayfield.php-docblocker",
 		"coenraads.bracket-pair-colorizer",
 		"mikestead.dotenv",
-		"damianbal.php-class-generator-composer-psr-4"
+		"damianbal.php-class-generator-composer-psr-4",
+		"felixfbecker.php-debug",
+		"recca0120.vscode-phpunit"
 	],
 }

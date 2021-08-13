@@ -35,7 +35,8 @@ RUN apt install -y \
         php8.0-pgsql \
         php8.0-mbstring \
         php8.0-dom \
-        php8.0-zip
+        php8.0-zip \
+        php8.0-xdebug
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
