@@ -13,7 +13,8 @@
 	"runArgs": [
 		"--rm",
 		"--dns=8.8.8.8",
-		"--network=sylph"
+		"--network=sylph",
+		"--env-file",".devcontainer/.env",
 	],
 	"remoteUser": "${localEnv:USER}",
 	"remoteEnv": {
