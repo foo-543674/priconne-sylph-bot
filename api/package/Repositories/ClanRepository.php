@@ -23,6 +23,11 @@ interface ClanRepository
     public function getById(ClanId $id): ?Clan;
 
     /**
+     * 名前で指定したクランを取得する
+     */
+    public function getByName(string $name): ?Clan;
+
+    /**
      * クランを永続化する
      */
     public function save(Clan $value): void;

@@ -4,6 +4,7 @@ namespace Sylph\Repositories;
 
 use Sylph\Entities\ClanBattle;
 use Sylph\VO\ClanBattleId;
+use Sylph\VO\Date;
 
 /**
  * クラバトのリポジトリ
@@ -21,6 +22,11 @@ interface ClanBattleRepository
      * IDで指定したクランバトルを取得する
      */
     public function getById(ClanBattleId $id): ?ClanBattle;
+
+    /**
+     * 開催中のクランバトルを取得する
+     */
+    public function getInSession(): ?ClanBattle;
 
     /**
      * クランバトルを永続化する
