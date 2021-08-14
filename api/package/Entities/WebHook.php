@@ -3,6 +3,7 @@
 namespace Sylph\Entities;
 
 use GuzzleHttp\Psr7\Uri;
+use Sylph\VO\ClanId;
 use Sylph\VO\WebHookId;
 
 /**
@@ -13,6 +14,7 @@ class WebHook
     public function __construct(
         private WebHookId $id,
         private Uri $destination,
+        private ClanId $clanId
     ) {
         //
     }
@@ -25,5 +27,10 @@ class WebHook
     public function getDestination(): Uri
     {
         return $this->destination;
+    }
+
+    public function getClanId(): ClanId
+    {
+        return $this->clanId;
     }
 }
