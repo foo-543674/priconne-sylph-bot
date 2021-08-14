@@ -18,18 +18,10 @@ class DateTest extends \PHPUnit\Framework\TestCase
      */
     public function shouldTruncateTime(): void
     {
-        $target = new Date("2021-08-11 15:38:16");
+        $target = new Date(
+            new DateTime("2021-08-11 15:38:16"),
+        );
 
-        $this->assertSame("2021-08-11", $target->__toString());
-    }
-
-    /**
-     * @test
-     */
-    public function shouldAbleToConvertAsBuiltInDateTime(): void
-    {
-        $target = new Date("2021-08-11 15:38:16");
-
-        $this->assertEquals(new DateTime("2021-08-11"), $target->getValueAsDateTime());
+        $this->assertEquals(new DateTime("2021-08-11"), $target->getValue());
     }
 }

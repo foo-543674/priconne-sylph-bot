@@ -2,37 +2,20 @@
 
 namespace Sylph\Entities;
 
-use Sylph\Common\DailyAction;
-use Sylph\VO\Date;
-use Sylph\VO\MemberId;
-use Sylph\VO\TaskKillId;
+use YaLinqo\Enumerable;
 
 /**
  * タスキル
  */
-class TaskKill implements DailyAction
+class TaskKill extends Activity
 {
-    public function __construct(
-        private TaskKillId $id,
-        private Date $usedAt
-    ) {
-        //
-    }
-
-    public function getId(): TaskKillId
-    {
-        return $this->id;
-    }
-
     /** {@inheritdoc} */
-    public function getActedAt(): Date
+    public function canAct(Activity ...$allActivities): bool
     {
-        return $this->usedAt;
-    }
-
-    /** {@inheritdoc} */
-    public function isActedAt(Date $date): bool
-    {
-        return $this->usedAt == $date;
+        return Enumerable::from($allActivities)
+            ->where(fn (Activity $activity) => $activity instanceof self)
+            ->where(fn (Activity $activity) => $activity->getActedMemberId() == $this->getActedMemberId())
+            ->where(fn (Activity $activity) => $activity->getActedDateId() == $this->getActedDateId())
+            ->any() === false;
     }
 }

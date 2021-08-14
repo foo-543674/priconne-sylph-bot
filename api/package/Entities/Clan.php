@@ -4,23 +4,20 @@ namespace Sylph\Entities;
 
 use JsonSerializable;
 use Sylph\VO\ClanId;
-use Sylph\VO\DiscordUserId;
-use Sylph\VO\MemberId;
 
 /**
- * クランメンバー
+ * クラン
  */
-class Member implements JsonSerializable
+class Clan implements JsonSerializable
 {
     public function __construct(
-        private MemberId $id,
+        private ClanId $id,
         private string $name,
-        private DiscordUserId $discordUserId,
-        private ClanId $clanId,
     ) {
+        //
     }
 
-    public function getId(): MemberId
+    public function getId(): ClanId
     {
         return $this->id;
     }
@@ -30,19 +27,12 @@ class Member implements JsonSerializable
         return $this->name;
     }
 
-    public function getClanId(): ClanId
-    {
-        return $this->clanId;
-    }
-
     /** {@inheritdoc} */
     public function jsonSerialize()
     {
         return [
             "id" => $this->id->__toString(),
             "name" => $this->name,
-            "discordUserId" => $this->discordUserId->__toString(),
-            "clanId" => $this->clanId->__toString(),
         ];
     }
 }

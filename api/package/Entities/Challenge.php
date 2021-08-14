@@ -2,37 +2,22 @@
 
 namespace Sylph\Entities;
 
-use Sylph\Common\DailyAction;
-use Sylph\VO\ChallengeId;
-use Sylph\VO\Date;
-use Sylph\VO\MemberId;
+use YaLinqo\Enumerable;
 
 /**
  * 凸
  */
-class Challenge implements DailyAction
+class Challenge extends Activity
 {
-    public function __construct(
-        private ChallengeId $id,
-        private Date $challengedAt
-    ) {
-        //
-    }
-
-    public function getId(): ChallengeId
-    {
-        return $this->id;
-    }
+    private const MAX_COUNT_BY_DAY = 3;
 
     /** {@inheritdoc} */
-    public function getActedAt(): Date
+    public function canAct(Activity ...$allActivities): bool
     {
-        return $this->challengedAt;
-    }
-
-    /** {@inheritdoc} */
-    public function isActedAt(Date $date): bool
-    {
-        return $this->challengedAt == $date;
+        return Enumerable::from($allActivities)
+            ->where(fn (Activity $activity) => $activity instanceof self)
+            ->where(fn (Activity $activity) => $activity->getActedMemberId() == $this->getActedMemberId())
+            ->where(fn (Activity $activity) => $activity->getActedDateId() == $this->getActedDateId())
+            ->count() < self::MAX_COUNT_BY_DAY;
     }
 }

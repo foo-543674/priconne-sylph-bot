@@ -2,14 +2,12 @@
 
 namespace Sylph\VO;
 
-use Ulid\Ulid;
-
 /**
- * MemberのID
+ * DiscordのユーザーID
  */
-class MemberId
+class DiscordUserId
 {
-    public function __construct(private Ulid $value)
+    public function __construct(private string $value)
     {
         //
     }
@@ -17,7 +15,7 @@ class MemberId
     /** {@inheritdoc} */
     public function __toString(): string
     {
-        return $this->value->__toString();
+        return $this->value;
     }
 
     /**
@@ -25,6 +23,6 @@ class MemberId
      */
     public function equals(self $that): bool
     {
-        return $this->value == $that->value;
+        return $this->value === $that->value;
     }
 }

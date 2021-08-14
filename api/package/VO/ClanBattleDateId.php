@@ -5,9 +5,9 @@ namespace Sylph\VO;
 use Ulid\Ulid;
 
 /**
- * MemberのID
+ * クランバトル開催日のID
  */
-class MemberId
+class ClanBattleDateId
 {
     public function __construct(private Ulid $value)
     {

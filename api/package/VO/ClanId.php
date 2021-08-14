@@ -5,9 +5,9 @@ namespace Sylph\VO;
 use Ulid\Ulid;
 
 /**
- * MemberのID
+ * クランのID
  */
-class MemberId
+class ClanId
 {
     public function __construct(private Ulid $value)
     {

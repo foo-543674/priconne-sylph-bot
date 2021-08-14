@@ -5,9 +5,9 @@ namespace Sylph\VO;
 use Ulid\Ulid;
 
 /**
- * MemberのID
+ * 報告場所のチャンネルID
  */
-class MemberId
+class ReportChannelId
 {
     public function __construct(private Ulid $value)
     {

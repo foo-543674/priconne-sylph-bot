@@ -5,9 +5,9 @@ namespace Sylph\VO;
 use Ulid\Ulid;
 
 /**
- * TaskKillのID
+ * 報告場所となるメッセージのID
  */
-class TaskKillId
+class ReportMessageId
 {
     public function __construct(private Ulid $value)
     {
@@ -25,6 +25,6 @@ class TaskKillId
      */
     public function equals(self $that): bool
     {
-        return $this->value->__toString() === $that->value->__toString();
+        return $this->value == $that->value;
     }
 }

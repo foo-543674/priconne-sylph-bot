@@ -5,9 +5,9 @@ namespace Sylph\VO;
 use Ulid\Ulid;
 
 /**
- * ChallengeのID
+ * クランバトルのID
  */
-class ChallengeId
+class ClanBattleId
 {
     public function __construct(private Ulid $value)
     {
@@ -25,6 +25,6 @@ class ChallengeId
      */
     public function equals(self $that): bool
     {
-        return $this->value->__toString() === $that->value->__toString();
+        return $this->value == $that->value;
     }
 }
