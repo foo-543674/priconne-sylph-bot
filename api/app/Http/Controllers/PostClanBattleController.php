@@ -9,7 +9,7 @@ use Illuminate\Http\JsonResponse;
 use App\Http\Requests\PostClanBattleRequest;
 use Sylph\Application\Usecases\AddClanBattleUsecase;
 
-class PostCarryOverController extends Controller
+class PostClanBattleController extends Controller
 {
     /**
      * @return JsonResponse|Response
