@@ -8,7 +8,6 @@ use Sylph\Application\Support\ErrorIgnition;
 use Sylph\Application\Support\MessageKey;
 use Sylph\Application\Support\UlidGenerator;
 use Sylph\Entities\CarryOver;
-use Sylph\Entities\Challenge;
 use Sylph\Repositories\ActivityRepository;
 use Sylph\Repositories\ClanBattleRepository;
 use Sylph\Repositories\MemberRepository;
@@ -20,7 +19,7 @@ use Sylph\VO\DiscordUserId;
 /**
  * 持ち越し報告ユースケース
  */
-class ReportChallengeUsecase
+class ReportCarryOverUsecase
 {
     public function __construct(
         private ActivityRepository $activityRepository,

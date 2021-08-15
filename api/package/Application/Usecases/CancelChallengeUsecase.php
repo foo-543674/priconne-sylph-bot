@@ -18,7 +18,7 @@ use Sylph\VO\DiscordUserId;
 /**
  * 凸キャンセルユースケース
  */
-class ReportChallengeUsecase
+class CancelChallengeUsecase
 {
     public function __construct(
         private ActivityRepository $activityRepository,

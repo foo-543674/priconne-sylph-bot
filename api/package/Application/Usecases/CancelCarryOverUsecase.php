@@ -16,9 +16,9 @@ use Sylph\VO\DiscordMessageId;
 use Sylph\VO\DiscordUserId;
 
 /**
- * 凸キャンセルユースケース
+ * 持ち越しキャンセルユースケース
  */
-class ReportChallengeUsecase
+class CancelCarryOverUsecase
 {
     public function __construct(
         private ActivityRepository $activityRepository,

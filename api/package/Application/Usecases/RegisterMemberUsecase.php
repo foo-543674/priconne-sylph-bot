@@ -40,6 +40,10 @@ class RegisterMemberUsecase
         }
 
         $newMembers = Enumerable::from($users)
+            ->where(fn (DiscordUser $user) => is_null($this->memberRepository->getByClanIdAndDiscordId(
+                $clan->getId(),
+                $user->getId()
+            )))
             ->select(fn (DiscordUser $user) => new Member(
                 new MemberId($this->ulidGenerator->generate()),
                 $user->getName(),

@@ -7,7 +7,6 @@ use Sylph\Application\Events\ActivityChangedEvent;
 use Sylph\Application\Support\ErrorIgnition;
 use Sylph\Application\Support\MessageKey;
 use Sylph\Application\Support\UlidGenerator;
-use Sylph\Entities\Challenge;
 use Sylph\Entities\TaskKill;
 use Sylph\Repositories\ActivityRepository;
 use Sylph\Repositories\ClanBattleRepository;
@@ -20,7 +19,7 @@ use Sylph\VO\DiscordUserId;
 /**
  * タスキル報告ユースケース
  */
-class ReportChallengeUsecase
+class ReportTaskKillUsecase
 {
     public function __construct(
         private ActivityRepository $activityRepository,
