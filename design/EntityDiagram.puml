@@ -1,0 +1,56 @@
+# クラバト
+
+@startuml
+
+entity Clan
+entity ReportChannel
+{
+  discordChannelId
+}
+entity ClanBattle
+entity ClanBattleDate
+entity ReportMessage
+{
+  discordMessageId
+}
+entity Member
+{
+  discordUserId
+}
+entity Challenge
+entity CarryOver
+entity TaskKill
+entity WebHook
+
+interface ClanRepository
+interface ClanBattleRepository
+interface ReportChannelRepository
+interface MemberRepository
+interface WebHookRepository
+interface ActivityRepository
+
+Clan ||--o{ Member
+ReportChannel }o-|| Clan
+ClanBattle ||--o{ ClanBattleDate
+ClanBattle ||-o{ ReportChannel
+ClanBattleDate ||-o{ ReportMessage
+ReportChannel ||-o{ ReportMessage
+Member ||---o{ Challenge
+Member ||---o{ CarryOver
+Member ||---o{ TaskKill
+ClanBattleDate ||---o{ Challenge
+ClanBattleDate ||---o{ CarryOver
+ClanBattleDate ||---o{ TaskKill
+
+ClanRepository -- Clan
+ClanBattleRepository -- ClanBattle
+ReportChannelRepository -- ReportChannel
+Member - MemberRepository
+WebHook - WebHookRepository
+Challenge -- ActivityRepository
+CarryOver -- ActivityRepository
+TaskKill -- ActivityRepository
+
+Clan ||-o{ WebHook
+
+@enduml
