@@ -3,6 +3,7 @@
 namespace Sylph\Entities;
 
 use JsonSerializable;
+use Sylph\VO\ClanBattleId;
 use Sylph\VO\ClanId;
 use Sylph\VO\DiscordChannelId;
 use Sylph\VO\ReportChannelId;
@@ -19,6 +20,7 @@ class ReportChannel implements JsonSerializable
     public function __construct(
         private ReportChannelId $id,
         private ClanId $clanId,
+        private ClanBattleId $clanBattleId,
         private DiscordChannelId $discordChannelId,
         private $messages
     ) {
@@ -54,6 +56,7 @@ class ReportChannel implements JsonSerializable
         return [
             "id" => $this->id->__toString(),
             "clanId" => $this->clanId->__toString(),
+            "clanBattleId" => $this->clanBattleId->__toString(),
             "discordChannelId" => $this->discordChannelId->__toString(),
             "messages" => Enumerable::from($this->messages)
                 ->select(fn (ReportMessage $message) => $message->jsonSerialize())

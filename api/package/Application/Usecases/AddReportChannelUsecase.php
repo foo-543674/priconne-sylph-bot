@@ -32,9 +32,6 @@ class AddReportChannelUsecase
         //
     }
 
-    /**
-     * ユースケースを実行する
-     */
     public function execute(
         string $clanName,
         DiscordChannelId $channelId,
@@ -52,12 +49,13 @@ class AddReportChannelUsecase
 
         $clan = $this->clanRepository->getByName($clanName);
         if (is_null($clan)) {
-            $this->errorIgnition->throwValidationError(MessageKey::CLAN_IS_NOT_EXISTS);
+            $this->errorIgnition->throwValidationError(MessageKey::CLAN_IS_NOT_EXISTS, $clanName);
         }
 
         $newReportChannel = new ReportChannel(
             new ReportChannelId($this->ulidGenerator->generate()),
             $clan->getId(),
+            $clanBattle->getId(),
             $channelId,
             ...Enumerable::from($messageIds)
                 ->select(fn (DiscordMessageId $messageId, int $index) => new ReportMessage(

@@ -23,9 +23,6 @@ class AddClanUsecase
         //
     }
 
-    /**
-     * ユースケースを実行する
-     */
     public function execute(string $name): JsonSerializable
     {
         if (!is_null($this->clanRepository->getByName($name))) {

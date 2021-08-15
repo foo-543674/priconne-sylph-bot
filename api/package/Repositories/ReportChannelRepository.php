@@ -3,6 +3,7 @@
 namespace Sylph\Repositories;
 
 use Sylph\Entities\ReportChannel;
+use Sylph\VO\DiscordMessageId;
 use Sylph\VO\ReportChannelId;
 
 /**
@@ -21,6 +22,11 @@ interface ReportChannelRepository
      * IDで指定した報告場所を取得する
      */
     public function getById(ReportChannelId $id): ?ReportChannel;
+
+    /**
+     * 指定したメッセージIDの報告場所を取得する
+     */
+    public function getByDiscordMessageId(DiscordMessageId $discordMessageId): ?ReportChannel;
 
     /**
      * 報告場所を永続化する

@@ -26,9 +26,6 @@ class FinishClanBattleUsecase
         //
     }
 
-    /**
-     * ユースケースを実行する
-     */
     public function execute(): JsonSerializable
     {
         $inSessionClanBattle = $this->clanBattleRepository->getInSession();

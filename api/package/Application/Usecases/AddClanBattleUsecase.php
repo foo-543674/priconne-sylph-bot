@@ -27,9 +27,6 @@ class AddClanBattleUsecase
         //
     }
 
-    /**
-     * ユースケースを実行する
-     */
     public function execute(Date $since, Date $until): JsonSerializable
     {
         if ($since->greaterThan($until)) {

@@ -3,6 +3,7 @@
 namespace Sylph\Entities;
 
 use JsonSerializable;
+use ReflectionClass;
 use Sylph\VO\ActivityId;
 use Sylph\VO\ClanBattleDateId;
 use Sylph\VO\MemberId;
@@ -30,6 +31,15 @@ abstract class Activity implements JsonSerializable
      */
     public abstract function canAct(Activity ...$allActivities): bool;
 
+    public static function getTypeName(): string
+    {
+        return (new ReflectionClass(static::class))->getShortName();
+    }
+    public function getType(): string
+    {
+        return static::getTypeName();
+    }
+
     public function getActedMemberId(): MemberId
     {
         return $this->actedMemberId;
@@ -45,7 +55,7 @@ abstract class Activity implements JsonSerializable
     {
         return [
             "id" => $this->id->__toString(),
-            "type" => get_class($this),
+            "type" => $this->getType(),
             "actedMemberId" => $this->actedMemberId->__toString(),
             "actedDateId" => $this->actedDateId->__toString(),
         ];
