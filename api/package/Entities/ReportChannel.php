@@ -37,6 +37,11 @@ class ReportChannel implements JsonSerializable
         return $this->clanId;
     }
 
+    public function getClanBattleId(): ClanBattleId
+    {
+        return $this->clanBattleId;
+    }
+
     public function getDiscordChannelId(): DiscordChannelId
     {
         return $this->discordChannelId;

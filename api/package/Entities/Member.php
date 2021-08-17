@@ -35,6 +35,11 @@ class Member implements JsonSerializable
         return $this->clanId;
     }
 
+    public function getDiscordUserId(): DiscordUserId
+    {
+        return $this->discordUserId;
+    }
+
     /** {@inheritdoc} */
     public function jsonSerialize()
     {
