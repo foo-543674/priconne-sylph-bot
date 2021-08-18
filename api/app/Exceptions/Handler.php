@@ -3,6 +3,9 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Response;
+use Sylph\Application\Errors\ValidationException;
+use Sylph\Errors\DomainValidationException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -34,8 +37,16 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        $this->reportable(function (Throwable $e) {
-            //
+        $this->reportable(function (ValidationException $e) {
+            return response($e->getMessage(), Response::HTTP_BAD_REQUEST);
+        });
+
+        $this->reportable(function (DomainValidationException $e) {
+            return response("Unexpected error occured", Response::HTTP_INTERNAL_SERVER_ERROR);
+        });
+
+        $this->reportable(function (InvalidDbStateException $e) {
+            return response("Unexpected error occured", Response::HTTP_INTERNAL_SERVER_ERROR);
         });
     }
 }
