@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class PostClanRequest extends FormRequest
 {
@@ -29,7 +30,8 @@ class PostClanRequest extends FormRequest
             ],
             400
         );
-        throw new HttpResponseException($res);}
+        throw new HttpResponseException($res);
+    }
 
     /**
      * Get the validation rules that apply to the request.
