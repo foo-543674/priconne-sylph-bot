@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use DateTime;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Validation\ValidationException;
 use Sylph\VO\Date;
 
 class PostClanBattleRequest extends FormRequest
@@ -25,6 +26,7 @@ class PostClanBattleRequest extends FormRequest
      */
     protected function failedValidation(Validator $validator)
     {
+        throw new ValidationException($validator);
     }
 
     /**

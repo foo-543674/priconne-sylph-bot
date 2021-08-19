@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use GuzzleHttp\Psr7\Uri;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Validation\ValidationException;
 
 class PostWebHookRequest extends FormRequest
 {
@@ -24,6 +25,7 @@ class PostWebHookRequest extends FormRequest
      */
     protected function failedValidation(Validator $validator)
     {
+        throw new ValidationException($validator);
     }
 
     /**
