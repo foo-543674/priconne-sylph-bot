@@ -82,7 +82,7 @@ class Date implements JsonSerializable
         $addInterval = new DateInterval("P${actualAddDays}D");
         $addInterval->invert = ($daysCount < 0);
 
-        return new Date($this->value->add($addInterval));
+        return new Date((clone $this->value)->add($addInterval));
     }
 
     /** {@inheritdoc} */
