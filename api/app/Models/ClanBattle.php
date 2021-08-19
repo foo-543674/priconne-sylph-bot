@@ -23,6 +23,7 @@ class ClanBattle extends Model
 
     public $incrementing = false;
     protected $keyType = 'string';
+    protected $with = ['dates', 'finish'];
 
     protected $fillable = [
         "id",

@@ -29,6 +29,7 @@ class ReportChannel extends Model
 
     public $incrementing = false;
     protected $keyType = 'string';
+    protected $with = ['messages'];
 
     protected $fillable = [
         "id",
