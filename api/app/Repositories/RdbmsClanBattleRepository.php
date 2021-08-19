@@ -31,7 +31,7 @@ class RdbmsClanBattleRepository implements ClanBattleRepository
     public function getByDateId(ClanBattleDateId $clanBattleDateId): ?ClanBattle
     {
         return ModelsClanBattle::query()
-            ->whereHas("dates", function (Builder $query) use ($clanBattleDateId) {
+            ->whereHas("clanBattleDates", function (Builder $query) use ($clanBattleDateId) {
                 $query->where("id", $clanBattleDateId->__toString());
             })
             ->first()
@@ -42,7 +42,7 @@ class RdbmsClanBattleRepository implements ClanBattleRepository
     public function getDateByMessageId(DiscordMessageId $messageId): ?ClanBattleDate
     {
         return ModelsClanBattle::query()
-            ->whereHas("dates", function (Builder $query) use ($messageId) {
+            ->whereHas("clanBattleDates", function (Builder $query) use ($messageId) {
                 $query->whereHas("reportMessages", function (Builder $query) use ($messageId) {
                     $query->where("discord_message_id", $messageId->__toString());
                 });

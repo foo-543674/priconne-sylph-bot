@@ -13,7 +13,7 @@ use Ulid\Ulid;
 
 /**
  * @property string $id
- * @property Collection<ClanBattleDate> $dates
+ * @property Collection<ClanBattleDate> $clanBattleDates
  * @property null|ClanBattleFinish $finish
  * @property Collection<ReportChannel> $reportChannels
  */
@@ -23,13 +23,13 @@ class ClanBattle extends Model
 
     public $incrementing = false;
     protected $keyType = 'string';
-    protected $with = ['dates', 'finish'];
+    protected $with = ['clanBattleDates', 'finish'];
 
     protected $fillable = [
         "id",
     ];
 
-    public function dates(): HasMany
+    public function clanBattleDates(): HasMany
     {
         return $this->hasMany(ClanBattleDate::class);
     }
@@ -51,7 +51,7 @@ class ClanBattle extends Model
     {
         return new EntitiesClanBattle(
             new ClanBattleId(Ulid::fromString($this->id)),
-            collect($this->dates)->map(fn (ClanBattleDate $date) => $date->toEntity())->toArray(),
+            collect($this->clanBattleDates)->map(fn (ClanBattleDate $date) => $date->toEntity())->toArray(),
             $this->finish?->toEntity(),
         );
     }
