@@ -32,7 +32,7 @@ class RdbmsReportChannelRepository implements ReportChannelRepository
     {
         return ModelsReportChannel::query()
             ->whereHas("messages", function (Builder $query) use ($discordMessageId) {
-                $query->where("id", $discordMessageId->__toString());
+                $query->where("discord_message_id", $discordMessageId->__toString());
             })
             ->first()
             ?->toEntity();
