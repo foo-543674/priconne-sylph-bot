@@ -44,7 +44,8 @@ class AddClanBattleUsecase
                 ->select(fn (Date $date) => new ClanBattleDate(
                     new ClanBattleDateId($this->ulidGenerator->generate()),
                     $date
-                )),
+                ))
+                ->toList(),
             null
         );
 
