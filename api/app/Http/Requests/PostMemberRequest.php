@@ -2,10 +2,12 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Sylph\Domain\DiscordUser;
-use Sylph\VO\DiscordUserId;
 use YaLinqo\Enumerable;
+use Sylph\VO\DiscordUserId;
+use Sylph\Domain\DiscordUser;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class PostMemberRequest extends FormRequest
 {
@@ -17,6 +19,20 @@ class PostMemberRequest extends FormRequest
     public function authorize()
     {
         return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function failedValidation(Validator $validator)
+    {
+        $res = response()->json(
+            [
+                'errors' => $validator->errors(),
+            ],
+            400
+        );
+        throw new HttpResponseException($res);
     }
 
     /**

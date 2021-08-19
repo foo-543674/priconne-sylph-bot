@@ -3,8 +3,10 @@
 namespace App\Http\Requests;
 
 use DateTime;
-use Illuminate\Foundation\Http\FormRequest;
 use Sylph\VO\Date;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class PostClanBattleRequest extends FormRequest
 {
@@ -16,6 +18,20 @@ class PostClanBattleRequest extends FormRequest
     public function authorize()
     {
         return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function failedValidation(Validator $validator)
+    {
+        $res = response()->json(
+            [
+                'errors' => $validator->errors(),
+            ],
+            400
+        );
+        throw new HttpResponseException($res);
     }
 
     /**

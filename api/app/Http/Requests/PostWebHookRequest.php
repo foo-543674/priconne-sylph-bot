@@ -4,6 +4,8 @@ namespace App\Http\Requests;
 
 use GuzzleHttp\Psr7\Uri;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class PostWebHookRequest extends FormRequest
 {
@@ -15,6 +17,20 @@ class PostWebHookRequest extends FormRequest
     public function authorize()
     {
         return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function failedValidation(Validator $validator)
+    {
+        $res = response()->json(
+            [
+                'errors' => $validator->errors(),
+            ],
+            400
+        );
+        throw new HttpResponseException($res);
     }
 
     /**
