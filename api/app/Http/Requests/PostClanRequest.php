@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
 
 class PostClanRequest extends FormRequest
 {
@@ -17,9 +18,8 @@ class PostClanRequest extends FormRequest
     }
 
     /**
-     * @Override
+     * {@inheritdoc}
      * 勝手にリダイレクトさせない
-     * @param  \Illuminate\Contracts\Validation\Validator  $validator
      */
     protected function failedValidation(Validator $validator)
     {

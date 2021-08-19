@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use DateTime;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
 use Sylph\VO\Date;
 
 class PostClanBattleRequest extends FormRequest
@@ -19,9 +20,8 @@ class PostClanBattleRequest extends FormRequest
     }
 
     /**
-     * @Override
+     * {@inheritdoc}
      * 勝手にリダイレクトさせない
-     * @param  \Illuminate\Contracts\Validation\Validator  $validator
      */
     protected function failedValidation(Validator $validator)
     {
