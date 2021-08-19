@@ -13,7 +13,7 @@ class MessageResolverFromConfig implements MessageResolver
     }
 
     private const DEFAULT_ERROR_MESSAGE = "原因不明のエラーが発生したよ";
-    private const CONFIG_ROOT = "messages.errors";
+    private const CONFIG_ROOT = "message.errors";
 
     /** {@inheritdoc} */
     public function get(string $key, string ...$params): string
