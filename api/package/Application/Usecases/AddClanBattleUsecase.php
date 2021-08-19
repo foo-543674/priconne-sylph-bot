@@ -39,12 +39,13 @@ class AddClanBattleUsecase
 
         $newClanBattle = new ClanBattle(
             new ClanBattleId($this->ulidGenerator->generate()),
-            ...Enumerable::from(range(0, $since->calculateDiff($until)))
+            Enumerable::from(range(0, $since->calculateDiff($until)))
                 ->select(fn (int $dateNumber) => $since->addDays($dateNumber))
                 ->select(fn (Date $date) => new ClanBattleDate(
                     new ClanBattleDateId($this->ulidGenerator->generate()),
                     $date
-                ))
+                )),
+            null
         );
 
         $this->clanBattleRepository->save($newClanBattle);
