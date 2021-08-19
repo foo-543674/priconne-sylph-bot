@@ -50,7 +50,7 @@ class ClanBattle extends Model
     {
         return new EntitiesClanBattle(
             new ClanBattleId(Ulid::fromString($this->id)),
-            $this->dates->map(fn (ClanBattleDate $date) => $date->toEntity())->toArray(),
+            collect($this->dates)->map(fn (ClanBattleDate $date) => $date->toEntity())->toArray(),
             $this->finish?->toEntity(),
         );
     }
