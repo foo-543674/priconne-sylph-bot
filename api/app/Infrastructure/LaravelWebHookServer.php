@@ -20,7 +20,7 @@ class LaravelWebHookServer implements WebHookServer
     public function send(WebHook $webHook, ActivityChangedEventPayload $payload): void
     {
         $this->clientFactory
-            ->withBody($payload, "application/json")
+            ->withBody($payload->jsonSerialize(), "application/json")
             ->timeout(self::TIMEOUT_SECONDS)
             ->post($webHook->getDestination()->__toString());
     }
