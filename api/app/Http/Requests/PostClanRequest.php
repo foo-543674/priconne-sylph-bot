@@ -3,8 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Validation\ValidationException;
 
 class PostClanRequest extends FormRequest
 {
@@ -16,15 +14,6 @@ class PostClanRequest extends FormRequest
     public function authorize()
     {
         return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     * 勝手にリダイレクトさせない
-     */
-    protected function failedValidation(Validator $validator)
-    {
-        throw new ValidationException($validator);
     }
 
     /**
