@@ -58,8 +58,8 @@ class ActivityChangedEventPayload implements JsonSerializable
                                 ->where(fn (Activity $activity) => ($activity instanceof TaskKill
                                     && $activity->getActedMemberId() == $member->getId()
                                     && $activity->getActedDateId() == $date->getId()))->any(),
-                        ])
-                ])
+                        ])->toList()
+                ])->toList()
         ];
     }
 }
