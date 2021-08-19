@@ -41,11 +41,9 @@ class RdbmsClanBattleRepository implements ClanBattleRepository
     /** {@inheritdoc} */
     public function getDateByMessageId(DiscordMessageId $messageId): ?ClanBattleDate
     {
-        return ModelsClanBattle::query()
-            ->whereHas("clanBattleDates", function (Builder $query) use ($messageId) {
-                $query->whereHas("reportMessages", function (Builder $query) use ($messageId) {
-                    $query->where("discord_message_id", $messageId->__toString());
-                });
+        return ModelsClanBattleDate::query()
+            ->whereHas("reportMessages", function (Builder $query) use ($messageId) {
+                $query->where("discord_message_id", $messageId->__toString());
             })
             ->first()
             ?->toEntity();
