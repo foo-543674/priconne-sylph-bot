@@ -25,16 +25,16 @@ class ClanBattleDate extends Model
 {
     use HasFactory;
 
-    public bool $incrementing = false;
-    protected string $keyType = "string";
+    public $incrementing = false;
+    protected $keyType = 'string';
 
-    protected array $fillable = [
+    protected $fillable = [
         "id",
         "date_value",
         "clan_battle_id",
     ];
 
-    protected array $dates = [
+    protected $dates = [
         "date_value",
     ];
 

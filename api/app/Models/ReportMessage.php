@@ -23,10 +23,10 @@ class ReportMessage extends Model
 {
     use HasFactory;
 
-    public bool $incrementing = false;
-    protected string $keyType = "string";
+    public $incrementing = false;
+    protected $keyType = 'string';
 
-    protected array $fillable = [
+    protected $fillable = [
         "id",
         "report_channel_id",
         "date_id",

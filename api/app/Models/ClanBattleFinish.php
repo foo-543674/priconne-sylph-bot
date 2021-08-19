@@ -18,10 +18,10 @@ class ClanBattleFinish extends Model
     use HasFactory;
 
     protected $primaryKey = "clan_battle_id";
-    public bool $incrementing = false;
-    protected string $keyType = "string";
+    public $incrementing = false;
+    protected $keyType = 'string';
 
-    protected array $fillable = [
+    protected $fillable = [
         "clan_battle_id",
     ];
 

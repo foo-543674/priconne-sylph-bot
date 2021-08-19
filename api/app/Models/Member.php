@@ -25,10 +25,10 @@ class Member extends Model
 {
     use HasFactory;
 
-    public bool $incrementing = false;
-    protected string $keyType = "string";
+    public $incrementing = false;
+    protected $keyType = 'string';
 
-    protected array $fillable = [
+    protected $fillable = [
         "id",
         "name",
         "discord_user_id",
