@@ -55,6 +55,7 @@ class CancelCarryOverUsecase
         }
 
         $this->activityRepository->delete($activity);
+        $this->activityChangedEvent->invoke($activity);
 
         return $activity;
     }

@@ -55,6 +55,7 @@ class CancelChallengeUsecase
         }
 
         $this->activityRepository->delete($activity);
+        $this->activityChangedEvent->invoke($activity);
 
         return $activity;
     }
