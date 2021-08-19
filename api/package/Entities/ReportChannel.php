@@ -14,17 +14,14 @@ use YaLinqo\Enumerable;
  */
 class ReportChannel implements JsonSerializable
 {
-    /**
-     * @param ReportMessage[] $messages
-     */
     public function __construct(
         private ReportChannelId $id,
         private ClanId $clanId,
         private ClanBattleId $clanBattleId,
         private DiscordChannelId $discordChannelId,
-        private $messages
+        ReportMessage ...$messages
     ) {
-        //
+        $this->messages = $messages;
     }
 
     public function getId(): ReportChannelId
@@ -47,6 +44,8 @@ class ReportChannel implements JsonSerializable
         return $this->discordChannelId;
     }
 
+    /** @var ReportMessage[] */
+    private $messages;
     /**
      * @return ReportMessage[] $messages
      */
