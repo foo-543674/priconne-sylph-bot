@@ -20,6 +20,15 @@ class PostMemberRequest extends FormRequest
     }
 
     /**
+     * @Override
+     * 勝手にリダイレクトさせない
+     * @param  \Illuminate\Contracts\Validation\Validator  $validator
+     */
+    protected function failedValidation(Validator $validator)
+    {
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array
