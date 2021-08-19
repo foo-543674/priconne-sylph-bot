@@ -2,6 +2,7 @@
 
 namespace Sylph\Application\Events;
 
+use Illuminate\Support\Facades\Log;
 use Sylph\Application\Gateway\WebHookServer;
 use Sylph\Entities\Activity;
 use Sylph\Repositories\ActivityRepository;
@@ -32,6 +33,9 @@ class ActivityChangedEvent
         $members = $this->memberRepository->getByClanId($clan->getId());
         $clanBattle = $this->clanBattleRepository->getByDateId($activity->getActedDateId());
         $activities = $this->activityRepository->getByClanIdAndClanBattleId($clan->getId(), $clanBattle->getId());
+
+        Log::info(json_encode($clanBattle, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        Log::info(json_encode($activities, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 
         $webHooks = $this->webHookRepository->getByClanId($clan->getId());
 
