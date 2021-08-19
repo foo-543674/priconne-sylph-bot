@@ -63,7 +63,7 @@ class ReportChannel extends Model
             new ClanId(Ulid::fromString($this->clan_id)),
             new ClanBattleId(Ulid::fromString($this->clan_battle_id)),
             new DiscordChannelId($this->discord_channel_id),
-            collect($this->messages)->map(fn (ReportMessage $message) => $message->toEntity())->toArray(),
+            ...collect($this->messages)->map(fn (ReportMessage $message) => $message->toEntity()),
         );
     }
 }
