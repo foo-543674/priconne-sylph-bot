@@ -6,7 +6,7 @@ return [
         "clan_battle_is_already_exists" => "既に開催中のクランバトルがあるよ",
         "clan_battle_period_is_invalid" => "クランバトルの期間がおかしいよ",
         "in_session_clan_battle_is_not_exists" => "開催中のクランバトルが無いよ",
-        "report_message_count_is_invalid" => "クランバトルの開催日数と報告先のメッセージ数が合ってないよ",
+        "report_message_count_is_invalid" => "クランバトルの開催日数と報告先のメッセージ数が合ってないよ(%d日:%d個)",
         "clan_is_not_exists" => "%sっていうクランは知らない",
         "message_does_not_exists" => "報告先のメッセージがないよ",
         "member_does_not_exists" => "該当するメンバーはいないよ",

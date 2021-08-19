@@ -43,8 +43,10 @@ class AddReportChannelUsecase
             $this->errorIgnition->throwValidationError(MessageKey::IN_SESSION_CLAN_BATTLE_IS_NOT_EXISTS);
         }
 
-        if (count($clanBattle->getDates()) !== count($messageIds)) {
-            $this->errorIgnition->throwValidationError(MessageKey::REPORT_MESSAGE_COUNT_IS_INVALID);
+        $datesCount = count($clanBattle->getDates());
+        $messagesCount = count($messageIds);
+        if ($datesCount !== $messagesCount) {
+            $this->errorIgnition->throwValidationError(MessageKey::REPORT_MESSAGE_COUNT_IS_INVALID, $datesCount, $messagesCount);
         }
 
         $clan = $this->clanRepository->getByName($clanName);
