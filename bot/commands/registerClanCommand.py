@@ -26,4 +26,4 @@ class RegisterClanCommand(MessageCommand):
         if(response.status_code == 200):
             await message.add_reaction(self.phraseRepository.get('succeed_reaction'))
         else:
-            await message.add_reaction(self.phraseRepository.get('failed_reaction'))
+            await message.channel.send(response.text)
