@@ -1,4 +1,6 @@
 phrases:
+  bot_name: Sylph
+  register_clan: ^(?P<clanName>[\s\S]+)を登録して$
   create_challenge_report: 凸報告場所を作って
   challenge_report_guide: |-
     凸をしたら回数に応じてスタンプを押してね。
@@ -11,3 +13,5 @@ phrases:
   first_carry_over_stamp: ☑️
   second_carry_over_stamp: ✅
   task_kill_stamp: ⚠️
+  succeed_reaction: 👍
+  failed_reaction: 🥺
