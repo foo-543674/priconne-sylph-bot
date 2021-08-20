@@ -1,3 +1,4 @@
+from requests import status_codes
 from apiClient import ApiClient
 from typing import Match
 from discord.message import Message
@@ -25,5 +26,7 @@ class RegisterClanCommand(MessageCommand):
 
         if(response.status_code == 200):
             await message.add_reaction(self.phraseRepository.get('succeed_reaction'))
-        else:
+        elif(response.status_codes == 400):
             await message.channel.send(response.text)
+        else:
+            await message.add_reaction(self.phraseRepository.get('failed_reaction'))
