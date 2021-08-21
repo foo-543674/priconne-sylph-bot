@@ -35,7 +35,7 @@ class ActivityChangedEventPayload implements JsonSerializable
     public function jsonSerialize()
     {
         return [
-            "type" => "ACTIVITIY_CHANGED",
+            "type" => "ACTIVITY_CHANGED",
             "name" => $this->clan->getName(),
             "activities" => Enumerable::from($this->dates)
                 ->select(fn (ClanBattleDate $date) => [
