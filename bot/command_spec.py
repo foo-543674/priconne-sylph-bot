@@ -1,6 +1,8 @@
 from abc import ABCMeta, abstractmethod
 from discord import Message
 from discord.client import Client
+from discord.enums import Enum
+from discord.raw_models import RawReactionActionEvent
 
 
 class PhraseRepository(metaclass=ABCMeta):
@@ -44,7 +46,7 @@ class MessageCommand(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    async def execute(self, message: Message, discordClient: Client) -> None:
+    async def execute(self, message: Message) -> None:
         """
         メッセージに対する反応をする
 
@@ -52,5 +54,57 @@ class MessageCommand(metaclass=ABCMeta):
         ------------
         message : Message
             受信したメッセージ
+        """
+        pass
+
+class ReactionCommand(metaclass=ABCMeta):
+    """
+    リアクションを受信した際に実行されるコマンド
+    """
+
+    def __init__(self, phraseRepository: PhraseRepository) -> None:
+        """
+        Parameters
+        ------------
+        phraseRepository : CommandPhraseRepository
+            コマンドのフレーズが格納されたリポジトリ
+        """
+        self.phraseRepository = phraseRepository
+
+    @abstractmethod
+    def isMatchTo(self, reaction: str, messageId: str) -> bool:
+        """
+        リアクションの内容とメッセージに対応したコマンドかどうか確認
+
+        Parameters
+        ------------
+        reaction : str
+            受信したリアクション
+        messageId : str
+            リアクションされたメッセージのID
+        """
+        pass
+
+    @abstractmethod
+    def executeForAdd(self, reaction: RawReactionActionEvent) -> None:
+        """
+        リアクションが追加されたことに対する反応をする
+
+        Parameters
+        ------------
+        reaction : RawReactionActionEvent
+            リアクションの内容
+        """
+        pass
+
+    @abstractmethod
+    def executeForRemove(self, reaction: RawReactionActionEvent) -> None:
+        """
+        リアクションが削除されたことに対する反応をする
+
+        Parameters
+        ------------
+        reaction : RawReactionActionEvent
+            リアクションの内容
         """
         pass

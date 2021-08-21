@@ -15,7 +15,7 @@ class CreateChallengeReportCommand(MessageCommand):
     def isMatchTo(self, message: str):
         return re.search(self.phraseRepository.get('create_challenge_report'), message)
 
-    async def execute(self, message: Message, discordClient: Client) -> None:
+    async def execute(self, message: Message) -> None:
         print('start create challenge report command')
         await message.channel.send(self.phraseRepository.get('challenge_report_guide'))
 

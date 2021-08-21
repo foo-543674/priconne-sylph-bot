@@ -16,7 +16,7 @@ class RegisterWebhookCommand(MessageCommand):
     def isMatchTo(self, message: str):
         return re.search(self.phraseRepository.get('register_webhook'), message)
 
-    async def execute(self, message: Message, discordClient: Client) -> None:
+    async def execute(self, message: Message) -> None:
         print('start register webhook command')
         messageText: str = re.sub(
             f"@{self.phraseRepository.get('bot_name')}", '', message.clean_content).strip(" ")

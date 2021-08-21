@@ -59,3 +59,66 @@ class ApiClient:
                 'X-Authorization': self.apiKey
             }
         )
+
+    def get_report_message(self, messageId: str):
+        return requests.get(
+            f"{self.baseUri}/api/report_messages/{messageId}",
+            headers={
+                'Content-Type': 'application/json',
+                'X-Authorization': self.apiKey
+            }
+        )
+
+    def report_challenge(self, messageId: str, userId: str):
+        return requests.post(
+            f"{self.baseUri}/api/challenges/messages/{messageId}/users/{userId}",
+            headers={
+                'Content-Type': 'application/json',
+                'X-Authorization': self.apiKey
+            }
+        )
+
+    def cancel_challenge(self, messageId: str, userId: str):
+        return requests.delete(
+            f"{self.baseUri}/api/challenges/messages/{messageId}/users/{userId}",
+            headers={
+                'Content-Type': 'application/json',
+                'X-Authorization': self.apiKey
+            }
+        )
+
+    def report_carry_over(self, messageId: str, userId: str):
+        return requests.post(
+            f"{self.baseUri}/api/carry_overs/messages/{messageId}/users/{userId}",
+            headers={
+                'Content-Type': 'application/json',
+                'X-Authorization': self.apiKey
+            }
+        )
+
+    def cancel_carry_over(self, messageId: str, userId: str):
+        return requests.delete(
+            f"{self.baseUri}/api/carry_overs/messages/{messageId}/users/{userId}",
+            headers={
+                'Content-Type': 'application/json',
+                'X-Authorization': self.apiKey
+            }
+        )
+
+    def report_task_kill(self, messageId: str, userId: str):
+        return requests.post(
+            f"{self.baseUri}/api/task_kills/messages/{messageId}/users/{userId}",
+            headers={
+                'Content-Type': 'application/json',
+                'X-Authorization': self.apiKey
+            }
+        )
+
+    def cancel_task_kill(self, messageId: str, userId: str):
+        return requests.delete(
+            f"{self.baseUri}/api/task_kills/messages/{messageId}/users/{userId}",
+            headers={
+                'Content-Type': 'application/json',
+                'X-Authorization': self.apiKey
+            }
+        )
