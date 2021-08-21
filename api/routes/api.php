@@ -3,6 +3,7 @@
 use App\Http\Controllers\DeleteCarryOverController;
 use App\Http\Controllers\DeleteChallengeController;
 use App\Http\Controllers\DeleteTaskKillController;
+use App\Http\Controllers\GetReportMessageController;
 use App\Http\Controllers\PatchClanBattleStatusController;
 use App\Http\Controllers\PostCarryOverController;
 use App\Http\Controllers\PostChallengeController;
@@ -39,6 +40,9 @@ Route::middleware("auth.apikey")->group(function () {
     });
     Route::prefix("/report_channels")->group(function () {
         Route::post("/", PostReportChannelController::class)->name("post.report_channels");
+    });
+    Route::prefix("/report_messages")->group(function () {
+        Route::get("/{discordMessageId}", GetReportMessageController::class)->name("get.report_messages");
     });
     Route::prefix("/webhooks")->group(function () {
         Route::post("/", PostWebHookController::class)->name("post.webhooks");
