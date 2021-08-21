@@ -32,7 +32,7 @@ class MemberRegisteredEventPayload implements JsonSerializable
             "name" => $this->clan->getName(),
             "members" => Enumerable::from($this->members)
                 ->select(fn (Member $member) => [
-                    "id" => $member->getId(),
+                    "id" => $member->getId()->__toString(),
                     "name" => $member->getName()
                 ])
                 ->toList(),

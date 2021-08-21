@@ -42,7 +42,7 @@ class ActivityChangedEventPayload implements JsonSerializable
                     "date" => $date->getDate()->__toString(),
                     "members" => Enumerable::from($this->members)
                         ->select(fn (Member $member) => [
-                            "id" => $member->getId(),
+                            "id" => $member->getId()->__toString(),
                             "name" => $member->getName(),
                             "challenged" => Enumerable::from($this->activities)
                                 ->where(fn (Activity $activity) => ($activity instanceof Challenge
