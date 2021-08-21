@@ -19,7 +19,6 @@ class ActivityChangedEventPayload implements JsonSerializable
 {
     /**
      * @param Clan $clan
-     * @param Member[] $members
      * @param ClanBattleDate[] $dates
      * @param Activity[] $activities
      */
@@ -36,15 +35,14 @@ class ActivityChangedEventPayload implements JsonSerializable
     public function jsonSerialize()
     {
         return [
+            "type" => "ACTIVITIY_CHANGED",
             "name" => $this->clan->getName(),
-            "members" => Enumerable::from($this->members)
-                ->select(fn (Member $member) => $member->getName())
-                ->toList(),
             "activities" => Enumerable::from($this->dates)
                 ->select(fn (ClanBattleDate $date) => [
                     "date" => $date->getDate()->__toString(),
                     "members" => Enumerable::from($this->members)
                         ->select(fn (Member $member) => [
+                            "id" => $member->getId(),
                             "name" => $member->getName(),
                             "challenged" => Enumerable::from($this->activities)
                                 ->where(fn (Activity $activity) => ($activity instanceof Challenge

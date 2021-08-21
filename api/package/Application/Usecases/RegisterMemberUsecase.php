@@ -3,6 +3,7 @@
 namespace Sylph\Application\Usecases;
 
 use JsonSerializable;
+use Sylph\Application\Events\MemberRegisteredEvent;
 use Sylph\Application\Support\ErrorIgnition;
 use Sylph\Application\Support\MessageKey;
 use Sylph\Application\Support\UlidGenerator;
@@ -23,6 +24,7 @@ class RegisterMemberUsecase
         private ClanRepository $clanRepository,
         private ErrorIgnition $errorIgnition,
         private UlidGenerator $ulidGenerator,
+        private MemberRegisteredEvent $memberRegisteredEvent,
     ) {
         //
     }
@@ -54,6 +56,8 @@ class RegisterMemberUsecase
         foreach ($newMembers as $newMember) {
             $this->memberRepository->save($newMember);
         }
+
+        $this->memberRegisteredEvent->invoke(...$newMember);
 
         return $newMembers;
     }

@@ -2,7 +2,7 @@
 
 namespace Sylph\Application\Gateway;
 
-use Sylph\Application\Events\ActivityChangedEventPayload;
+use JsonSerializable;
 use Sylph\Entities\WebHook;
 
 /**
@@ -13,5 +13,5 @@ interface WebHookServer
     /**
      * WebHookを送信する
      */
-    public function send(WebHook $webHook, ActivityChangedEventPayload $payload): void;
+    public function send(WebHook $webHook, JsonSerializable $payload): void;
 }

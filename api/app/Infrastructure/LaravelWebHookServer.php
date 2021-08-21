@@ -3,7 +3,7 @@
 namespace App\Infrastructure;
 
 use Illuminate\Http\Client\Factory;
-use Sylph\Application\Events\ActivityChangedEventPayload;
+use JsonSerializable;
 use Sylph\Application\Gateway\WebHookServer;
 use Sylph\Entities\WebHook;
 
@@ -17,7 +17,7 @@ class LaravelWebHookServer implements WebHookServer
     private const TIMEOUT_SECONDS = 60 * 3;
 
     /** {@inheritdoc} */
-    public function send(WebHook $webHook, ActivityChangedEventPayload $payload): void
+    public function send(WebHook $webHook, JsonSerializable $payload): void
     {
         $this->clientFactory
             ->timeout(self::TIMEOUT_SECONDS)
