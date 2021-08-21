@@ -1,7 +1,9 @@
 phrases:
   bot_name: Sylph
-  register_clan: ^(?P<clanName>[\s\S]+)を登録して$
-  create_challenge_report: 凸報告場所を作って
+  register_clan: \[(?P<clanName>[\s\S]+)\]を登録して
+  register_members: \[(?P<clanName>[\s\S]+)\]のメンバーを登録して
+  create_challenge_report: \[(?P<clanName>[\s\S]+)\]の凸報告場所を作って
+  register_webhook: \[(?P<clanName>[\s\S]+)\]の状況が変化したら \[(?P<url>https?://[\w!\?/\+\-_~=;\.,\*&@#\$%\(\)'\[\]]+)\] に通知して
   challenge_report_guide: |-
     凸をしたら回数に応じてスタンプを押してね。
     持ち越しを持ったら1回目は青、2回目は緑のチェックマークにスタンプを押してね。

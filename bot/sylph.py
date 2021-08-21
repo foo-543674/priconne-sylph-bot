@@ -1,6 +1,7 @@
 from command_spec import MessageCommand
 from discord import Client, Message, RawReactionActionEvent
 
+
 class Sylph(Client):
     def __init__(self, *, loop=None, **options):
         super().__init__(loop=loop, **options)
@@ -19,7 +20,7 @@ class Sylph(Client):
         for command in self.commands:
             if not command.isMatchTo(message.clean_content):
                 continue
-            await command.execute(message)
+            await command.execute(message, self)
 
     async def on_raw_reaction_add(self, payload: RawReactionActionEvent):
         if payload.member == self.user:

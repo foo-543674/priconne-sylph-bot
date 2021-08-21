@@ -1,5 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from discord import Message
+from discord.client import Client
+
 
 class PhraseRepository(metaclass=ABCMeta):
     @abstractmethod
@@ -14,10 +16,12 @@ class PhraseRepository(metaclass=ABCMeta):
         """
         pass
 
+
 class MessageCommand(metaclass=ABCMeta):
     """
     メッセージを受信した際に実行されるコマンド
     """
+
     def __init__(self, phraseRepository: PhraseRepository) -> None:
         """
         Parameters
@@ -40,7 +44,7 @@ class MessageCommand(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    async def execute(self, message: Message) -> None:
+    async def execute(self, message: Message, discordClient: Client) -> None:
         """
         メッセージに対する反応をする
 
