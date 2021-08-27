@@ -13,16 +13,13 @@ class CreateBossQuestionnaireCommand(MessageCommand):
 
     async def execute(self, message: Message) -> None:
         print('start create boss querstionaire command')
-        await message.channel.send(self.phraseRepository.get('boss_questionnaire_message'))
-
-        for day in range(1, 6):
-            sentMessage: Message = await message.channel.send(self.phraseRepository.get('boss_questionnaire_message'))
-            reactions = [
-                self.phraseRepository.get('first_boss_stamp'),
-                self.phraseRepository.get('second_boss_stamp'),
-                self.phraseRepository.get('third_boss_stamp'),
-                self.phraseRepository.get('forth_boss_stamp'),
-                self.phraseRepository.get('fifth_boss_stamp'),
-            ]
-            for reaction in reactions:
-                await sentMessage.add_reaction(reaction)
+        sentMessage: Message = await message.channel.send(self.phraseRepository.get('boss_questionnaire_message'))
+        reactions = [
+            self.phraseRepository.get('first_boss_stamp'),
+            self.phraseRepository.get('second_boss_stamp'),
+            self.phraseRepository.get('third_boss_stamp'),
+            self.phraseRepository.get('forth_boss_stamp'),
+            self.phraseRepository.get('fifth_boss_stamp'),
+        ]
+        for reaction in reactions:
+            await sentMessage.add_reaction(reaction)
