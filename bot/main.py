@@ -2,6 +2,7 @@ import discord
 from apiClient import ApiClient
 from repository import YamlPhraseRepository
 from commands.createChallengeReportCommand import CreateChallengeReportCommand
+from commands.createBossQuestionnaireCommand import CreateBossQuestionnaireCommand
 from commands.registerClanCommand import RegisterClanCommand
 from commands.registerMembersCommand import RegisterMembersCommand
 from commands.registerWebhookCommand import RegisterWebhookCommand
@@ -25,6 +26,7 @@ client.add_message_command(RegisterMembersCommand(phraseRepository, apiClient))
 client.add_message_command(
     CreateChallengeReportCommand(phraseRepository, apiClient))
 client.add_message_command(RegisterWebhookCommand(phraseRepository, apiClient))
+client.add_message_command(CreateBossQuestionnaireCommand(phraseRepository))
 
 client.add_reaction_command(
     ReportChallengeCommand(phraseRepository, apiClient))

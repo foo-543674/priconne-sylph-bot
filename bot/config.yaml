@@ -4,11 +4,13 @@ phrases:
   register_members: \[(?P<clanName>[\s\S]+)\]のメンバーを登録して
   create_challenge_report: \[(?P<clanName>[\s\S]+)\]の凸報告場所を作って
   register_webhook: \[(?P<clanName>[\s\S]+)\]の状況が変化したら \[(?P<url>https?://[\w!\?/\+\-_~=;\.,\*&@#\$%\(\)'\[\]]+)\] に通知して
+  create_boss_questionnaire: ボスアンケート作って
   challenge_report_guide: |-
     凸をしたら回数に応じてスタンプを押してね。
     持ち越しを持ったら1回目は青、2回目は緑のチェックマークにスタンプを押してね。
     タスキルを使ったら黄色い警告スタンプを押してね。
   days_unit: '{0}日目'
+  boss_questionnaire_message: 行きたいボスのスタンプ押してね
   first_challenge_stamp: 1️⃣
   second_challenge_stamp: 2️⃣
   third_challenge_stamp: 3️⃣
@@ -17,3 +19,8 @@ phrases:
   task_kill_stamp: ⚠️
   succeed_reaction: 👍
   failed_reaction: 🥺
+  first_boss_stamp: 1️⃣
+  second_boss_stamp: 2️⃣
+  third_boss_stamp: 3️⃣
+  forth_boss_stamp: 4️⃣
+  fifth_boss_stamp: 5️⃣
