@@ -5,7 +5,7 @@ phrases:
   create_challenge_report: \[(?P<clanName>[\s\S]+)\]の凸報告場所を作って
   register_webhook: \[(?P<clanName>[\s\S]+)\]の状況が変化したら \[(?P<url>https?://[\w!\?/\+\-_~=;\.,\*&@#\$%\(\)'\[\]]+)\] に通知して
   create_boss_questionnaire: ボスアンケート作って
-  boss_notification_command: (?P<bossnumber>[1-5])に行きたい人に通知して
+  boss_notification_command: (?P<bossNumber>[1-5])に行きたい人に通知して
   challenge_report_guide: |-
     凸をしたら回数に応じてスタンプを押してね。
     持ち越しを持ったら1回目は青、2回目は緑のチェックマークにスタンプを押してね。
