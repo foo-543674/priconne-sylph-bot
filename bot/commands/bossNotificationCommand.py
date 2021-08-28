@@ -28,8 +28,8 @@ class BossNotificationCommand(MessageCommand):
         bossNumber: str = matches.group('bossNumber')
         bossNumberEmoji = self.phraseRepository.get(f"{bossNumber}_boss_stamp")
         notifyReactions = [reaction for reaction in questionaireMessage.reactions if reaction.emoji == bossNumberEmoji]
-        users = itertools.chain([await reaction.users() for reaction in notifyReactions])
-        mentions = [f"<@{user.id}>" for user in users]
-        memtionText = ".".join(mentions)
+        users = itertools.chain([await reaction.users().flatten() for reaction in notifyReactions])
+        #mentions = [f"<@{user.id}>" for user in users]
+        memtionText = ".".join(users)
 
         await message.channel.send(f"{memtionText}{bossNumber}{self.phraseRepository.get('boss_notify_message')}")
