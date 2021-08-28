@@ -1,6 +1,7 @@
 import discord
 from apiClient import ApiClient
 from repository import YamlPhraseRepository
+from commands.bossNotificationCommand import BossNotificationCommand
 from commands.createChallengeReportCommand import CreateChallengeReportCommand
 from commands.createBossQuestionnaireCommand import CreateBossQuestionnaireCommand
 from commands.registerClanCommand import RegisterClanCommand
@@ -27,6 +28,7 @@ client.add_message_command(
     CreateChallengeReportCommand(phraseRepository, apiClient))
 client.add_message_command(RegisterWebhookCommand(phraseRepository, apiClient))
 client.add_message_command(CreateBossQuestionnaireCommand(phraseRepository))
+client.add_message_command(BossNotificationCommand(phraseRepository, client))
 
 client.add_reaction_command(
     ReportChallengeCommand(phraseRepository, apiClient))

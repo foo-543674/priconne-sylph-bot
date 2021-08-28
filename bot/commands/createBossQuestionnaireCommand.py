@@ -15,11 +15,11 @@ class CreateBossQuestionnaireCommand(MessageCommand):
         print('start create boss querstionaire command')
         sentMessage: Message = await message.channel.send(self.phraseRepository.get('boss_questionnaire_message'))
         reactions = [
-            self.phraseRepository.get('first_boss_stamp'),
-            self.phraseRepository.get('second_boss_stamp'),
-            self.phraseRepository.get('third_boss_stamp'),
-            self.phraseRepository.get('forth_boss_stamp'),
-            self.phraseRepository.get('fifth_boss_stamp'),
+            self.phraseRepository.get('1_boss_stamp'),
+            self.phraseRepository.get('2_boss_stamp'),
+            self.phraseRepository.get('3_boss_stamp'),
+            self.phraseRepository.get('4_boss_stamp'),
+            self.phraseRepository.get('5_boss_stamp'),
         ]
         for reaction in reactions:
             await sentMessage.add_reaction(reaction)

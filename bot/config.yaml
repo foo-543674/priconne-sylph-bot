@@ -19,8 +19,8 @@ phrases:
   task_kill_stamp: ⚠️
   succeed_reaction: 👍
   failed_reaction: 🥺
-  first_boss_stamp: 1️⃣
-  second_boss_stamp: 2️⃣
-  third_boss_stamp: 3️⃣
-  forth_boss_stamp: 4️⃣
-  fifth_boss_stamp: 5️⃣
+  1_boss_stamp: 1️⃣
+  2_boss_stamp: 2️⃣
+  3_boss_stamp: 3️⃣
+  4_boss_stamp: 4️⃣
+  5_boss_stamp: 5️⃣
