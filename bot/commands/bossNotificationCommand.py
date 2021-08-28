@@ -25,7 +25,7 @@ class BossNotificationCommand(MessageCommand):
             f"@{self.phraseRepository.get('bot_name')}", '', message.clean_content).strip(" ")
         matches: Match = re.search(self.phraseRepository.get(
             'boss_notification_command'), messageText)
-        bossNumber: str = matches.group('boss_number')
+        bossNumber: str = matches.group('bossNumber')
         bossNumberEmoji = self.phraseRepository.get(f"{bossNumber}_boss_stamp")
         notifyReactions: List[Reaction] = filter(lambda reaction: reaction.emoji == bossNumberEmoji,
                                 questionaireMessage.reactions)
@@ -33,5 +33,5 @@ class BossNotificationCommand(MessageCommand):
         mentions = map(lambda member: f"<@{member.id}>", members)
         memtionText = ".".join(mentions)
 
-        await message.channel.send(f"{memtionText}{self.phraseRepository.get('boss_notify_message')}")
+        await message.channel.send(f"{memtionText}{bossNumber}{self.phraseRepository.get('boss_notify_message')}")
 
