@@ -19,7 +19,7 @@ class BossNotificationCommand(MessageCommand):
     async def execute(self, message: Message) -> None:
         print('start boss notification command')
         questionaireMessageId = message.reference.message_id
-        questionaireMessage: Message = message.channel.fetch_message(questionaireMessageId)
+        questionaireMessage: Message = await message.channel.fetch_message(questionaireMessageId)
 
         messageText: str = re.sub(
             f"@{self.phraseRepository.get('bot_name')}", '', message.clean_content).strip(" ")
@@ -27,10 +27,9 @@ class BossNotificationCommand(MessageCommand):
             'boss_notification_command'), messageText)
         bossNumber: str = matches.group('bossNumber')
         bossNumberEmoji = self.phraseRepository.get(f"{bossNumber}_boss_stamp")
-        notifyReactions: List[Reaction] = [reaction for reaction in message.reactions if reaction.emoji == bossNumberEmoji]
+        notifyReactions: List[Reaction] = [reaction for reaction in questionaireMessage.reactions if reaction.emoji == bossNumberEmoji]
         users = itertools.chain([reaction.users() for reaction in notifyReactions])
         mentions = [f"<@{user.id}>" for user in users]
         memtionText = ".".join(mentions)
 
         await message.channel.send(f"{memtionText}{bossNumber}{self.phraseRepository.get('boss_notify_message')}")
-
