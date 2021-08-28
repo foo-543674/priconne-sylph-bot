@@ -13,6 +13,7 @@ phrases:
   days_unit: '{0}日目'
   boss_questionnaire_message: 行きたいボスのスタンプ押してね
   boss_notify_message: ボスの凸を開始するよ
+  cannot_find_boss_questionnaire_message: ボスアンケートが見つからないよ。1000個以上前のメッセージは見つけられないから、新しくアンケートを作ってね。
   first_challenge_stamp: 1️⃣
   second_challenge_stamp: 2️⃣
   third_challenge_stamp: 3️⃣

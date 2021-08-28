@@ -18,18 +18,20 @@ class BossNotificationCommand(MessageCommand):
 
     async def execute(self, message: Message) -> None:
         print('start boss notification command')
-        questionaireMessageId = message.reference.message_id
-        questionaireMessage: Message = await message.channel.fetch_message(questionaireMessageId)
 
-        messageText: str = re.sub(
-            f"@{self.phraseRepository.get('bot_name')}", '', message.clean_content).strip(" ")
-        matches: Match = re.search(self.phraseRepository.get(
-            'boss_notification_command'), messageText)
-        bossNumber: str = matches.group('bossNumber')
-        bossNumberEmoji = self.phraseRepository.get(f"{bossNumber}_boss_stamp")
-        notifyReactions = [reaction for reaction in questionaireMessage.reactions if reaction.emoji == bossNumberEmoji]
-        users = itertools.chain.from_iterable([await reaction.users().flatten() for reaction in notifyReactions])
-        mentions = [f"<@{user.id}>" for user in users if user != self.discordClient.user]
-        memtionText = ",".join(mentions)
+        questionnaireMessage =  await message.channel.history(limit = 1000)\
+            .find(lambda m: (m.author == self.discordClient.user) & (m.clean_content == self.phraseRepository.get('boss_questionnaire_message')))
 
-        await message.channel.send(f"{memtionText}{bossNumber}{self.phraseRepository.get('boss_notify_message')}")
+        if questionnaireMessage is None:
+            await message.channel.send(self.phraseRepository.get('cannot_find_boss_questionnaire_message'))
+        else:
+            messageText: str = re.sub(f"@{self.phraseRepository.get('bot_name')}", '', message.clean_content).strip(" ")
+            matches: Match = re.search(self.phraseRepository.get('boss_notification_command'), messageText)
+            bossNumber: str = matches.group('bossNumber')
+            bossNumberEmoji = self.phraseRepository.get(f"{bossNumber}_boss_stamp")
+            notifyReactions = [reaction for reaction in questionnaireMessage.reactions if reaction.emoji == bossNumberEmoji]
+            users = itertools.chain.from_iterable([await reaction.users().flatten() for reaction in notifyReactions])
+            mentions = [f"<@{user.id}>" for user in users if user != self.discordClient.user]
+            memtionText = ",".join(mentions)
+
+            await message.channel.send(f"{memtionText}{bossNumber}{self.phraseRepository.get('boss_notify_message')}")
