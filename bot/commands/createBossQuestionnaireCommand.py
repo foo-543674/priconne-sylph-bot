@@ -12,6 +12,7 @@ class CreateBossQuestionnaireCommand(MessageCommand):
         return re.search(self.phraseRepository.get('create_boss_questionnaire'), message)
 
     async def execute(self, message: Message) -> None:
+        print(message.clean_content)
         print('start create boss querstionaire command')
         sentMessage: Message = await message.channel.send(self.phraseRepository.get('boss_questionnaire_message'))
         reactions = [
