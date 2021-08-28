@@ -30,6 +30,6 @@ class BossNotificationCommand(MessageCommand):
         notifyReactions = [reaction for reaction in questionaireMessage.reactions if reaction.emoji == bossNumberEmoji]
         users = itertools.chain.from_iterable([await reaction.users().flatten() for reaction in notifyReactions])
         mentions = [f"<@{user.id}>" for user in users if user != self.discordClient.user]
-        memtionText = ".".join(mentions)
+        memtionText = ",".join(mentions)
 
         await message.channel.send(f"{memtionText}{bossNumber}{self.phraseRepository.get('boss_notify_message')}")
