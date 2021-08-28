@@ -29,7 +29,7 @@ class BossNotificationCommand(MessageCommand):
         bossNumberEmoji = self.phraseRepository.get(f"{bossNumber}_boss_stamp")
         notifyReactions = [reaction for reaction in questionaireMessage.reactions if reaction.emoji == bossNumberEmoji]
         users = await notifyReactions[0].users().flatten()
-        mentions = [f"<@{user}>" for user in users]
+        mentions = [f"<@{user[0]}>" for user in users]
         memtionText = ".".join(mentions)
 
         await message.channel.send(f"{memtionText}{bossNumber}{self.phraseRepository.get('boss_notify_message')}")
