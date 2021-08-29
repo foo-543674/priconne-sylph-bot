@@ -1,0 +1,28 @@
+{
+  "name": "typescript-template",
+  "description": "discord.jsとTypeScriptを使ってボットを作るためのテンプレート",
+  "website": "https://discordjs-japan.org",
+  "repository": "https://github.com/discordjs-japan/typescript-template",
+  "keywords": [
+    "Discord.js",
+    "Node.js",
+    "TypeScript",
+    "Discord",
+    "Bot"
+  ],
+  "env": {
+    "DISCORD_TOKEN": {
+      "description": "Discordボットのトークン"
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 0,
+      "size": "free"
+    },
+    "worker": {
+      "quantity": 1,
+      "size": "free"
+    }
+  }
+}
