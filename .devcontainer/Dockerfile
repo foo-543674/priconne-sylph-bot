@@ -26,6 +26,15 @@ RUN apt install -y python3-pip \
  && python3 -m pip install -U discord.py \
  && pip3 install pyyaml
 
+# Environment for bot(js)
+RUN apt install -y \
+        nodejs \
+        npm \
+ && npm install n -g \
+ && sudo n stable \
+ && apt purge -y nodejs npm \
+ && exec $SHELL -l
+
 # Environment for api
 RUN apt-get install -y software-properties-common \
  && add-apt-repository -y ppa:ondrej/php \
