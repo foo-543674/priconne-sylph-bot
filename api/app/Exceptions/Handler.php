@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Response;
 use Sylph\Application\Errors\ValidationException;
+use Illuminate\Validation\ValidationException as LaravelValidationException;
 use Sylph\Errors\DomainValidationException;
 use Throwable;
 
@@ -37,6 +38,10 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
+        $this->renderable(function (LaravelValidationException $e) {
+            return response($e->validator->errors()->first(), Response::HTTP_BAD_REQUEST);
+        });
+
         $this->renderable(function (ValidationException $e) {
             return response($e->getMessage(), Response::HTTP_BAD_REQUEST);
         });
