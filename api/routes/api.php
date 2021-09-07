@@ -32,6 +32,7 @@ Route::middleware("auth.apikey")->group(function () {
         Route::post("/", PostClanController::class)->name("post.clans");
     });
     Route::prefix("/clan_battles")->group(function () {
+        Route::get("/", GetClanBattleController::class)->name("get.clan_battles");
         Route::post("/", PostClanBattleController::class)->name("post.clan_battles");
         Route::patch("/status", PatchClanBattleStatusController::class)->name("patch.clan_battle_status");
     });
