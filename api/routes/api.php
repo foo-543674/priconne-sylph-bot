@@ -3,6 +3,7 @@
 use App\Http\Controllers\DeleteCarryOverController;
 use App\Http\Controllers\DeleteChallengeController;
 use App\Http\Controllers\DeleteTaskKillController;
+use App\Http\Controllers\GetClanBattleController;
 use App\Http\Controllers\GetReportMessageController;
 use App\Http\Controllers\PatchClanBattleStatusController;
 use App\Http\Controllers\PostCarryOverController;
