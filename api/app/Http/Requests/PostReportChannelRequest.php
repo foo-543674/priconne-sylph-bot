@@ -6,11 +6,11 @@ use YaLinqo\Enumerable;
 use Sylph\VO\DiscordChannelId;
 use Sylph\VO\DiscordMessageId;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Http\Exceptions\HttpResponseException;
 
 class PostReportChannelRequest extends FormRequest
 {
+    use ValidationHandle;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -19,18 +19,6 @@ class PostReportChannelRequest extends FormRequest
     public function authorize()
     {
         return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function failedValidation(Validator $validator)
-    {
-        $res = response()->json(
-            $validator->errors()->first()[0],
-            400
-        );
-        throw new HttpResponseException($res);
     }
 
     /**
