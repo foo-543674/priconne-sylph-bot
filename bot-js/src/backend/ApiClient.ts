@@ -109,6 +109,7 @@ export class ApiClient {
     ) {
         return await ApiClient.sendToApi(async () => await axios.post(
             `${this.baseUri}/api/challenges/messages/${messageId}/users/${userId}`,
+            null,
             { headers: this.header }
         ));
     }
@@ -129,6 +130,7 @@ export class ApiClient {
     ) {
         return await ApiClient.sendToApi(async () => await axios.post(
             `${this.baseUri}/api/carry_overs/messages/${messageId}/users/${userId}`,
+            null,
             { headers: this.header }
         ));
     }
@@ -149,6 +151,7 @@ export class ApiClient {
     ) {
         return await ApiClient.sendToApi(async () => await axios.post(
             `${this.baseUri}/api/task_kills/messages/${messageId}/users/${userId}`,
+            null,
             { headers: this.header }
         ));
     }
