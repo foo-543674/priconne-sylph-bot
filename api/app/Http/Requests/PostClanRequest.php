@@ -30,6 +30,14 @@ class PostClanRequest extends FormRequest
         ];
     }
 
+    /** {@inheritdoc} */
+    public function attributes()
+    {
+        return [
+            'clanName' => 'クラン名',
+        ];
+    }
+
     public function getClanName(): string
     {
         return $this->input("clanName");

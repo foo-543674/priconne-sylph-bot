@@ -33,6 +33,15 @@ class PostClanBattleRequest extends FormRequest
         ];
     }
 
+    /** {@inheritdoc} */
+    public function attributes()
+    {
+        return [
+            'since' => '開始日',
+            'until' => '終了日',
+        ];
+    }
+
     public function getSince(): Date
     {
         return new Date(new DateTime($this->input("since")));

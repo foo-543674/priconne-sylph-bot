@@ -36,6 +36,17 @@ class PostReportChannelRequest extends FormRequest
         ];
     }
 
+    /** {@inheritdoc} */
+    public function attributes()
+    {
+        return [
+            'clanName' => 'クラン名',
+            "discordChannelId" => 'DiscordのチャンネルID',
+            "discordMessageIds" => 'DiscordのメッセージID',
+            "discordMessageIds.*" => 'DiscordのメッセージID',
+        ];
+    }
+
     public function getClanName(): string
     {
         return $this->input("clanName");

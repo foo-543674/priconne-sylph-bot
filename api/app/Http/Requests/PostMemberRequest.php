@@ -36,6 +36,17 @@ class PostMemberRequest extends FormRequest
         ];
     }
 
+    /** {@inheritdoc} */
+    public function attributes()
+    {
+        return [
+            'clanName' => 'クラン名',
+            'users' => 'クランメンバー',
+            'users.*.discordId' => 'メンバーのDiscordID',
+            'users.*.name' => 'メンバーのDiscord名',
+        ];
+    }
+
     public function getClanName(): string
     {
         return $this->input("clanName");

@@ -32,6 +32,15 @@ class PostWebHookRequest extends FormRequest
         ];
     }
 
+    /** {@inheritdoc} */
+    public function attributes()
+    {
+        return [
+            'clanName' => 'クラン名',
+            "destination" => '通知先',
+        ];
+    }
+
     public function getClanName(): string
     {
         return $this->input("clanName");
