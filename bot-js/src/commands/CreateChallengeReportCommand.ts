@@ -2,7 +2,6 @@ import { Message } from 'discord.js';
 import { MessageCommand } from './MessageCommand';
 import { PhraseRepository } from '../support/PhraseRepository';
 import { ApiClient } from '../backend/ApiClient';
-import { range } from 'fp-ts/lib/ReadonlyNonEmptyArray';
 import { ValidationError } from '../support/ValidationError';
 
 export class CreateChallengeReportCommand implements MessageCommand {
@@ -25,15 +24,16 @@ export class CreateChallengeReportCommand implements MessageCommand {
         if (matches && matches.groups) {
             const clanName = matches.groups["clanName"];
 
-            if (! await this.apiClient.hasInSessionClanBattle()) {
+            const clanBattle = await this.apiClient.getInSessionClanBattle();
+            if (!clanBattle) {
                 throw new ValidationError(this.phraseRepository.get('no_in_session_clan_battle_message'));
             }
 
             await message.channel.send(this.phraseRepository.get("challenge_report_guide"));
 
-            const messageIds = await Promise.all(range(1, 5).map(async value => {
+            const messageIds = await Promise.all(clanBattle.dates.map(async (_, index) => {
                 const sentMessage = await message.channel.send(
-                    this.phraseRepository.get("days_unit").replace("{day}", value.toString())
+                    this.phraseRepository.get("days_unit").replace("{day}", (index + 1).toString())
                 );
 
                 await sentMessage.react(this.phraseRepository.get("first_challenge_stamp"));

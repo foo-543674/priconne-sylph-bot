@@ -1,6 +1,7 @@
 import axios, { AxiosError } from "axios";
 import { GuildMember } from "discord.js";
 import { ValidationError } from '../support/ValidationError';
+import { ClanBattle } from '../entities/ClanBattle';
 
 function isAxiosError(error: any): error is AxiosError {
     return !!error.isAxiosError;
@@ -86,8 +87,8 @@ export class ApiClient {
         return response.status === 200;
     }
 
-    public async hasInSessionClanBattle() {
-        const response = await axios.get(
+    public async getInSessionClanBattle() {
+        const response = await axios.get<ClanBattle>(
             `${this.baseUri}/api/clan_battles`,
             {
                 headers: this.header,
@@ -95,7 +96,11 @@ export class ApiClient {
             }
         );
 
-        return response.status === 200;
+        if (response.status === 200) {
+            return response.data;
+        } else {
+            return null;
+        }
     }
 
     public async reportChallenge(
@@ -166,7 +171,7 @@ export class ApiClient {
                 throw new ValidationError(error.response?.data)
             }
             else {
-                throw new Error();
+                throw error;
             }
         }
     }
