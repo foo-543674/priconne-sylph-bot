@@ -12,9 +12,11 @@ export class ReportChallengeCommand implements ReactionCommand {
 
     async isMatchTo(reaction: MessageReaction): Promise<boolean> {
         return await this.apiClient.hasReportMessage(reaction.message.id)
-            && reaction.emoji.toString() === this.phraseRepository.get("first_challenge_stamp")
-            && reaction.emoji.toString() === this.phraseRepository.get("second_challenge_stamp")
-            && reaction.emoji.toString() === this.phraseRepository.get("third_challenge_stamp");
+            && (
+                reaction.emoji.toString() === this.phraseRepository.get("first_challenge_stamp")
+                || reaction.emoji.toString() === this.phraseRepository.get("second_challenge_stamp")
+                || reaction.emoji.toString() === this.phraseRepository.get("third_challenge_stamp")
+            );
     }
 
     async executeForAdd(reaction: MessageReaction, user: User): Promise<void> {
