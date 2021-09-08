@@ -25,9 +25,7 @@ class PostClanRequest extends FormRequest
     protected function failedValidation(Validator $validator)
     {
         $res = response()->json(
-            [
-                'errors' => $validator->errors(),
-            ],
+            $validator->errors()->first()[0],
             400
         );
         throw new HttpResponseException($res);
