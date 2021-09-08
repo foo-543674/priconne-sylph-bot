@@ -71,11 +71,15 @@ export class Sylph {
                 return;
             }
 
-            await Promise.all(this.reactionCommands.map(async command => {
-                if (await command.isMatchTo(actualReaction)) {
-                    await command.executeForAdd(actualReaction, actualUser);
-                }
-            }));
+            try {
+                await Promise.all(this.reactionCommands.map(async command => {
+                    if (await command.isMatchTo(actualReaction)) {
+                        await command.executeForAdd(actualReaction, actualUser);
+                    }
+                }));
+            } catch (error) {
+                console.log(error);
+            }
         });
         this.client.on('messageReactionRemove', async (reaction, user) => {
             const [actualReaction, actualUser] = await Promise.all([
@@ -91,11 +95,15 @@ export class Sylph {
                 return;
             }
 
-            await Promise.all(this.reactionCommands.map(async command => {
-                if (await command.isMatchTo(actualReaction)) {
-                    await command.executeForRemove(actualReaction, actualUser);
-                }
-            }))
+            try {
+                await Promise.all(this.reactionCommands.map(async command => {
+                    if (await command.isMatchTo(actualReaction)) {
+                        await command.executeForRemove(actualReaction, actualUser);
+                    }
+                }));
+            } catch (error) {
+                console.log(error);
+            }
         });
     }
 
