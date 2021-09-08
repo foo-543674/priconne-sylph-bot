@@ -3,6 +3,7 @@ FROM ubuntu:20.04
 ARG USER
 
 RUN apt update \
+ && apt-get update \
 # gitより先にtzdataインストールしとかないとタイムゾーン選択で止まってしまう
  && apt install -y tzdata \
  && apt install -y \
@@ -32,8 +33,7 @@ RUN apt install -y \
         npm \
  && npm install n -g \
  && sudo n stable \
- && apt purge -y nodejs npm \
- && exec $SHELL -l
+ && apt purge -y nodejs npm
 
 # Environment for api
 RUN apt-get install -y software-properties-common \
