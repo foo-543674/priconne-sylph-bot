@@ -24,8 +24,8 @@ class PostWebHookRequest extends FormRequest
      */
     protected function failedValidation(Validator $validator)
     {
-        $res = response()->json(
-            $validator->errors(),
+        $res = response(
+            $validator->errors()->first()[0],
             400
         );
         throw new HttpResponseException($res);
