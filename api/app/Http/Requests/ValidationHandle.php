@@ -17,7 +17,8 @@ trait ValidationHandle
     {
         $res = response()->json(
             $validator->errors()->first(),
-            400
+            400,
+            options: JSON_UNESCAPED_UNICODE
         );
         throw new HttpResponseException($res);
     }
