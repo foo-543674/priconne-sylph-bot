@@ -15,6 +15,7 @@ import {
     ReportChallengeCommand,
     ReportCarryOverCommand,
     ReportTaskKillCommand,
+    GetBossQuestionnaireResultCommand,
 } from "./commands";
 
 const phraseConfig = yaml.load(fs.readFileSync('src/resources/config.yaml', 'utf8'));
@@ -49,6 +50,7 @@ bot.addMessageCommand(new RegisterWebhookCommand(phraseRepository, apiClient));
 bot.addMessageCommand(new CreateChallengeReportCommand(phraseRepository, apiClient));
 bot.addMessageCommand(new CreateBossQuestionnaireCommand(phraseRepository));
 bot.addMessageCommand(new BossNotificationCommand(phraseRepository, client));
+bot.addMessageCommand(new GetBossQuestionnaireResultCommand(phraseRepository, client));
 
 bot.addReactionCommand(new ReportChallengeCommand(phraseRepository, apiClient));
 bot.addReactionCommand(new ReportCarryOverCommand(phraseRepository, apiClient));

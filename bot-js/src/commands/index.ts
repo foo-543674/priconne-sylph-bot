@@ -5,6 +5,7 @@ export { RegisterWebhookCommand } from "./RegisterWebhookCommand";
 export { CreateChallengeReportCommand } from "./CreateChallengeReportCommand";
 export { CreateBossQuestionnaireCommand } from "./CreateBossQuestionnaireCommand";
 export { BossNotificationCommand } from "./BossNotificationCommand";
+export { GetBossQuestionnaireResultCommand } from "./GetBossQuestionnaireResultCommand";
 
 export { ReactionCommand } from "./ReactionCommand";
 export { ReportChallengeCommand } from "./ReportChallengeCommand";
