@@ -1,6 +1,7 @@
 import { Message } from 'discord.js';
 import { MessageCommand } from './MessageCommand';
 import { PhraseRepository } from '../support/PhraseRepository';
+import { isTextChannel } from '../support/DiscordHelper';
 
 export class CreateBossQuestionnaireCommand implements MessageCommand {
     constructor(
@@ -18,7 +19,14 @@ export class CreateBossQuestionnaireCommand implements MessageCommand {
     async execute(message: Message): Promise<void> {
         console.log("start create boss questionnaire command");
 
-        const sentMessage = await message.channel.send(this.phraseRepository.get("boss_questionnaire_message"));
+        if (!isTextChannel(message.channel)) return;
+
+        const thread = await message.channel.threads.create({
+            name: this.phraseRepository.get('boss_questionnaire_thread_name'),
+            autoArchiveDuration: 1440
+        });
+        const sentMessage = await thread.send(this.phraseRepository.get("boss_questionnaire_message"));
+
 
         await sentMessage.react(this.phraseRepository.get("1_boss_stamp"));
         await sentMessage.react(this.phraseRepository.get("2_boss_stamp"));

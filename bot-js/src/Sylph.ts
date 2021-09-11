@@ -36,7 +36,6 @@ export class Sylph {
 
         this.client.on('messageCreate', async message => {
             console.log("message received");
-            console.log(message);
 
             if (this.client.user && !message.mentions.has(this.client.user)) {
                 return;
@@ -52,6 +51,7 @@ export class Sylph {
                 if (error instanceof ValidationError) {
                     await message.reply(error.message);
                 } else {
+                    console.log(error);
                     await message.react(this.phraseRepository.get('failed_reaction'));
                 }
             }
@@ -64,8 +64,6 @@ export class Sylph {
             ]);
 
             console.log("reaction received");
-            console.log(actualReaction);
-            console.log(actualUser);
 
             if (actualUser.id === this.client.user?.id) {
                 return;
@@ -88,8 +86,6 @@ export class Sylph {
             ]);
 
             console.log("reaction received");
-            console.log(actualReaction);
-            console.log(actualUser);
 
             if (actualUser.id === this.client.user?.id) {
                 return;

@@ -1,9 +1,10 @@
 import { Client, Message } from 'discord.js';
 import { MessageCommand } from './MessageCommand';
 import { PhraseRepository } from '../support/PhraseRepository';
-import TaskOption from 'fp-ts/lib/TaskOption';
+import * as TaskOption from 'fp-ts/lib/TaskOption';
 import { pipe } from 'fp-ts/lib/function';
 import { ValidationError } from '../support/ValidationError';
+import { isTextChannel } from '../support/DiscordHelper';
 
 export class BossNotificationCommand implements MessageCommand {
     constructor(
@@ -22,32 +23,43 @@ export class BossNotificationCommand implements MessageCommand {
     async execute(message: Message): Promise<void> {
         console.log("start boss notification command");
 
-        const questionnaireMessages = await message.channel.awaitMessages({
-            max: 1000,
-            filter: (m: Message) => (
-                m.author.id === this.discordClient.user?.id
-                && m.cleanContent === this.phraseRepository.get("boss_questionnaire_message")
-            ),
-        }
-        );
+        if (!isTextChannel(message.channel)) return;
 
-        if (questionnaireMessages.size <= 0) {
-            throw new ValidationError(this.phraseRepository.get("cannot_find_boss_questionnaire_message"));
-        }
+        const messageChannel = message.channel;
 
-        pipe(
+        await pipe(
             TaskOption.fromNullable(this.commandPattern.exec(message.cleanContent)),
             TaskOption.chain(m => TaskOption.fromNullable(m.groups)),
             TaskOption.map(g => g["bossNumber"]),
             TaskOption.chain(bossNumber => pipe(
-                TaskOption.fromNullable(questionnaireMessages.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()).first()),
-                TaskOption.chain(targetMessage => TaskOption.fromNullable(targetMessage.reactions.resolve(this.phraseRepository.get(`${bossNumber}_boss_stamp`)))),
+                TaskOption.fromTask(async () => await messageChannel.threads.fetchActive()),
+                TaskOption.chain(threads => TaskOption.fromNullable(threads.threads.find(thread => thread.name === this.phraseRepository.get('boss_questionnaire_thread_name')))),
+                TaskOption.fold(
+                    () => { throw new ValidationError(this.phraseRepository.get("cannot_find_boss_questionnaire_thread")); },
+                    targetThread => TaskOption.fromTask(async () => await targetThread.messages.fetch({
+                        limit: 100,
+                    }))
+                ),
+                TaskOption.chain(threadMessages => TaskOption.fromNullable(
+                    threadMessages.filter(
+                        m => (
+                            m.author.id === this.discordClient.user?.id
+                            && m.cleanContent === this.phraseRepository.get("boss_questionnaire_message")
+                        ),
+                    )
+                        .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+                        .first()
+                )),
+                TaskOption.fold(
+                    () => { throw new ValidationError(this.phraseRepository.get("cannot_find_boss_questionnaire_message")); },
+                    targetMessage => TaskOption.fromNullable(targetMessage.reactions.resolve(this.phraseRepository.get(`${bossNumber}_boss_stamp`))),
+                ),
                 TaskOption.chain(targetReaction => TaskOption.fromTask(async () => await targetReaction.users.fetch())),
-                TaskOption.map(users => users.map(user => `<@${user.id}>`)),
+                TaskOption.map(users => users.filter(user => user.id !== this.discordClient.user?.id).map(user => `<@${user.id}>`)),
                 TaskOption.map(userIds => userIds.join(",")),
                 TaskOption.map(mentionText => `${mentionText}${bossNumber}${this.phraseRepository.get("boss_notify_message")}`),
             )),
-            TaskOption.chain(messageText => TaskOption.fromTask(() => message.channel.send(messageText)))
-        );
+            TaskOption.chain(messageText => TaskOption.fromTask(async () => await message.channel.send(messageText)))
+        )();
     }
 }
