@@ -6,6 +6,7 @@ import { Client, Intents } from "discord.js";
 import { Sylph } from './Sylph';
 import { ApiClient } from './backend/ApiClient';
 import {
+    HelpCommand,
     RegisterClanCommand,
     RegisterMembersCommand,
     RegisterWebhookCommand,
@@ -44,6 +45,7 @@ if (!(process.env.API_URI && process.env.API_KEY && process.env.DISCORD_TOKEN)) 
 const apiClient = new ApiClient(process.env.API_URI, process.env.API_KEY);
 
 const bot = new Sylph(client, phraseRepository);
+bot.addMessageCommand(new HelpCommand(phraseRepository));
 bot.addMessageCommand(new RegisterClanCommand(phraseRepository, apiClient));
 bot.addMessageCommand(new RegisterMembersCommand(phraseRepository, apiClient, client));
 bot.addMessageCommand(new RegisterWebhookCommand(phraseRepository, apiClient));

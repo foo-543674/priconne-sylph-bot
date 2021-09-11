@@ -1,3 +1,4 @@
+export { HelpCommand } from "./HelpCommand";
 export { MessageCommand } from "./MessageCommand";
 export { RegisterClanCommand } from "./RegisterClanCommand";
 export { RegisterMembersCommand } from "./RegisterMembersCommand";

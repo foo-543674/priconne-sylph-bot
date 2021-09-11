@@ -1,5 +1,6 @@
 phrases:
   bot_name: Sylph
+  help_command: 使い方教えて
   register_clan: \[(?<clanName>[\s\S]+)\]を登録して
   register_members: \[(?<clanName>[\s\S]+)\]のメンバーを登録して
   create_challenge_report: \[(?<clanName>[\s\S]+)\]の凸報告場所を作って
