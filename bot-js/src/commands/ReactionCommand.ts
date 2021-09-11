@@ -1,4 +1,4 @@
-import { MessageReaction, PartialUser, User } from "discord.js";
+import { MessageReaction, User } from "discord.js";
 
 export interface ReactionCommand {
     isMatchTo(reaction: MessageReaction): Promise<boolean>;
