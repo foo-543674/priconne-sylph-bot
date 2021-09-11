@@ -7,7 +7,7 @@ phrases:
   register_webhook: \[(?<clanName>[\s\S]+)\]の状況が変化したら \[(?<url>https?://[\w!\?/\+\-_~=;\.,\*&@#\$%\(\)'\[\]]+)\] に通知して
   create_boss_questionnaire: ボスアンケートを?作って
   boss_notification_command: (?<bossNumber>[1-5])に?行きたい人に通知して
-  get_boss_questionnaire_result_command: (?<bossNumber>[1-5])に?行きたい人を教えて
+  get_boss_questionnaire_result_command: (?<bossNumber>[1-5])に?行きたい人を?教えて
   challenge_report_guide: |-
     凸をしたら回数に応じてスタンプを押してね。
     持ち越しを持ったら1回目は青、2回目は緑のチェックマークにスタンプを押してね。
