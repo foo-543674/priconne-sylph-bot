@@ -165,7 +165,7 @@ return [
         /*
          * Package Service Providers...
          */
-        Ejarnutowski\LaravelApiKey\Providers\ApiKeyServiceProvider::class,
+        App\Providers\ApiKeyServiceProvider::class,
 
         /*
          * Application Service Providers...
