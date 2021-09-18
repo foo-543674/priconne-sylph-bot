@@ -5,6 +5,7 @@ import * as TaskOption from 'fp-ts/lib/TaskOption';
 import { pipe } from 'fp-ts/lib/function';
 import { ValidationError } from '../support/ValidationError';
 import { isTextChannel } from '../support/DiscordHelper';
+import { mentionedToMe } from '../Sylph';
 
 export class BossNotificationCommand implements MessageCommand {
     constructor(
@@ -17,7 +18,10 @@ export class BossNotificationCommand implements MessageCommand {
     private readonly commandPattern: RegExp;
 
     isMatchTo(message: Message): Promise<boolean> {
-        return Promise.resolve(this.commandPattern.test(message.cleanContent));
+        return Promise.resolve(
+            this.commandPattern.test(message.cleanContent)
+            && mentionedToMe(message, this.discordClient)
+        );
     }
 
     async execute(message: Message): Promise<void> {

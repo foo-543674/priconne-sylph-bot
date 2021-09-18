@@ -17,6 +17,7 @@ import {
     ReportCarryOverCommand,
     ReportTaskKillCommand,
     GetBossQuestionnaireResultCommand,
+    PrepareDamageReportCommand,
 } from "./commands";
 
 const phraseConfig = yaml.load(fs.readFileSync('src/resources/config.yaml', 'utf8'));
@@ -45,14 +46,15 @@ if (!(process.env.API_URI && process.env.API_KEY && process.env.DISCORD_TOKEN)) 
 const apiClient = new ApiClient(process.env.API_URI, process.env.API_KEY);
 
 const bot = new Sylph(client, phraseRepository);
-bot.addMessageCommand(new HelpCommand(phraseRepository));
-bot.addMessageCommand(new RegisterClanCommand(phraseRepository, apiClient));
+bot.addMessageCommand(new HelpCommand(phraseRepository, client));
+bot.addMessageCommand(new RegisterClanCommand(phraseRepository, client, apiClient));
 bot.addMessageCommand(new RegisterMembersCommand(phraseRepository, apiClient, client));
-bot.addMessageCommand(new RegisterWebhookCommand(phraseRepository, apiClient));
-bot.addMessageCommand(new CreateChallengeReportCommand(phraseRepository, apiClient));
-bot.addMessageCommand(new CreateBossQuestionnaireCommand(phraseRepository));
+bot.addMessageCommand(new RegisterWebhookCommand(phraseRepository, client, apiClient));
+bot.addMessageCommand(new CreateChallengeReportCommand(phraseRepository, client, apiClient));
+bot.addMessageCommand(new CreateBossQuestionnaireCommand(phraseRepository, client));
 bot.addMessageCommand(new BossNotificationCommand(phraseRepository, client));
 bot.addMessageCommand(new GetBossQuestionnaireResultCommand(phraseRepository, client));
+bot.addMessageCommand(new PrepareDamageReportCommand(phraseRepository, apiClient));
 
 bot.addReactionCommand(new ReportChallengeCommand(phraseRepository, apiClient));
 bot.addReactionCommand(new ReportCarryOverCommand(phraseRepository, apiClient));

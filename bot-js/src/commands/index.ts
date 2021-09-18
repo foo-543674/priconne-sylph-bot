@@ -7,6 +7,7 @@ export { CreateChallengeReportCommand } from "./CreateChallengeReportCommand";
 export { CreateBossQuestionnaireCommand } from "./CreateBossQuestionnaireCommand";
 export { BossNotificationCommand } from "./BossNotificationCommand";
 export { GetBossQuestionnaireResultCommand } from "./GetBossQuestionnaireResultCommand";
+export { PrepareDamageReportCommand } from "./PrepareDamageReportCommand";
 
 export { ReactionCommand } from "./ReactionCommand";
 export { ReportChallengeCommand } from "./ReportChallengeCommand";

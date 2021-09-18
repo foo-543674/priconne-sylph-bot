@@ -1,8 +1,9 @@
-import { Client, PartialMessageReaction, MessageReaction, PartialUser, User } from 'discord.js';
+import { Client, PartialMessageReaction, MessageReaction, PartialUser, User, Message } from 'discord.js';
 import { MessageCommand } from "./commands/MessageCommand";
 import { ReactionCommand } from './commands/ReactionCommand';
 import { ValidationError } from './support/ValidationError';
 import { PhraseRepository } from './support/PhraseRepository';
+import { boolean } from 'fp-ts';
 
 function isPartialReaction(reaction: PartialMessageReaction | MessageReaction): reaction is PartialMessageReaction {
     return reaction.partial;
@@ -30,77 +31,20 @@ async function toUser(user: PartialUser | User) {
     }
 }
 
+export function mentionedToMe(message: Message, client: Client): boolean {
+    return client.user ? message.mentions.has(client.user) : false;
+}
+
+export type DiscordReaction = PartialMessageReaction | MessageReaction;
+export type DiscordUser = PartialUser | User;
+
 export class Sylph {
     constructor(private client: Client, private phraseRepository: PhraseRepository) {
         this.client.on('ready', c => console.log(`${c.user.username} logged in`));
 
-        this.client.on('messageCreate', async message => {
-            console.log("message received");
-
-            if (this.client.user && !message.mentions.has(this.client.user)) {
-                return;
-            }
-
-            try {
-                await Promise.all(this.messageCommands.map(async command => {
-                    if (await command.isMatchTo(message)) {
-                        await command.execute(message);
-                    }
-                }))
-            } catch (error) {
-                if (error instanceof ValidationError) {
-                    await message.reply(error.message);
-                } else {
-                    console.log(error);
-                    await message.react(this.phraseRepository.get('failed_reaction'));
-                }
-            }
-        });
-
-        this.client.on('messageReactionAdd', async (reaction, user) => {
-            const [actualReaction, actualUser] = await Promise.all([
-                toReaction(reaction),
-                toUser(user),
-            ]);
-
-            console.log("reaction received");
-
-            if (actualUser.id === this.client.user?.id) {
-                return;
-            }
-
-            try {
-                await Promise.all(this.reactionCommands.map(async command => {
-                    if (await command.isMatchTo(actualReaction)) {
-                        await command.executeForAdd(actualReaction, actualUser);
-                    }
-                }));
-            } catch (error) {
-                console.log(error);
-            }
-        });
-        this.client.on('messageReactionRemove', async (reaction, user) => {
-            const [actualReaction, actualUser] = await Promise.all([
-                toReaction(reaction),
-                toUser(user),
-            ]);
-
-            console.log("reaction received");
-
-            if (actualUser.id === this.client.user?.id) {
-                return;
-            }
-
-            try {
-                await Promise.all(this.reactionCommands.map(async command => {
-                    if (await command.isMatchTo(actualReaction)) {
-                        await command.executeForRemove(actualReaction, actualUser);
-                    }
-                }));
-            } catch (error) {
-                console.log(error);
-            }
-        });
+        this.client.on('messageCreate', this.onMessageCreate);
+        this.client.on('messageReactionAdd', this.onReactionAdd);
+        this.client.on('messageReactionRemove', this.onReactionRemove);
     }
 
     private messageCommands: MessageCommand[] = [];
@@ -116,5 +60,70 @@ export class Sylph {
 
     public async login(token: string) {
         await this.client.login(token);
+    }
+
+    protected async onMessageCreate(message: Message) {
+        console.log("message received");
+
+        try {
+            await Promise.all(this.messageCommands.map(async command => {
+                if (await command.isMatchTo(message)) {
+                    await command.execute(message);
+                }
+            }))
+        } catch (error) {
+            if (error instanceof ValidationError) {
+                await message.reply(error.message);
+            } else {
+                console.log(error);
+                await message.react(this.phraseRepository.get('failed_reaction'));
+            }
+        }
+    }
+
+    protected async onReactionAdd(reaction: DiscordReaction, user: DiscordUser) {
+        const [actualReaction, actualUser] = await Promise.all([
+            toReaction(reaction),
+            toUser(user),
+        ]);
+
+        console.log("reaction received");
+
+        if (actualUser.id === this.client.user?.id) {
+            return;
+        }
+
+        try {
+            await Promise.all(this.reactionCommands.map(async command => {
+                if (await command.isMatchTo(actualReaction)) {
+                    await command.executeForAdd(actualReaction, actualUser);
+                }
+            }));
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    protected async onReactionRemove(reaction: DiscordReaction, user: DiscordUser) {
+        const [actualReaction, actualUser] = await Promise.all([
+            toReaction(reaction),
+            toUser(user),
+        ]);
+
+        console.log("reaction received");
+
+        if (actualUser.id === this.client.user?.id) {
+            return;
+        }
+
+        try {
+            await Promise.all(this.reactionCommands.map(async command => {
+                if (await command.isMatchTo(actualReaction)) {
+                    await command.executeForRemove(actualReaction, actualUser);
+                }
+            }));
+        } catch (error) {
+            console.log(error);
+        }
     }
 }

@@ -1,11 +1,13 @@
-import { Message } from 'discord.js';
+import { Client, Message } from 'discord.js';
 import { MessageCommand } from './MessageCommand';
 import { PhraseRepository } from '../support/PhraseRepository';
 import { isTextChannel } from '../support/DiscordHelper';
+import { mentionedToMe } from '../Sylph';
 
 export class CreateBossQuestionnaireCommand implements MessageCommand {
     constructor(
         private phraseRepository: PhraseRepository,
+        private discordClient: Client,
     ) {
         this.commandPattern = new RegExp(this.phraseRepository.get("create_boss_questionnaire"));
     }
@@ -13,7 +15,10 @@ export class CreateBossQuestionnaireCommand implements MessageCommand {
     private readonly commandPattern: RegExp;
 
     isMatchTo(message: Message): Promise<boolean> {
-        return Promise.resolve(this.commandPattern.test(message.cleanContent));
+        return Promise.resolve(
+            this.commandPattern.test(message.cleanContent)
+            && mentionedToMe(message, this.discordClient)
+        );
     }
 
     async execute(message: Message): Promise<void> {
