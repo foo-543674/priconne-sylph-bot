@@ -22,17 +22,13 @@ RUN apt-get install -y \
  && locale-gen ja_JP.UTF-8
 ENV LANG ja_JP.UTF-8
 
-# Environment for bot
-RUN apt install -y python3-pip \
- && python3 -m pip install -U discord.py \
- && pip3 install pyyaml
-
 # Environment for bot(js)
-RUN apt install -y \
+RUN apt-get update \
+ && apt install -y \
         nodejs \
         npm \
  && npm install n -g \
- && sudo n stable \
+ && n latest \
  && apt purge -y nodejs npm
 
 # Environment for api
