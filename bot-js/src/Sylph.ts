@@ -41,9 +41,9 @@ export class Sylph {
     constructor(private client: Client, private phraseRepository: PhraseRepository) {
         this.client.on('ready', c => console.log(`${c.user.username} logged in`));
 
-        this.client.on('messageCreate', this.onMessageCreate);
-        this.client.on('messageReactionAdd', this.onReactionAdd);
-        this.client.on('messageReactionRemove', this.onReactionRemove);
+        this.client.on('messageCreate', m => this.onMessageCreate(m));
+        this.client.on('messageReactionAdd', (r, u) => this.onReactionAdd(r, u));
+        this.client.on('messageReactionRemove', (r, u) => this.onReactionRemove(r, u));
     }
 
     private messageCommands: MessageCommand[] = [];
