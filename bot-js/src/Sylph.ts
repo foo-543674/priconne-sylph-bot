@@ -3,7 +3,6 @@ import { MessageCommand } from "./commands/MessageCommand";
 import { ReactionCommand } from './commands/ReactionCommand';
 import { ValidationError } from './support/ValidationError';
 import { PhraseRepository } from './support/PhraseRepository';
-import { boolean } from 'fp-ts';
 
 function isPartialReaction(reaction: PartialMessageReaction | MessageReaction): reaction is PartialMessageReaction {
     return reaction.partial;
