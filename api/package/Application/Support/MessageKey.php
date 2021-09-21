@@ -19,4 +19,6 @@ class MessageKey
     public const CAN_NOT_CHALLENGE_ANY_MORE = "can_not_challenge_any_more";
     public const CAN_NOT_CARRY_OVER_ANY_MORE = "can_not_carry_over_any_more";
     public const CAN_NOT_TASK_KILL_ANY_MORE = "can_not_task_kill_any_more";
+    public const DAMAGE_REPORT_CHANNEL_NOT_EXISTS = "damage_report_channel_not_exists";
+    public const DAMAGE_REPORT_NOT_EXISTS = "damage_report_not_exists";
 }

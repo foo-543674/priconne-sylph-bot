@@ -14,5 +14,7 @@ return [
         "can_not_challenge_any_more" => "もう凸できないよ",
         "can_not_carry_over_any_more" => "もう持ち越しは持てないよ",
         "can_not_task_kill_any_more" => "もうタスキルは使用済だよ",
+        "damage_report_channel_not_exists" => "ダメージ報告チャンネルが見つからないよ",
+        "damage_report_not_exists" => "ダメージ報告のメッセージが見つからないよ",
     ]
 ];

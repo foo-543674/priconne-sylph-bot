@@ -2,14 +2,19 @@
 
 use App\Http\Controllers\DeleteCarryOverController;
 use App\Http\Controllers\DeleteChallengeController;
+use App\Http\Controllers\DeleteDamageReportController;
 use App\Http\Controllers\DeleteTaskKillController;
 use App\Http\Controllers\GetClanBattleController;
+use App\Http\Controllers\GetDamageReportChannelController;
 use App\Http\Controllers\GetReportMessageController;
 use App\Http\Controllers\PatchClanBattleStatusController;
 use App\Http\Controllers\PostCarryOverController;
 use App\Http\Controllers\PostChallengeController;
 use App\Http\Controllers\PostClanBattleController;
 use App\Http\Controllers\PostClanController;
+use App\Http\Controllers\PostDamageReportChannelController;
+use App\Http\Controllers\PostFinishedDamageReportController;
+use App\Http\Controllers\PostInProcessDamageReportController;
 use App\Http\Controllers\PostMemberController;
 use App\Http\Controllers\PostReportChannelController;
 use App\Http\Controllers\PostTaskKillController;
@@ -45,6 +50,15 @@ Route::middleware("auth.apikey")->group(function () {
     });
     Route::prefix("/report_messages")->group(function () {
         Route::get("/{discordMessageId}", GetReportMessageController::class)->name("get.report_messages");
+    });
+    Route::prefix("/damage_report_channels")->group(function () {
+        Route::post("/", PostDamageReportChannelController::class)->name("post.damage_report_channels");
+        Route::get("/{discordChannelId}", GetDamageReportChannelController::class)->name("get.damage_report_channels");
+    });
+    Route::prefix("/damage_reports")->group(function () {
+        Route::post("/in_process", PostInProcessDamageReportController::class)->name("post.in_process_damage_reports");
+        Route::post("/finished", PostFinishedDamageReportController::class)->name("post.finished_damage_reports");
+        Route::delete("/{discordChannelId}/{discordMessageId}", DeleteDamageReportController::class)->name("delete.damage_reports");
     });
     Route::prefix("/webhooks")->group(function () {
         Route::post("/", PostWebHookController::class)->name("post.webhooks");
