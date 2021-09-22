@@ -14,6 +14,8 @@ use YaLinqo\Enumerable;
 class RedisDamageReportRepository implements DamageReportRepository
 {
     private const KEY_PREFIX = "damage-report";
+    private const BATTLE_TIME_OUT_LIMIT_SECOND = 60 * 60;
+    private const KEY_EXPIRE_SECOND = self::BATTLE_TIME_OUT_LIMIT_SECOND + 30 * 60;
 
     /** {@inheritdoc} */
     public function getAll()
@@ -55,6 +57,7 @@ class RedisDamageReportRepository implements DamageReportRepository
     {
         $key = self::generateKey($value->getChannelId(), $value->getMessageId());
         Redis::set($key, json_encode($value, JSON_UNESCAPED_UNICODE));
+        Redis::expire($key, self::KEY_EXPIRE_SECOND);
     }
 
     /** {@inheritdoc} */
