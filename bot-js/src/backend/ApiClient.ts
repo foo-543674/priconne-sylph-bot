@@ -213,9 +213,12 @@ export class ApiClient {
                 "discordChannelId": channelId,
                 "discordMessageId": messageId,
                 "bossNumber": bossNumber,
-                "discordUserId": discordUserId,
-                "memberName": memberName,
                 "comment": comment,
+                ...(memberName) ? {
+                    "memberName": memberName,
+                } : {
+                    "discordUserId": discordUserId,
+                }
             },
             { headers: this.header }
         ));
@@ -236,10 +239,13 @@ export class ApiClient {
                 "discordChannelId": channelId,
                 "discordMessageId": messageId,
                 "bossNumber": bossNumber,
-                "discordUserId": discordUserId,
-                "memberName": memberName,
                 "damage": damage,
                 "comment": comment,
+                ...(memberName) ? {
+                    "memberName": memberName,
+                } : {
+                    "discordUserId": discordUserId,
+                }
             },
             { headers: this.header }
         ));

@@ -95,19 +95,19 @@ export class Sylph {
         }
     }
 
-    protected async onMessageUpdate(oldMessage: DiscordMessage, newMessage: DiscordMessage) {
+    protected async onMessageUpdate(_: DiscordMessage, newMessage: DiscordMessage) {
         console.log("message updated");
 
-        const [actualOldMessage, actualNewMessage] = await Promise.all([
-            toMessage(oldMessage),
+        const [actualNewMessage] = await Promise.all([
             toMessage(newMessage),
         ]);
 
         try {
-            console.log(await Promise.resolve(oldMessage));
-            console.log(await Promise.resolve(newMessage));
-            console.log(await Promise.resolve(actualOldMessage));
-            console.log(await Promise.resolve(actualNewMessage));
+            await Promise.all(this.messageCommands.map(async command => {
+                if (await command.isMatchTo(actualNewMessage)) {
+                    await command.execute(actualNewMessage);
+                }
+            }))
         } catch (error) {
             if (error instanceof ValidationError) {
                 await actualNewMessage.reply(error.message);

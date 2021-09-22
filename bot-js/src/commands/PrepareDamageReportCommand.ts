@@ -1,11 +1,13 @@
-import { Message } from 'discord.js';
+import { Client, Message } from 'discord.js';
 import { MessageCommand } from './MessageCommand';
 import { PhraseRepository } from '../support/PhraseRepository';
 import { ApiClient } from '../backend/ApiClient';
+import { mentionedToMe } from '../Sylph';
 
 export class PrepareDamageReportCommand implements MessageCommand {
     constructor(
         private phraseRepository: PhraseRepository,
+        private discordClient: Client,
         private apiClient: ApiClient,
     ) {
         this.commandPattern = new RegExp(this.phraseRepository.get("create_damage_report_command"));
@@ -14,7 +16,10 @@ export class PrepareDamageReportCommand implements MessageCommand {
     private readonly commandPattern: RegExp;
 
     isMatchTo(message: Message): Promise<boolean> {
-        return Promise.resolve(this.commandPattern.test(message.cleanContent));
+        return Promise.resolve(
+            this.commandPattern.test(message.cleanContent)
+            && mentionedToMe(message, this.discordClient)
+        );
     }
 
     async execute(message: Message): Promise<void> {
@@ -26,6 +31,7 @@ export class PrepareDamageReportCommand implements MessageCommand {
 
             await this.apiClient.registerDamageReportChannel(clanName, message.channel.id);
 
+            await message.channel.send(this.phraseRepository.get('create_damage_report_message'));
             await message.react(this.phraseRepository.get("succeed_reaction"));
         }
     }

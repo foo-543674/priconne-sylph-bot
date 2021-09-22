@@ -9,6 +9,8 @@ phrases:
   boss_notification_command: (?<bossNumber>[1-5])に?行きたい人に通知して
   get_boss_questionnaire_result_command: (?<bossNumber>[1-5])に?行きたい人を?教えて
   create_damage_report_command: ここを\[(?<clanName>[\s\S]+)\]のダメージ報告場所にするよ
+  in_process_damage_report_command: ^(?<bossNumber>[1-5])ボス( (?<memberName>.+))? 進行中( (?<comment>.*))?$
+  finished_damage_report_command: ^(?<bossNumber>[1-5])ボス( (?<memberName>.+))? (?<damage>[0-9]+)( (?<comment>.*))?$
   challenge_report_guide: |-
     凸をしたら回数に応じてスタンプを押してね。
     持ち越しを持ったら1回目は青、2回目は緑のチェックマークにスタンプを押してね。
@@ -70,15 +72,7 @@ phrases:
       3ボス 0 事故救援求
     
     各値の間には半角スペースを入れてね。
-  create_damage_report_error_message: |
-    報告の形式が間違ってるよ。以下の形式のいずれかで入力してね。
-    ・1ボス 進行中
-    ・2ボス ふー 進行中
-    ・1ボス 2000 5秒前 ニャルUBあり
-    ・2ボス ふー 1500 5s 打ち切り
-    ・3ボス 0 事故救援求
-    
-    各値の間には半角スペースを入れてね。
+    🥺のリアクションがついたらメッセージの形式が間違ってるよ。上の例を参考に修正してね。
   first_challenge_stamp: 1️⃣
   second_challenge_stamp: 2️⃣
   third_challenge_stamp: 3️⃣
