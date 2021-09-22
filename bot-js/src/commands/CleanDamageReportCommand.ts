@@ -5,6 +5,7 @@ import { ApiClient } from '../backend/ApiClient';
 import { mentionedToMe } from '../Sylph';
 import { getGroupOf } from '../support/RegexHelper';
 import { CooperateChannel } from '../entities/CooperateChannel';
+import { sleep } from '../support/AsyncTimer';
 
 export class CleanDamageReportCommand implements MessageCommand {
     constructor(
@@ -44,7 +45,7 @@ export class CleanDamageReportCommand implements MessageCommand {
             return;
         }
 
-        await Promise.all(damageReportChannels.map(async damageReportChannel => {
+        for (const damageReportChannel of damageReportChannels) {
             const channel = await this.discordClient.channels.fetch(damageReportChannel.discordChannelId) as TextChannel;
             const targetMessages = (await channel.messages.fetch({ limit: 100 }))
                 .filter(m => {
@@ -56,11 +57,14 @@ export class CleanDamageReportCommand implements MessageCommand {
                     return targetBossNumber === bossNumber;
                 })
 
-            await Promise.all(targetMessages.map(async m => {
-                await m.delete();
-                await this.apiClient.deleteDamageReport(channel.id, m.id);
-            }));
-        }));
+            for (const targetMessage of targetMessages) {
+                await targetMessage[1].delete();
+                await this.apiClient.deleteDamageReport(channel.id, targetMessage[1].id);
+                //NOTE: Discordのリミットに引っかかるので、1秒待機
+                await sleep(1000);
+            }
+            await sleep(1000);
+        }
 
         await message.react(this.phraseRepository.get("succeed_reaction"));
     }
