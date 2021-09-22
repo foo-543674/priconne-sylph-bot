@@ -1,4 +1,4 @@
-import { Client, PartialMessageReaction, MessageReaction, PartialUser, User, Message } from 'discord.js';
+import { Client, PartialMessageReaction, MessageReaction, PartialUser, User, Message, PartialMessage } from 'discord.js';
 import { MessageCommand } from "./commands/MessageCommand";
 import { ReactionCommand } from './commands/ReactionCommand';
 import { ValidationError } from './support/ValidationError';
@@ -30,18 +30,33 @@ async function toUser(user: PartialUser | User) {
     }
 }
 
+function isPartialMessage(message: PartialMessage | Message): message is PartialMessage {
+    return message.partial;
+}
+
+async function toMessage(message: PartialMessage | Message) {
+    if (isPartialMessage(message)) {
+        return await message.fetch();
+    }
+    else {
+        return message;
+    }
+}
+
 export function mentionedToMe(message: Message, client: Client): boolean {
     return client.user ? message.mentions.has(client.user) : false;
 }
 
 export type DiscordReaction = PartialMessageReaction | MessageReaction;
 export type DiscordUser = PartialUser | User;
+export type DiscordMessage = PartialMessage | Message;
 
 export class Sylph {
     constructor(private client: Client, private phraseRepository: PhraseRepository) {
         this.client.on('ready', c => console.log(`${c.user.username} logged in`));
 
         this.client.on('messageCreate', m => this.onMessageCreate(m));
+        this.client.on('messageUpdate', (old, updated) => this.onMessageUpdate(old, updated));
         this.client.on('messageReactionAdd', (r, u) => this.onReactionAdd(r, u));
         this.client.on('messageReactionRemove', (r, u) => this.onReactionRemove(r, u));
     }
@@ -76,6 +91,29 @@ export class Sylph {
             } else {
                 console.log(error);
                 await message.react(this.phraseRepository.get('failed_reaction'));
+            }
+        }
+    }
+
+    protected async onMessageUpdate(oldMessage: DiscordMessage, newMessage: DiscordMessage) {
+        console.log("message updated");
+
+        const [actualOldMessage, actualNewMessage] = await Promise.all([
+            toMessage(oldMessage),
+            toMessage(newMessage),
+        ]);
+
+        try {
+            console.log(await Promise.resolve(oldMessage));
+            console.log(await Promise.resolve(newMessage));
+            console.log(await Promise.resolve(actualOldMessage));
+            console.log(await Promise.resolve(actualNewMessage));
+        } catch (error) {
+            if (error instanceof ValidationError) {
+                await actualNewMessage.reply(error.message);
+            } else {
+                console.log(error);
+                await actualNewMessage.react(this.phraseRepository.get('failed_reaction'));
             }
         }
     }

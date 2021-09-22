@@ -2,6 +2,7 @@ import axios, { AxiosError } from "axios";
 import { GuildMember } from "discord.js";
 import { ValidationError } from '../support/ValidationError';
 import { ClanBattle } from '../entities/ClanBattle';
+import { DamageReportChannel } from '../entities/DamageReportChannel';
 
 function isAxiosError(error: any): error is AxiosError {
     return !!error.isAxiosError;
@@ -162,6 +163,94 @@ export class ApiClient {
     ) {
         return await ApiClient.sendToApi(async () => await axios.delete(
             `${this.baseUri}/api/task_kills/messages/${messageId}/users/${userId}`,
+            { headers: this.header }
+        ));
+    }
+
+    public async registerDamageReportChannel(
+        clanName: string,
+        channelId: string
+    ) {
+        return await ApiClient.sendToApi(async () => await axios.post(
+            `${this.baseUri}/api/damage_report_channels`,
+            {
+                "clanName": clanName,
+                "discordChannelId": channelId,
+            },
+            { headers: this.header }
+        ));
+    }
+
+    public async getDamageReportChannel(
+        channelId: string
+    ) {
+        const response = await axios.get<DamageReportChannel>(
+            `${this.baseUri}/api/damage_report_channels/${channelId}`,
+            {
+                headers: this.header,
+                validateStatus: status => (status >= 200 && status < 300) || status === 404
+            }
+        );
+
+        if (response.status === 200) {
+            return response.data;
+        } else {
+            return null;
+        }
+    }
+
+    public async postInProcessDamageReport(
+        channelId: string,
+        messageId: string,
+        bossNumber: number,
+        discordUserId: string | null,
+        memberName: string | null,
+        comment: string,
+    ) {
+        return await ApiClient.sendToApi(async () => await axios.post(
+            `${this.baseUri}/api/damage_reports/in_process`,
+            {
+                "discordChannelId": channelId,
+                "discordMessageId": messageId,
+                "bossNumber": bossNumber,
+                "discordUserId": discordUserId,
+                "memberName": memberName,
+                "comment": comment,
+            },
+            { headers: this.header }
+        ));
+    }
+
+    public async postFinishedDamageReport(
+        channelId: string,
+        messageId: string,
+        bossNumber: number,
+        discordUserId: string | null,
+        memberName: string | null,
+        damage: number,
+        comment: string,
+    ) {
+        return await ApiClient.sendToApi(async () => await axios.post(
+            `${this.baseUri}/api/damage_reports/finished`,
+            {
+                "discordChannelId": channelId,
+                "discordMessageId": messageId,
+                "bossNumber": bossNumber,
+                "discordUserId": discordUserId,
+                "memberName": memberName,
+                "damage": damage,
+                "comment": comment,
+            },
+            { headers: this.header }
+        ));
+    }
+
+    public async deleteDamageReport(
+        channelId: string,
+        messageId: string,
+    ) {
+        return await ApiClient.sendToApi(async () => await axios.delete(
+            `${this.baseUri}/api/damage_reports/${channelId}/${messageId}`,
             { headers: this.header }
         ));
     }

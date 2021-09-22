@@ -8,6 +8,7 @@ phrases:
   create_boss_questionnaire: ボスアンケートを?作って
   boss_notification_command: (?<bossNumber>[1-5])に?行きたい人に通知して
   get_boss_questionnaire_result_command: (?<bossNumber>[1-5])に?行きたい人を?教えて
+  create_damage_report_command: ここを\[(?<clanName>[\s\S]+)\]のダメージ報告場所にするよ
   challenge_report_guide: |-
     凸をしたら回数に応じてスタンプを押してね。
     持ち越しを持ったら1回目は青、2回目は緑のチェックマークにスタンプを押してね。
@@ -51,6 +52,29 @@ phrases:
   cannot_find_boss_questionnaire_message: ボスアンケートのメッセージが見つからないよ。100個以上前のメッセージは見れないから、新しくアンケートを作ってね。
   cannot_find_boss_number_message: 通知したいボスの番号が見つからないよ。
   no_in_session_clan_battle_message: 開催中のクランバトルがないよ。
+  create_damage_report_message: |
+    このチャンネルをダメージ報告場所として設定するよ。
+    
+    凸をする直前にここで"(1~5)ボス 進行中"と入力してね。代理の場合は"(1~5)ボス 名前 進行中"と入力してね。
+    例：1ボス 進行中 or 2ボス ふー 進行中
+    
+    終了5秒前や、最後のUB発動直後等のキリのいいタイミングで止めたら、進行中メッセージを編集してダメージを報告してね。
+    ダメージの後は補足情報等のテキストを入力してね。
+    例：
+      1ボス 2000 5秒前 ニャルUBあり
+      2ボス ふー 1500 5s 打ち切り
+      3ボス 0 事故救援求
+    
+    各値の間には半角スペースを入れてね。
+  create_damage_report_error_message: |
+    報告の形式が間違ってるよ。以下の形式のいずれかで入力してね。
+    ・1ボス 進行中
+    ・2ボス ふー 進行中
+    ・1ボス 2000 5秒前 ニャルUBあり
+    ・2ボス ふー 1500 5s 打ち切り
+    ・3ボス 0 事故救援求
+    
+    各値の間には半角スペースを入れてね。
   first_challenge_stamp: 1️⃣
   second_challenge_stamp: 2️⃣
   third_challenge_stamp: 3️⃣
