@@ -5,6 +5,7 @@ use App\Http\Controllers\DeleteChallengeController;
 use App\Http\Controllers\DeleteDamageReportController;
 use App\Http\Controllers\DeleteTaskKillController;
 use App\Http\Controllers\GetClanBattleController;
+use App\Http\Controllers\GetCooperateChannelController;
 use App\Http\Controllers\GetDamageReportChannelController;
 use App\Http\Controllers\GetDamageReportChannelListController;
 use App\Http\Controllers\GetReportMessageController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\PostCarryOverController;
 use App\Http\Controllers\PostChallengeController;
 use App\Http\Controllers\PostClanBattleController;
 use App\Http\Controllers\PostClanController;
+use App\Http\Controllers\PostCooperateChannelController;
 use App\Http\Controllers\PostDamageReportChannelController;
 use App\Http\Controllers\PostFinishedDamageReportController;
 use App\Http\Controllers\PostInProcessDamageReportController;
@@ -56,6 +58,10 @@ Route::middleware("auth.apikey")->group(function () {
         Route::post("/", PostDamageReportChannelController::class)->name("post.damage_report_channels");
         Route::get("/", GetDamageReportChannelListController::class)->name("get.damage_report_channels_list");
         Route::get("/{discordChannelId}", GetDamageReportChannelController::class)->name("get.damage_report_channels");
+    });
+    Route::prefix("/cooperate_channels")->group(function () {
+        Route::post("/", PostCooperateChannelController::class)->name("post.cooperate_channels");
+        Route::get("/{discordChannelId}", GetCooperateChannelController::class)->name("get.cooperate_channels");
     });
     Route::prefix("/damage_reports")->group(function () {
         Route::post("/in_process", PostInProcessDamageReportController::class)->name("post.in_process_damage_reports");
