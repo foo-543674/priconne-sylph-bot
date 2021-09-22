@@ -3,7 +3,6 @@
 namespace Sylph\Application\Usecases;
 
 use JsonSerializable;
-use Sylph\Application\Events\DamageReportAddedEvent;
 use Sylph\Application\Support\ErrorIgnition;
 use Sylph\Application\Support\MessageKey;
 use Sylph\Application\Support\UlidGenerator;

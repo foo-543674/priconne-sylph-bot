@@ -4,7 +4,6 @@ namespace Sylph\Application\Usecases;
 
 use JsonSerializable;
 use Sylph\Application\Events\DamageReportAddedEvent;
-use Sylph\Application\Events\DamageReportRemovedEvent;
 use Sylph\VO\BossNumber;
 use Sylph\VO\DiscordUserId;
 use Sylph\VO\MemberIdOrName;
