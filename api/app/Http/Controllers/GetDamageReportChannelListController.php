@@ -14,7 +14,7 @@ class GetDamageReportChannelListController extends Controller
      */
     public function __invoke(Request $request)
     {
-        $clanName = $request->query("clanName", "");
+        $clanName = $request->query("clan_name", "");
 
         return response()->json(
             DamageReportChannel::query()
