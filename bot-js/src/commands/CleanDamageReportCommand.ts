@@ -58,6 +58,7 @@ export class CleanDamageReportCommand implements MessageCommand {
                 })
 
             for (const targetMessage of targetMessages) {
+                if(targetMessage[1].author.id === this.discordClient.user?.id) continue;
                 await targetMessage[1].delete();
                 await this.apiClient.deleteDamageReport(channel.id, targetMessage[1].id);
                 //NOTE: Discordのリミットに引っかかるので、1秒待機
