@@ -14,12 +14,15 @@ class GetDamageReportChannelListController extends Controller
      */
     public function __invoke(Request $request)
     {
+        $clanId = $request->query("clan_id", "");
         $clanName = $request->query("clan_name", "");
 
         return response()->json(
             DamageReportChannel::query()
-                ->whereHas("clan", function (Builder $builder) use ($clanName) {
-                    $builder->where('name', $clanName);
+                ->whereHas("clan", function (Builder $builder) use ($clanId, $clanName) {
+                    $builder->where(function (Builder $builder) use ($clanId, $clanName) {
+                        $builder->where('name', $clanName)->orWhere('id', $clanId);
+                    });
                 })
                 ->get()
                 ->map(fn ($record) => $record->toEntity())
