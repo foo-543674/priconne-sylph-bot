@@ -83,8 +83,8 @@ class FinishedDamageReport implements DamageReport
             new DiscordChannelId($source["channelId"]),
             new BossNumber($source["bossNumber"]),
             is_null($source["memberId"])
-                ? new MemberIdOrName(new MemberId($source["memberId"]))
-                : new MemberIdOrName($source["memberName"]),
+                ? new MemberIdOrName($source["memberName"])
+                : new MemberIdOrName(new MemberId($source["memberId"])),
             new Damage($source["damage"]),
             $source["comment"],
         );
