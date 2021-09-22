@@ -3,6 +3,7 @@
 namespace Sylph\Application\Usecases;
 
 use JsonSerializable;
+use Sylph\Application\Events\DamageReportAddedEvent;
 use Sylph\Application\Events\DamageReportRemovedEvent;
 use Sylph\VO\BossNumber;
 use Sylph\VO\DiscordUserId;
@@ -27,7 +28,7 @@ class ReportInProcessDamageUsecase
         private DamageReportRepository $damageReportRepository,
         private DamageReportChannelRepository $damageReportChannelRepository,
         private MemberRepository $memberRepository,
-        private DamageReportRemovedEvent $damageReportRemovedEvent,
+        private DamageReportAddedEvent $damageReportAddedEvent,
         private ErrorIgnition $errorIgnition,
         private UlidGenerator $ulidGenerator,
     ) {
@@ -57,7 +58,7 @@ class ReportInProcessDamageUsecase
         );
 
         $this->damageReportRepository->save($newReport);
-        $this->damageReportRemovedEvent->invoke($newReport, $channel->getClanId());
+        $this->damageReportAddedEvent->invoke($newReport, $channel->getClanId());
 
         return $newReport;
     }

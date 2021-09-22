@@ -24,7 +24,7 @@ class DamageReportAddedEvent
         $webHooks = $this->webHookRepository->getByClanId($clanId);
 
         foreach ($webHooks as $webHook) {
-            $this->webHookServer->send($webHook, $damageReport);
+            $this->webHookServer->send($webHook, new DamageReportAddedEventPayload($damageReport));
         }
     }
 }
