@@ -30,7 +30,7 @@ class DeleteDamageReportUsecase
     public function execute(
         DiscordChannelId $channelId,
         DiscordMessageId $messageId,
-    ): JsonSerializable {
+    ): void {
         $channel = $this->damageReportChannelRepository->getByChannelId($channelId);
         if (is_null($channel)) {
             $this->errorIgnition->throwValidationError(MessageKey::DAMAGE_REPORT_CHANNEL_NOT_EXISTS);
@@ -38,12 +38,11 @@ class DeleteDamageReportUsecase
 
         $report = $this->damageReportRepository->getByMessageId($channelId, $messageId);
         if (is_null($report)) {
-            $this->errorIgnition->throwValidationError(MessageKey::DAMAGE_REPORT_NOT_EXISTS);
+            //NOTE: あくまで一時データなので、勝手に消えてても問題ない。
+            return;
         }
 
         $this->damageReportRepository->delete($report);
         $this->damageReportRemovedEvent->invoke($report, $channel->getClanId());
-
-        return $report;
     }
 }
