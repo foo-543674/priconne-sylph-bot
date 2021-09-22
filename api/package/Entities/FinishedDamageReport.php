@@ -2,11 +2,12 @@
 
 namespace Sylph\Entities;
 
+use Ulid\Ulid;
 use Sylph\VO\Damage;
 use Sylph\VO\MemberId;
 use Sylph\VO\BossNumber;
-use Sylph\VO\DiscordChannelId;
 use Sylph\VO\MemberIdOrName;
+use Sylph\VO\DiscordChannelId;
 use Sylph\VO\DiscordMessageId;
 
 /**
@@ -84,7 +85,7 @@ class FinishedDamageReport implements DamageReport
             new BossNumber($source["bossNumber"]),
             is_null($source["memberId"])
                 ? new MemberIdOrName($source["memberName"])
-                : new MemberIdOrName(new MemberId($source["memberId"])),
+                : new MemberIdOrName(new MemberId(Ulid::fromString($source["memberId"]))),
             new Damage($source["damage"]),
             $source["comment"],
         );

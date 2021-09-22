@@ -8,6 +8,7 @@ use Sylph\VO\DiscordChannelId;
 use Sylph\VO\DiscordMessageId;
 use Sylph\VO\MemberId;
 use Sylph\VO\MemberIdOrName;
+use Ulid\Ulid;
 
 /**
  * 進行中のダメージ報告
@@ -82,7 +83,7 @@ class InProcessDamageReport implements DamageReport
             new BossNumber($source["bossNumber"]),
             is_null($source["memberId"])
                 ? new MemberIdOrName($source["memberName"])
-                : new MemberIdOrName(new MemberId($source["memberId"])),
+                : new MemberIdOrName(new MemberId(Ulid::fromString($source["memberId"]))),
             $source["comment"],
         );
     }
