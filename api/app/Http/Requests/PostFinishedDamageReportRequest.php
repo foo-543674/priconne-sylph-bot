@@ -72,15 +72,20 @@ class PostFinishedDamageReportRequest extends FormRequest
 
     public function getDiscordUserId(): ?DiscordUserId
     {
-        return ($this->has("discordUserId") && $this->filled("discordUserId"))
+        return (!$this->hasMemberName() && $this->has("discordUserId") && $this->filled("discordUserId"))
             ? new DiscordUserId($this->input("discordUserId"))
             : null;
     }
 
+    public function hasMemberName(): bool
+    {
+        return ($this->has("memberName") && $this->filled("memberName"));
+    }
+
     public function getMemberName(): ?string
     {
-        return ($this->has("memberName") && $this->filled("memberName"))
-            ? $this->input("discordUserId")
+        return $this->hasMemberName()
+            ? $this->input("memberName")
             : null;
     }
 
