@@ -6,6 +6,7 @@ use App\Http\Controllers\DeleteDamageReportController;
 use App\Http\Controllers\DeleteTaskKillController;
 use App\Http\Controllers\GetClanBattleController;
 use App\Http\Controllers\GetDamageReportChannelController;
+use App\Http\Controllers\GetDamageReportChannelListController;
 use App\Http\Controllers\GetReportMessageController;
 use App\Http\Controllers\PatchClanBattleStatusController;
 use App\Http\Controllers\PostCarryOverController;
@@ -53,6 +54,7 @@ Route::middleware("auth.apikey")->group(function () {
     });
     Route::prefix("/damage_report_channels")->group(function () {
         Route::post("/", PostDamageReportChannelController::class)->name("post.damage_report_channels");
+        Route::get("/", GetDamageReportChannelListController::class)->name("get.damage_report_channels_list");
         Route::get("/{discordChannelId}", GetDamageReportChannelController::class)->name("get.damage_report_channels");
     });
     Route::prefix("/damage_reports")->group(function () {
