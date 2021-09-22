@@ -2,6 +2,7 @@ import { Client, Message } from 'discord.js';
 import { MessageCommand } from './MessageCommand';
 import { PhraseRepository } from '../support/PhraseRepository';
 import { mentionedToMe } from '../Sylph';
+import { sleep } from '../support/AsyncTimer';
 
 export class HelpCommand implements MessageCommand {
     constructor(
@@ -36,7 +37,10 @@ export class HelpCommand implements MessageCommand {
     async execute(message: Message): Promise<void> {
         console.log("start help command");
 
-        for (const messageKey in this.messageKeys) {
+        console.log(message.cleanContent);
+        for (const messageKey of this.messageKeys) {
+            //NOTE: Discordのリミットに引っかかるので、1秒待機
+            await sleep(1000)
             await message.channel.send(this.phraseRepository.get(messageKey));
         }
     }
