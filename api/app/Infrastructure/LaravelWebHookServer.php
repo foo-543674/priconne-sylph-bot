@@ -4,12 +4,13 @@ namespace App\Infrastructure;
 
 use Illuminate\Http\Client\Factory;
 use JsonSerializable;
+use Psr\Log\LoggerInterface;
 use Sylph\Application\Gateway\WebHookServer;
 use Sylph\Entities\WebHook;
 
 class LaravelWebHookServer implements WebHookServer
 {
-    public function __construct(private Factory $clientFactory)
+    public function __construct(private Factory $clientFactory, private LoggerInterface $logger)
     {
         //
     }
@@ -19,6 +20,9 @@ class LaravelWebHookServer implements WebHookServer
     /** {@inheritdoc} */
     public function send(WebHook $webHook, JsonSerializable $payload): void
     {
+        $this->logger->info("Sending webhook to " . $webHook->getDestination()->__toString());
+        $this->logger->info("payload: " . json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+
         $this->clientFactory
             ->timeout(self::TIMEOUT_SECONDS)
             ->post($webHook->getDestination()->__toString(), $payload->jsonSerialize());
