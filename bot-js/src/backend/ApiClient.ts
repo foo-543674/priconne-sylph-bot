@@ -3,6 +3,7 @@ import { GuildMember } from "discord.js";
 import { ValidationError } from '../support/ValidationError';
 import { ClanBattle } from '../entities/ClanBattle';
 import { DamageReportChannel } from '../entities/DamageReportChannel';
+import { CooperateChannel } from '../entities/CooperateChannel';
 
 function isAxiosError(error: any): error is AxiosError {
     return !!error.isAxiosError;
@@ -199,6 +200,19 @@ export class ApiClient {
         }
     }
 
+    public async getDamageReportChannels(
+        clanId: string
+    ) {
+        const response = await axios.get<DamageReportChannel[]>(
+            `${this.baseUri}/api/damage_report_channels?clan_id=${clanId}`,
+            {
+                headers: this.header,
+            }
+        );
+
+        return response.data;
+    }
+
     public async postInProcessDamageReport(
         channelId: string,
         messageId: string,
@@ -259,6 +273,38 @@ export class ApiClient {
             `${this.baseUri}/api/damage_reports/${channelId}/${messageId}`,
             { headers: this.header }
         ));
+    }
+
+    public async registerCooperateChannel(
+        clanName: string,
+        channelId: string
+    ) {
+        return await ApiClient.sendToApi(async () => await axios.post(
+            `${this.baseUri}/api/cooperate_channels`,
+            {
+                "clanName": clanName,
+                "discordChannelId": channelId,
+            },
+            { headers: this.header }
+        ));
+    }
+
+    public async getCooperateChannel(
+        channelId: string
+    ) {
+        const response = await axios.get<CooperateChannel>(
+            `${this.baseUri}/api/cooperate_channels/${channelId}`,
+            {
+                headers: this.header,
+                validateStatus: status => (status >= 200 && status < 300) || status === 404
+            }
+        );
+
+        if (response.status === 200) {
+            return response.data;
+        } else {
+            return null;
+        }
     }
 
     private static async sendToApi<T>(func: () => Promise<T>): Promise<T> {

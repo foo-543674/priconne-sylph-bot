@@ -11,6 +11,8 @@ phrases:
   create_damage_report_command: ここを\[(?<clanName>[\s\S]+)\]のダメージ報告場所にするよ
   in_process_damage_report_command: ^(?<bossNumber>[1-5])ボス( (?<memberName>.+))? 進行中( (?<comment>.*))?$
   finished_damage_report_command: ^(?<bossNumber>[1-5])ボス( (?<memberName>.+))? (?<damage>[0-9]+)( (?<comment>.*))?$
+  register_cooperate_channel_command: ここを\[(?<clanName>[\s\S]+)\]の連携チャットにするよ
+  clean_damage_report_command: (?<bossNumber>[1-5])ボスのダメージ報告を掃除して
   challenge_report_guide: |-
     凸をしたら回数に応じてスタンプを押してね。
     持ち越しを持ったら1回目は青、2回目は緑のチェックマークにスタンプを押してね。
@@ -58,6 +60,8 @@ phrases:
   cannot_find_boss_questionnaire_message: ボスアンケートのメッセージが見つからないよ。100個以上前のメッセージは見れないから、新しくアンケートを作ってね。
   cannot_find_boss_number_message: 通知したいボスの番号が見つからないよ。
   no_in_session_clan_battle_message: 開催中のクランバトルがないよ。
+  no_damage_report_channels_message: ダメージ報告チャンネルがないよ。
+  specific_boss_word: (?<bossNumber>[1-5])ボス
   create_damage_report_message: |
     このチャンネルをダメージ報告場所として設定するよ。
     

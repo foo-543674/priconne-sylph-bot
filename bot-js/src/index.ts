@@ -6,6 +6,8 @@ import { Client, Intents } from "discord.js";
 import { Sylph } from './Sylph';
 import { ApiClient } from './backend/ApiClient';
 import { DamageReportCommand } from './commands/DamageReportCommand';
+import { RegisterCooperateChannelCommand } from './commands/RegisterCooperateChannelCommand';
+import { CleanDamageReportCommand } from './commands/CleanDamageReportCommand';
 import {
     HelpCommand,
     RegisterClanCommand,
@@ -57,6 +59,8 @@ bot.addMessageCommand(new BossNotificationCommand(phraseRepository, client));
 bot.addMessageCommand(new GetBossQuestionnaireResultCommand(phraseRepository, client));
 bot.addMessageCommand(new PrepareDamageReportCommand(phraseRepository, client, apiClient));
 bot.addMessageCommand(new DamageReportCommand(phraseRepository, client, apiClient));
+bot.addMessageCommand(new RegisterCooperateChannelCommand(phraseRepository, client, apiClient));
+bot.addMessageCommand(new CleanDamageReportCommand(phraseRepository, client, apiClient));
 
 bot.addReactionCommand(new ReportChallengeCommand(phraseRepository, apiClient));
 bot.addReactionCommand(new ReportCarryOverCommand(phraseRepository, apiClient));
