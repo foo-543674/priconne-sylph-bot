@@ -6,9 +6,11 @@ use App\Infrastructure\LaravelWebHookServer;
 use App\Repositories\RdbmsActivityRepository;
 use App\Repositories\RdbmsClanBattleRepository;
 use App\Repositories\RdbmsClanRepository;
+use App\Repositories\RdbmsDamageReportChannelRepository;
 use App\Repositories\RdbmsMemberRepository;
 use App\Repositories\RdbmsReportChannelRepository;
 use App\Repositories\RdbmsWebHookRepository;
+use App\Repositories\RedisDamageReportRepository;
 use App\Support\MessageResolverFromConfig;
 use App\Support\UlidGenerator;
 use Illuminate\Support\ServiceProvider;
@@ -18,6 +20,8 @@ use Sylph\Application\Support\UlidGenerator as UlidGeneratorInterface;
 use Sylph\Repositories\ActivityRepository;
 use Sylph\Repositories\ClanBattleRepository;
 use Sylph\Repositories\ClanRepository;
+use Sylph\Repositories\DamageReportChannelRepository;
+use Sylph\Repositories\DamageReportRepository;
 use Sylph\Repositories\MemberRepository;
 use Sylph\Repositories\ReportChannelRepository;
 use Sylph\Repositories\WebHookRepository;
@@ -42,6 +46,8 @@ class AppServiceProvider extends ServiceProvider
         WebHookRepository::class => RdbmsWebHookRepository::class,
         MemberRepository::class => RdbmsMemberRepository::class,
         ActivityRepository::class => RdbmsActivityRepository::class,
+        DamageReportChannelRepository::class => RdbmsDamageReportChannelRepository::class,
+        DamageReportRepository::class => RedisDamageReportRepository::class,
 
         // Supports
         UlidGeneratorInterface::class => UlidGenerator::class,
