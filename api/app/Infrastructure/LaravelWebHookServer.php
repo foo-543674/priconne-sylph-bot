@@ -21,7 +21,7 @@ class LaravelWebHookServer implements WebHookServer
     public function send(WebHook $webHook, JsonSerializable $payload): void
     {
         $this->logger->info("Sending webhook to " . $webHook->getDestination()->__toString());
-        $this->logger->info("payload: " . json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        $this->logger->info("payload: " . json_encode($payload, JSON_UNESCAPED_UNICODE));
 
         $this->clientFactory
             ->timeout(self::TIMEOUT_SECONDS)
