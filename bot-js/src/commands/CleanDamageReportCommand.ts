@@ -6,6 +6,7 @@ import { mentionedToMe } from '../Sylph';
 import { getGroupOf } from '../support/RegexHelper';
 import { CooperateChannel } from '../entities/CooperateChannel';
 import { sleep } from '../support/AsyncTimer';
+import { ConvertFullWidth } from '../support/MessageParser';
 
 export class CleanDamageReportCommand implements MessageCommand {
     constructor(
@@ -50,7 +51,7 @@ export class CleanDamageReportCommand implements MessageCommand {
             const targetMessages = (await channel.messages.fetch({ limit: 100 }))
                 .filter(m => {
                     const pattern = new RegExp(this.phraseRepository.get("specific_boss_word"));
-                    const [bossNumber] = getGroupOf(pattern, m.cleanContent, "bossNumber");
+                    const [bossNumber] = getGroupOf(pattern, ConvertFullWidth(m.cleanContent), "bossNumber");
 
                     if (!bossNumber) return false;
 
