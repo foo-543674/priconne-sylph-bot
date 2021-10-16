@@ -17,7 +17,8 @@
     "axios": "^0.21.1",
     "discord.js": "^13.1.0",
     "fp-ts": "^2.11.1",
-    "js-yaml": "^4.1.0"
+    "js-yaml": "^4.1.0",
+    "typed-signals": "^2.3.0"
   },
   "devDependencies": {
     "@types/js-yaml": "^4.0.3",
