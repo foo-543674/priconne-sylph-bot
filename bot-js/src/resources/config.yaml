@@ -1,18 +1,18 @@
 phrases:
   bot_name: Sylph
-  help_command: 使い方教えて
+  help: 使い方教えて
   register_clan: \[(?<clanName>[\s\S]+)\]を登録して
   register_members: \[(?<clanName>[\s\S]+)\]のメンバーを登録して
   create_challenge_report: \[(?<clanName>[\s\S]+)\]の凸報告場所を作って
   register_webhook: \[(?<clanName>[\s\S]+)\]の状況が変化したら \[(?<url>https?://[\w!\?/\+\-_~=;\.,\*&@#\$%\(\)'\[\]]+)\] に通知して
   create_boss_questionnaire: ボスアンケートを?作って
-  boss_notification_command: (?<bossNumber>[1-5])に?行きたい人に通知して
-  get_boss_questionnaire_result_command: (?<bossNumber>[1-5])に?行きたい人を?教えて
-  create_damage_report_command: ここを\[(?<clanName>[\s\S]+)\]のダメージ報告場所にするよ
-  in_process_damage_report_command: ^(?<bossNumber>[1-5])ボス( (?<memberName>.+))? 進行中( (?<comment>.*))?$
-  finished_damage_report_command: ^(?<bossNumber>[1-5])ボス( (?<memberName>.+))? (?<damage>[0-9]+)( (?<comment>.*))?$
-  register_cooperate_channel_command: ここを\[(?<clanName>[\s\S]+)\]の連携チャンネルにするよ
-  clean_damage_report_command: (?<bossNumber>[1-5])ボスのダメージ報告を掃除して
+  boss_notification: (?<bossNumber>[1-5])に?行きたい人に通知して
+  get_boss_questionnaire_result: (?<bossNumber>[1-5])に?行きたい人を?教えて
+  create_damage_report: ここを\[(?<clanName>[\s\S]+)\]のダメージ報告場所にするよ
+  in_process_damage_report: ^(?<bossNumber>[1-5])ボス( (?<memberName>.+))? 進行中( (?<comment>.*))?$
+  finished_damage_report: ^(?<bossNumber>[1-5])ボス( (?<memberName>.+))? (?<damage>[0-9]+)( (?<comment>.*))?$
+  register_cooperate_channel: ここを\[(?<clanName>[\s\S]+)\]の連携チャンネルにするよ
+  clean_damage_report: (?<bossNumber>[1-5])ボスのダメージ報告を掃除して
   challenge_report_guide: |-
     凸をしたら回数に応じてスタンプを押してね。
     持ち越しを持ったら1回目は青、2回目は緑のチェックマークにスタンプを押してね。
@@ -31,12 +31,12 @@ phrases:
     概要 : クランのメンバーを登録します。登録をするメンバー、もしくはロールへのメンションをつけてください。
     使用例 : [テストクラン]のメンバーを登録して ＠メンバーロール ＠メンバー
     ---------------------------------------------------------------------------
-  help_message_register_register_webhook: |-
+  help_message_register_webhook: |-
     コマンド : [クラン名]の状況が変化したら [URL] に通知して
     概要 : 指定したクランのメンバーや凸状況が変化した際にPOSTリクエストを送信するWebhookのURLを設定します。
     使用例 : [テストクラン]の状況が変化したら [https://example.com/] に通知して
     ---------------------------------------------------------------------------
-  help_message_register_create_report_message: |-
+  help_message_register_create_report: |-
     コマンド : [クラン名]の凸報告場所を作って
     概要 : 開催中のクランバトルにおけるクランの凸報告場所を作ります。このメッセージに対して指定のリアクションをすると、凸状況が更新されます。
     使用例 : [テストクラン]の凸報告場所を作って

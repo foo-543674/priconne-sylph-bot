@@ -3,6 +3,7 @@ import { MessageCommand } from './MessageCommand';
 import { PhraseRepository } from '../support/PhraseRepository';
 import { ApiClient } from '../backend/ApiClient';
 import { mentionedToMe } from '../Sylph';
+import { PhraseKey } from '../support/PhraseKey';
 
 export class PrepareDamageReportCommand implements MessageCommand {
     constructor(
@@ -10,7 +11,7 @@ export class PrepareDamageReportCommand implements MessageCommand {
         private discordClient: Client,
         private apiClient: ApiClient,
     ) {
-        this.commandPattern = new RegExp(this.phraseRepository.get("create_damage_report_command"));
+        this.commandPattern = new RegExp(this.phraseRepository.get(PhraseKey.createDamageReport()));
     }
 
     private readonly commandPattern: RegExp;
@@ -31,8 +32,8 @@ export class PrepareDamageReportCommand implements MessageCommand {
 
             await this.apiClient.registerDamageReportChannel(clanName, message.channel.id);
 
-            await message.channel.send(this.phraseRepository.get('create_damage_report_message'));
-            await message.react(this.phraseRepository.get("succeed_reaction"));
+            await message.channel.send(this.phraseRepository.get(PhraseKey.createDamageReportMessage()));
+            await message.react(this.phraseRepository.get(PhraseKey.succeedReaction()));
         }
     }
 }

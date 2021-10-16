@@ -6,13 +6,15 @@ import { pipe } from 'fp-ts/lib/function';
 import { ValidationError } from '../support/ValidationError';
 import { isTextChannel } from '../support/DiscordHelper';
 import { mentionedToMe } from '../Sylph';
+import { PhraseKey } from '../support/PhraseKey';
+import { toBossNumber } from '../entities/BossNumber';
 
 export class BossNotificationCommand implements MessageCommand {
     constructor(
         private phraseRepository: PhraseRepository,
         private discordClient: Client,
     ) {
-        this.commandPattern = new RegExp(this.phraseRepository.get("boss_notification_command"));
+        this.commandPattern = new RegExp(this.phraseRepository.get(PhraseKey.bossNotification()));
     }
 
     private readonly commandPattern: RegExp;
@@ -37,9 +39,9 @@ export class BossNotificationCommand implements MessageCommand {
             TaskOption.map(g => g["bossNumber"]),
             TaskOption.chain(bossNumber => pipe(
                 TaskOption.fromTask(async () => await messageChannel.threads.fetchActive()),
-                TaskOption.chain(threads => TaskOption.fromNullable(threads.threads.find(thread => thread.name === this.phraseRepository.get('boss_questionnaire_thread_name')))),
+                TaskOption.chain(threads => TaskOption.fromNullable(threads.threads.find(thread => thread.name === this.phraseRepository.get(PhraseKey.bossQuestionnaireThreadName())))),
                 TaskOption.fold(
-                    () => { throw new ValidationError(this.phraseRepository.get("cannot_find_boss_questionnaire_thread")); },
+                    () => { throw new ValidationError(this.phraseRepository.get(PhraseKey.cannotFindBossQuestionnaireThread())); },
                     targetThread => TaskOption.fromTask(async () => await targetThread.messages.fetch({
                         limit: 100,
                     }))
@@ -48,20 +50,20 @@ export class BossNotificationCommand implements MessageCommand {
                     threadMessages.filter(
                         m => (
                             m.author.id === this.discordClient.user?.id
-                            && m.cleanContent === this.phraseRepository.get("boss_questionnaire_message")
+                            && m.cleanContent === this.phraseRepository.get(PhraseKey.bossQuestionnaireMessage())
                         ),
                     )
                         .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
                         .first()
                 )),
                 TaskOption.fold(
-                    () => { throw new ValidationError(this.phraseRepository.get("cannot_find_boss_questionnaire_message")); },
-                    targetMessage => TaskOption.fromNullable(targetMessage.reactions.resolve(this.phraseRepository.get(`${bossNumber}_boss_stamp`))),
+                    () => { throw new ValidationError(this.phraseRepository.get(PhraseKey.cannotFindBossQuestionnaireMessage())); },
+                    targetMessage => TaskOption.fromNullable(targetMessage.reactions.resolve(this.phraseRepository.get(PhraseKey.bossStamp(toBossNumber(bossNumber))))),
                 ),
                 TaskOption.chain(targetReaction => TaskOption.fromTask(async () => await targetReaction.users.fetch())),
                 TaskOption.map(users => users.filter(user => user.id !== this.discordClient.user?.id).map(user => `<@${user.id}>`)),
                 TaskOption.map(userIds => userIds.join(",")),
-                TaskOption.map(mentionText => `${mentionText}${bossNumber}${this.phraseRepository.get("boss_notify_message")}`),
+                TaskOption.map(mentionText => `${mentionText}${bossNumber}${this.phraseRepository.get(PhraseKey.bossNotifyMessage())}`),
             )),
             TaskOption.chain(messageText => TaskOption.fromTask(async () => await message.channel.send(messageText)))
         )();

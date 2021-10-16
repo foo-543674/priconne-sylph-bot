@@ -4,6 +4,7 @@ import { PhraseRepository } from '../support/PhraseRepository';
 import { ApiClient } from '../backend/ApiClient';
 import { ValidationError } from '../support/ValidationError';
 import { mentionedToMe } from '../Sylph';
+import { PhraseKey } from '../support/PhraseKey';
 
 export class CreateChallengeReportCommand implements MessageCommand {
     constructor(
@@ -11,7 +12,7 @@ export class CreateChallengeReportCommand implements MessageCommand {
         private discordClient: Client,
         private apiClient: ApiClient,
     ) {
-        this.commandPattern = new RegExp(this.phraseRepository.get("create_challenge_report"));
+        this.commandPattern = new RegExp(this.phraseRepository.get(PhraseKey.createChallengeReport()));
     }
 
     private readonly commandPattern: RegExp;
@@ -31,29 +32,29 @@ export class CreateChallengeReportCommand implements MessageCommand {
 
             const clanBattle = await this.apiClient.getInSessionClanBattle();
             if (!clanBattle) {
-                throw new ValidationError(this.phraseRepository.get('no_in_session_clan_battle_message'));
+                throw new ValidationError(this.phraseRepository.get(PhraseKey.noInSessionClanBattleMessage()));
             }
 
-            await message.channel.send(this.phraseRepository.get("challenge_report_guide"));
+            await message.channel.send(this.phraseRepository.get(PhraseKey.challengeReportGuide()));
 
             const messageIds = await Promise.all(clanBattle.dates.map(async (_, index) => {
                 const sentMessage = await message.channel.send(
-                    this.phraseRepository.get("days_unit").replace("{day}", (index + 1).toString())
+                    this.phraseRepository.get(PhraseKey.daysUnit()).replace("{day}", (index + 1).toString())
                 );
 
-                await sentMessage.react(this.phraseRepository.get("first_challenge_stamp"));
-                await sentMessage.react(this.phraseRepository.get("second_challenge_stamp"));
-                await sentMessage.react(this.phraseRepository.get("third_challenge_stamp"));
-                await sentMessage.react(this.phraseRepository.get("first_carry_over_stamp"));
-                await sentMessage.react(this.phraseRepository.get("second_carry_over_stamp"));
-                await sentMessage.react(this.phraseRepository.get("task_kill_stamp"));
+                await sentMessage.react(this.phraseRepository.get(PhraseKey.firstChallengeStamp()));
+                await sentMessage.react(this.phraseRepository.get(PhraseKey.secondChallengeStamp()));
+                await sentMessage.react(this.phraseRepository.get(PhraseKey.thirdChallengeStamp()));
+                await sentMessage.react(this.phraseRepository.get(PhraseKey.firstCarryOverStamp()));
+                await sentMessage.react(this.phraseRepository.get(PhraseKey.secondCarryOverStamp()));
+                await sentMessage.react(this.phraseRepository.get(PhraseKey.taskKillStamp()));
 
                 return sentMessage.id;
             }));
 
             await this.apiClient.registerReportMessage(clanName, message.channel.id, ...messageIds);
 
-            await message.react(this.phraseRepository.get("succeed_reaction"));
+            await message.react(this.phraseRepository.get(PhraseKey.succeedReaction()));
         }
     }
 }

@@ -3,6 +3,7 @@ import { MessageCommand } from './MessageCommand';
 import { PhraseRepository } from '../support/PhraseRepository';
 import { ApiClient } from '../backend/ApiClient';
 import { ConvertFullWidth } from '../support/MessageParser';
+import { PhraseKey } from '../support/PhraseKey';
 
 export class DamageReportCommand implements MessageCommand {
     constructor(
@@ -10,11 +11,11 @@ export class DamageReportCommand implements MessageCommand {
         private discordClient: Client,
         private apiClient: ApiClient,
     ) {
-        this.inProcessCommandPattern = new RegExp(this.phraseRepository.get("in_process_damage_report_command"));
-        this.finishedCommandPattern = new RegExp(this.phraseRepository.get("finished_damage_report_command"));
+        this.inProcessCommandPattern = new RegExp(this.phraseRepository.get(PhraseKey.inProcessDamageReport()));
+        this.finishedCommandPattern = new RegExp(this.phraseRepository.get(PhraseKey.finishedDamageReport()));
         this.myReactions = [
-            this.phraseRepository.get('succeed_reaction'),
-            this.phraseRepository.get('failed_reaction'),
+            this.phraseRepository.get(PhraseKey.succeedReaction()),
+            this.phraseRepository.get(PhraseKey.failedReaction()),
         ];
     }
 
@@ -55,14 +56,14 @@ export class DamageReportCommand implements MessageCommand {
         } else if (matchToFinished) {
             await this.reportForFinished(matchToFinished, message);
         } else {
-            await message.react(this.phraseRepository.get('failed_reaction'));
+            await message.react(this.phraseRepository.get(PhraseKey.failedReaction()));
         }
     }
 
     protected async reportForInProcess(matches: RegExpExecArray, message: Message) {
         const groups = matches.groups;
         if (!groups) {
-            await message.react(this.phraseRepository.get('failed_reaction'));
+            await message.react(this.phraseRepository.get(PhraseKey.failedReaction()));
             return;
         }
 
@@ -79,13 +80,13 @@ export class DamageReportCommand implements MessageCommand {
             comment,
         );
 
-        await message.react(this.phraseRepository.get('succeed_reaction'));
+        await message.react(this.phraseRepository.get(PhraseKey.succeedReaction()));
     }
 
     protected async reportForFinished(matches: RegExpExecArray, message: Message) {
         const groups = matches.groups;
         if (!groups) {
-            await message.react(this.phraseRepository.get('failed_reaction'));
+            await message.react(this.phraseRepository.get(PhraseKey.failedReaction()));
             return;
         }
 
@@ -104,6 +105,6 @@ export class DamageReportCommand implements MessageCommand {
             comment,
         );
 
-        await message.react(this.phraseRepository.get('succeed_reaction'));
+        await message.react(this.phraseRepository.get(PhraseKey.succeedReaction()));
     }
 }

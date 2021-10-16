@@ -7,6 +7,7 @@ import { getGroupOf } from '../support/RegexHelper';
 import { CooperateChannel } from '../entities/CooperateChannel';
 import { sleep } from '../support/AsyncTimer';
 import { ConvertFullWidth } from '../support/MessageParser';
+import { PhraseKey } from '../support/PhraseKey';
 
 export class CleanDamageReportCommand implements MessageCommand {
     constructor(
@@ -14,7 +15,7 @@ export class CleanDamageReportCommand implements MessageCommand {
         private discordClient: Client,
         private apiClient: ApiClient,
     ) {
-        this.commandPattern = new RegExp(this.phraseRepository.get("clean_damage_report_command"));
+        this.commandPattern = new RegExp(this.phraseRepository.get(PhraseKey.cleanDamageReport()));
     }
 
     private readonly commandPattern: RegExp;
@@ -42,7 +43,7 @@ export class CleanDamageReportCommand implements MessageCommand {
         const damageReportChannels = await this.apiClient.getDamageReportChannels(cooperateChannel.clanId);
 
         if (damageReportChannels.length <= 0) {
-            await message.reply(this.phraseRepository.get('no_damage_report_channels_message'));
+            await message.reply(this.phraseRepository.get(PhraseKey.noDamageReportChannelsMessage()));
             return;
         }
 
@@ -50,7 +51,7 @@ export class CleanDamageReportCommand implements MessageCommand {
             const channel = await this.discordClient.channels.fetch(damageReportChannel.discordChannelId) as TextChannel;
             const targetMessages = (await channel.messages.fetch({ limit: 100 }))
                 .filter(m => {
-                    const pattern = new RegExp(this.phraseRepository.get("specific_boss_word"));
+                    const pattern = new RegExp(this.phraseRepository.get(PhraseKey.specificBossWord()));
                     const [bossNumber] = getGroupOf(pattern, ConvertFullWidth(m.cleanContent), "bossNumber");
 
                     if (!bossNumber) return false;
@@ -68,6 +69,6 @@ export class CleanDamageReportCommand implements MessageCommand {
             await sleep(1000);
         }
 
-        await message.react(this.phraseRepository.get("succeed_reaction"));
+        await message.react(this.phraseRepository.get(PhraseKey.succeedReaction()));
     }
 }

@@ -3,6 +3,7 @@ import { MessageCommand } from "./commands/MessageCommand";
 import { ReactionCommand } from './commands/ReactionCommand';
 import { ValidationError } from './support/ValidationError';
 import { PhraseRepository } from './support/PhraseRepository';
+import { PhraseKey } from './support/PhraseKey';
 
 function isPartialReaction(reaction: PartialMessageReaction | MessageReaction): reaction is PartialMessageReaction {
     return reaction.partial;
@@ -90,7 +91,7 @@ export class Sylph {
                 await message.reply(error.message);
             } else {
                 console.log(error);
-                await message.react(this.phraseRepository.get('failed_reaction'));
+                await message.react(this.phraseRepository.get(PhraseKey.failedReaction()));
             }
         }
     }
@@ -113,7 +114,7 @@ export class Sylph {
                 await actualNewMessage.reply(error.message);
             } else {
                 console.log(error);
-                await actualNewMessage.react(this.phraseRepository.get('failed_reaction'));
+                await actualNewMessage.react(this.phraseRepository.get(PhraseKey.failedReaction()));
             }
         }
     }

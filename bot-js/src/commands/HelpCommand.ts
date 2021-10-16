@@ -3,28 +3,29 @@ import { MessageCommand } from './MessageCommand';
 import { PhraseRepository } from '../support/PhraseRepository';
 import { mentionedToMe } from '../Sylph';
 import { sleep } from '../support/AsyncTimer';
+import { PhraseKey } from '../support/PhraseKey';
 
 export class HelpCommand implements MessageCommand {
     constructor(
         private phraseRepository: PhraseRepository,
         private discordClient: Client,
     ) {
-        this.commandPattern = new RegExp(this.phraseRepository.get("help_command"));
+        this.commandPattern = new RegExp(this.phraseRepository.get(PhraseKey.help()));
     }
 
     private readonly commandPattern: RegExp;
     private readonly messageKeys = [
-        "help_message_basic",
-        "help_message_register_clan",
-        "help_message_register_members",
-        "help_message_register_register_webhook",
-        "help_message_register_create_report_message",
-        "help_message_create_boss_questionaire",
-        "help_message_notify_boss_questionaire",
-        "help_message_get_result_boss_questionaire",
-        "help_message_register_damage_report_channel",
-        "help_message_register_coopreate_channel",
-        "help_message_clean_damage_report",
+        PhraseKey.helpMessageBasic(),
+        PhraseKey.helpMessageRegisterClan(),
+        PhraseKey.helpMessageRegisterMembers(),
+        PhraseKey.helpMessageRegisterWebhook(),
+        PhraseKey.helpMessageRegisterCreateReport(),
+        PhraseKey.helpMessageCreateBossQuestionaire(),
+        PhraseKey.helpMessageNotifyBossQuestionaire(),
+        PhraseKey.helpMessageGetResultBossQuestionaire(),
+        PhraseKey.helpMessageRegisterDamageReportChannel(),
+        PhraseKey.helpMessageRegisterCoopreateChannel(),
+        PhraseKey.helpMessageCleanDamageReport(),
     ];
 
     isMatchTo(message: Message): Promise<boolean> {

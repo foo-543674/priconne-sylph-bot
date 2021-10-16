@@ -1,5 +1,6 @@
 import { MessageReaction, User } from 'discord.js';
 import { ApiClient } from '../backend/ApiClient';
+import { PhraseKey } from '../support/PhraseKey';
 import { PhraseRepository } from '../support/PhraseRepository';
 import { ReactionCommand } from './ReactionCommand';
 
@@ -13,8 +14,8 @@ export class ReportCarryOverCommand implements ReactionCommand {
     async isMatchTo(reaction: MessageReaction): Promise<boolean> {
         return await this.apiClient.hasReportMessage(reaction.message.id)
             && (
-                reaction.emoji.toString() === this.phraseRepository.get("first_carry_over_stamp")
-                || reaction.emoji.toString() === this.phraseRepository.get("second_carry_over_stamp")
+                reaction.emoji.toString() === this.phraseRepository.get(PhraseKey.firstCarryOverStamp())
+                || reaction.emoji.toString() === this.phraseRepository.get(PhraseKey.secondCarryOverStamp())
             );
     }
 

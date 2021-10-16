@@ -3,6 +3,7 @@ import { MessageCommand } from './MessageCommand';
 import { PhraseRepository } from '../support/PhraseRepository';
 import { ApiClient } from '../backend/ApiClient';
 import { mentionedToMe } from '../Sylph';
+import { PhraseKey } from '../support/PhraseKey';
 
 export class RegisterMembersCommand implements MessageCommand {
     constructor(
@@ -10,7 +11,7 @@ export class RegisterMembersCommand implements MessageCommand {
         private apiClient: ApiClient,
         private discordClient: Client,
     ) {
-        this.commandPattern = new RegExp(this.phraseRepository.get("register_members"));
+        this.commandPattern = new RegExp(this.phraseRepository.get(PhraseKey.registerMembers()));
     }
 
     private readonly commandPattern: RegExp;
@@ -34,7 +35,7 @@ export class RegisterMembersCommand implements MessageCommand {
 
             await this.apiClient.registerMembers(clanName, ...members.values());
 
-            await message.react(this.phraseRepository.get("succeed_reaction"));
+            await message.react(this.phraseRepository.get(PhraseKey.succeedReaction()));
         }
     }
 }

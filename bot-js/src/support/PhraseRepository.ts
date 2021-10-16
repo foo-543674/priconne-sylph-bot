@@ -1,3 +1,5 @@
+import { PhraseKey } from './PhraseKey';
+
 export interface PhraseRepository {
-    get(key: string): string;
+    get(key: PhraseKey): string;
 }

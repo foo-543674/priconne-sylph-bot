@@ -1,5 +1,6 @@
 import { MessageReaction, User } from 'discord.js';
 import { ApiClient } from '../backend/ApiClient';
+import { PhraseKey } from '../support/PhraseKey';
 import { PhraseRepository } from '../support/PhraseRepository';
 import { ReactionCommand } from './ReactionCommand';
 
@@ -13,9 +14,9 @@ export class ReportChallengeCommand implements ReactionCommand {
     async isMatchTo(reaction: MessageReaction): Promise<boolean> {
         return await this.apiClient.hasReportMessage(reaction.message.id)
             && (
-                reaction.emoji.toString() === this.phraseRepository.get("first_challenge_stamp")
-                || reaction.emoji.toString() === this.phraseRepository.get("second_challenge_stamp")
-                || reaction.emoji.toString() === this.phraseRepository.get("third_challenge_stamp")
+                reaction.emoji.toString() === this.phraseRepository.get(PhraseKey.firstChallengeStamp())
+                || reaction.emoji.toString() === this.phraseRepository.get(PhraseKey.secondChallengeStamp())
+                || reaction.emoji.toString() === this.phraseRepository.get(PhraseKey.thirdChallengeStamp())
             );
     }
 
