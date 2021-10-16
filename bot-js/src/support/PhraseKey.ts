@@ -115,20 +115,12 @@ export class PhraseKey {
         return new PhraseKey("days_unit");
     }
 
-    public static bossQuestionnaireThreadName() {
-        return new PhraseKey("boss_questionnaire_thread_name");
-    }
-
     public static bossQuestionnaireMessage() {
         return new PhraseKey("boss_questionnaire_message");
     }
 
     public static bossNotifyMessage() {
         return new PhraseKey("boss_notify_message");
-    }
-
-    public static cannotFindBossQuestionnaireThread() {
-        return new PhraseKey("cannot_find_boss_questionnaire_thread");
     }
 
     public static cannotFindBossQuestionnaireMessage() {

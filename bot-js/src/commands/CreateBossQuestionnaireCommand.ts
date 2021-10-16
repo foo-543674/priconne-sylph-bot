@@ -27,12 +27,7 @@ export class CreateBossQuestionnaireCommand implements MessageCommand {
 
         if (!isTextChannel(message.channel)) return;
 
-        const thread = await message.channel.threads.create({
-            name: this.phraseRepository.get(PhraseKey.bossQuestionnaireThreadName()),
-            autoArchiveDuration: 1440
-        });
-        const sentMessage = await thread.send(this.phraseRepository.get(PhraseKey.bossQuestionnaireMessage()));
-
+        const sentMessage = await message.channel.send(this.phraseRepository.get(PhraseKey.bossQuestionnaireMessage()));
 
         await sentMessage.react(this.phraseRepository.get(PhraseKey.bossStamp(1)));
         await sentMessage.react(this.phraseRepository.get(PhraseKey.bossStamp(2)));

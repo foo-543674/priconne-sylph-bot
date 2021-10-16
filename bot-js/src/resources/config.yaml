@@ -71,11 +71,9 @@ phrases:
     使用例 : 1ボスのダメージ報告を掃除して
     ---------------------------------------------------------------------------
   days_unit: '{day}日目'
-  boss_questionnaire_thread_name: ボスアンケート
   boss_questionnaire_message: 行きたいボスのスタンプ押してね
   boss_notify_message: ボスの凸を開始するよ
-  cannot_find_boss_questionnaire_thread: ボスアンケートのスレッドが見つからないよ。
-  cannot_find_boss_questionnaire_message: ボスアンケートのメッセージが見つからないよ。100個以上前のメッセージは見れないから、新しくアンケートを作ってね。
+  cannot_find_boss_questionnaire_message: ボスアンケートのメッセージが見つからないよ。500個以上前のメッセージは見れないから、新しくアンケートを作ってね。
   cannot_find_boss_number_message: 通知したいボスの番号が見つからないよ。
   no_in_session_clan_battle_message: 開催中のクランバトルがないよ。
   no_damage_report_channels_message: ダメージ報告チャンネルがないよ。
