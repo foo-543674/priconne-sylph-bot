@@ -39,6 +39,9 @@ use Illuminate\Support\Facades\Route;
 Route::middleware("auth.apikey")->group(function () {
     Route::prefix("/clans")->group(function () {
         Route::post("/", PostClanController::class)->name("post.clans");
+        Route::prefix("/{clanName}")->group(function () {
+            Route::get("/members", GetMemberController::class)->name("get.members");
+        });
     });
     Route::prefix("/clan_battles")->group(function () {
         Route::get("/", GetClanBattleController::class)->name("get.clan_battles");
