@@ -5,9 +5,11 @@ use App\Http\Controllers\DeleteChallengeController;
 use App\Http\Controllers\DeleteDamageReportController;
 use App\Http\Controllers\DeleteTaskKillController;
 use App\Http\Controllers\GetClanBattleController;
+use App\Http\Controllers\GetClanController;
 use App\Http\Controllers\GetCooperateChannelController;
 use App\Http\Controllers\GetDamageReportChannelController;
 use App\Http\Controllers\GetDamageReportChannelListController;
+use App\Http\Controllers\GetMemberController;
 use App\Http\Controllers\GetReportMessageController;
 use App\Http\Controllers\PatchClanBattleStatusController;
 use App\Http\Controllers\PostCarryOverController;
@@ -39,7 +41,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware("auth.apikey")->group(function () {
     Route::prefix("/clans")->group(function () {
         Route::post("/", PostClanController::class)->name("post.clans");
-        Route::prefix("/{clanName}")->group(function () {
+        Route::get("/", GetClanController::class)->name("get.clans");
+        Route::prefix("/{clanId}")->group(function () {
             Route::get("/members", GetMemberController::class)->name("get.members");
         });
     });
