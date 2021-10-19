@@ -78,6 +78,7 @@ phrases:
   no_in_session_clan_battle_message: 開催中のクランバトルがないよ。
   no_damage_report_channels_message: ダメージ報告チャンネルがないよ。
   specific_boss_word: (?<bossNumber>[1-5])ボス
+  boss_knockout_message: ボスが倒れたよ。
   create_damage_report_message: |
     このチャンネルをダメージ報告場所として設定するよ。
     

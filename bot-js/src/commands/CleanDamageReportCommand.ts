@@ -59,6 +59,8 @@ export class CleanDamageReportCommand implements MessageCommand {
                     return targetBossNumber === bossNumber;
                 })
 
+            const memtion = targetMessages.map(m => `@<${m.author.id}`).join(',');
+
             for (const targetMessage of targetMessages) {
                 if (targetMessage[1].author.id === this.discordClient.user?.id) continue;
                 await targetMessage[1].delete();
@@ -67,8 +69,8 @@ export class CleanDamageReportCommand implements MessageCommand {
                 await sleep(500);
             }
             await sleep(500);
-        }
 
-        await message.react(this.phraseRepository.get(PhraseKey.succeedReaction()));
+            await message.channel.send(`${memtion}${this.phraseRepository.get(PhraseKey.bossKnockoutMessage())}`);
+        }
     }
 }

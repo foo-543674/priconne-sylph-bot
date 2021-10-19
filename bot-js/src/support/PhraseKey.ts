@@ -183,6 +183,10 @@ export class PhraseKey {
         return new PhraseKey(`${number}_boss_stamp`);
     }
 
+    public static bossKnockoutMessage() {
+        return new PhraseKey('boss_knockout_message');
+    }
+
     public toString(): string {
         return this.value;
     }
