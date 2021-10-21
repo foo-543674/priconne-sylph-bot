@@ -8,6 +8,7 @@ import { Clan } from "../entities/Clan";
 import { Member } from "../entities/Member";
 import { UncompleteMemberRole } from "../entities/UncompleteMemberRole";
 import { ActivityStatus } from '../entities/ActivityStatus';
+import { GetClanParamter } from './GetClanParameter';
 
 function isAxiosError(error: any): error is AxiosError {
     return !!error.isAxiosError;
@@ -326,9 +327,9 @@ export class ApiClient {
         ));
     }
 
-    public async getClans() {
+    public async getClans(param?: GetClanParamter) {
         const response = await axios.get<Clan[]>(
-            `${this.baseUri}/api/clans`,
+            `${this.baseUri}/api/clans?${param?.generateQueryParameterText() ?? ''}`,
             {
                 headers: this.header,
                 validateStatus: status => (status >= 200 && status < 300) || status === 404
