@@ -34,7 +34,7 @@ class GetActivityController extends Controller
                         fn (int $value, string $type) => $record->type === $type
                             ? $value++
                             : $value,
-                        $accumulator
+                        $accumulator, array_keys($accumulator)
                     ),
                     [
                         Challenge::getTypeName() => 0,
