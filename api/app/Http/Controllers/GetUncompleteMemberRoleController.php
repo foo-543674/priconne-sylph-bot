@@ -2,10 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Clan;
 use App\Models\UncompleteMemberRole;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
 
 class GetUncompleteMemberRoleController extends Controller
 {
