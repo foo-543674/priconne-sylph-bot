@@ -89,4 +89,6 @@ Route::middleware("auth.apikey")->group(function () {
         Route::post("/", PostTaskKillController::class)->name("post.task_kills");
         Route::delete("/", DeleteTaskKillController::class)->name("delete.task_kills");
     });
+    Route::prefix("/activities/messages/{discordMessageId}/users/{discordUserId}")->group(function () {
+    });
 });
