@@ -7,7 +7,7 @@ use Ulid\Ulid;
 /**
  * 凸未完了メンバーロールID
  */
-class UncompletedMemberRoleId
+class UncompleteMemberRoleId
 {
     public function __construct(private Ulid $value)
     {

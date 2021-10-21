@@ -5,22 +5,22 @@ namespace Sylph\Entities;
 use JsonSerializable;
 use Sylph\Domain\DiscordRole;
 use Sylph\VO\ClanId;
-use Sylph\VO\UncompletedMemberRoleId;
+use Sylph\VO\UncompleteMemberRoleId;
 
 /**
  * 凸未完了者ロール
  */
-class UncompletedMemberRole implements JsonSerializable
+class UncompleteMemberRole implements JsonSerializable
 {
     public function __construct(
-        private UncompletedMemberRoleId $id,
+        private UncompleteMemberRoleId $id,
         private DiscordRole $role,
         private ClanId $clanId,
     ) {
         //
     }
 
-    public function getId(): UncompletedMemberRoleId
+    public function getId(): UncompleteMemberRoleId
     {
         return $this->id;
     }

@@ -10,6 +10,7 @@ use App\Repositories\RdbmsCooperateChannelRepository;
 use App\Repositories\RdbmsDamageReportChannelRepository;
 use App\Repositories\RdbmsMemberRepository;
 use App\Repositories\RdbmsReportChannelRepository;
+use App\Repositories\RdbmsUncompleteMemberRoleRepository;
 use App\Repositories\RdbmsWebHookRepository;
 use App\Repositories\RedisDamageReportRepository;
 use App\Support\MessageResolverFromConfig;
@@ -26,6 +27,7 @@ use Sylph\Repositories\DamageReportChannelRepository;
 use Sylph\Repositories\DamageReportRepository;
 use Sylph\Repositories\MemberRepository;
 use Sylph\Repositories\ReportChannelRepository;
+use Sylph\Repositories\UncompleteMemberRoleRepository;
 use Sylph\Repositories\WebHookRepository;
 
 class AppServiceProvider extends ServiceProvider
@@ -51,6 +53,7 @@ class AppServiceProvider extends ServiceProvider
         DamageReportChannelRepository::class => RdbmsDamageReportChannelRepository::class,
         DamageReportRepository::class => RedisDamageReportRepository::class,
         CooperateChannelRepository::class => RdbmsCooperateChannelRepository::class,
+        UncompleteMemberRoleRepository::class => RdbmsUncompleteMemberRoleRepository::class,
 
         // Supports
         UlidGeneratorInterface::class => UlidGenerator::class,
