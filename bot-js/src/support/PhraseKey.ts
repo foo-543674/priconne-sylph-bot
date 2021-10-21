@@ -187,6 +187,14 @@ export class PhraseKey {
         return new PhraseKey('boss_knockout_message');
     }
 
+    public static registerUncompleteMemberRole() {
+        return new PhraseKey('register_uncomplete_member_role');
+    }
+
+    public static cannotGetRoleMessage() {
+        return new PhraseKey('cannot_get_role_message');
+    }
+
     public toString(): string {
         return this.value;
     }

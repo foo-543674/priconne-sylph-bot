@@ -13,6 +13,7 @@ phrases:
   finished_damage_report: ^(?<bossNumber>[1-5])ボス( (?<memberName>.+))? (?<damage>[0-9]+)( (?<comment>.*))?$
   register_cooperate_channel: ここを\[(?<clanName>[\s\S]+)\]の連携チャンネルにするよ
   clean_damage_report: (?<bossNumber>[1-5])ボスのダメージ報告を掃除して
+  register_uncomplete_member_role: \[(?<clanName>[\s\S]+)\]の凸未完了者のロールを登録して
   challenge_report_guide: |-
     凸をしたら回数に応じてスタンプを押してね。
     持ち越しを持ったら1回目は青、2回目は緑のチェックマークにスタンプを押してね。
@@ -94,6 +95,7 @@ phrases:
     
     各値の間にはスペースを入れてね。メンションはいらないよ。
     🥺のリアクションがついたらメッセージの形式が間違ってるよ。上の例を参考に修正してね。
+  cannot_get_role_message: ロールが見つからないよ。対象のロールに対してメンションをしてね。
   first_challenge_stamp: 1️⃣
   second_challenge_stamp: 2️⃣
   third_challenge_stamp: 3️⃣

@@ -8,6 +8,10 @@ export { CreateBossQuestionnaireCommand } from "./CreateBossQuestionnaireCommand
 export { BossNotificationCommand } from "./BossNotificationCommand";
 export { GetBossQuestionnaireResultCommand } from "./GetBossQuestionnaireResultCommand";
 export { PrepareDamageReportCommand } from "./PrepareDamageReportCommand";
+export { RegisterUncompleteMemberRoleCommand } from "./RegisterUncompleteMemberRoleCommand";
+export { CleanDamageReportCommand } from "./CleanDamageReportCommand";
+export { DamageReportCommand } from './DamageReportCommand';
+export { RegisterCooperateChannelCommand } from './RegisterCooperateChannelCommand';
 
 export { ReactionCommand } from "./ReactionCommand";
 export { ReportChallengeCommand } from "./ReportChallengeCommand";

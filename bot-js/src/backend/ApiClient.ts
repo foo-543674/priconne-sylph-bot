@@ -1,9 +1,13 @@
 import axios, { AxiosError } from "axios";
-import { GuildMember } from "discord.js";
+import { GuildMember, Role } from "discord.js";
 import { ValidationError } from '../support/ValidationError';
 import { ClanBattle } from '../entities/ClanBattle';
 import { DamageReportChannel } from '../entities/DamageReportChannel';
 import { CooperateChannel } from '../entities/CooperateChannel';
+import { Clan } from "../entities/Clan";
+import { Member } from "../entities/Member";
+import { UncompleteMemberRole } from "../entities/UncompleteMemberRole";
+import { ActivityStatus } from '../entities/ActivityStatus';
 
 function isAxiosError(error: any): error is AxiosError {
     return !!error.isAxiosError;
@@ -294,6 +298,85 @@ export class ApiClient {
     ) {
         const response = await axios.get<CooperateChannel>(
             `${this.baseUri}/api/cooperate_channels/${channelId}`,
+            {
+                headers: this.header,
+                validateStatus: status => (status >= 200 && status < 300) || status === 404
+            }
+        );
+
+        if (response.status === 200) {
+            return response.data;
+        } else {
+            return null;
+        }
+    }
+
+    public async registerUncompleteMemberRole(
+        clanName: string,
+        role: Role
+    ) {
+        return await ApiClient.sendToApi(async () => await axios.post(
+            `${this.baseUri}/api/uncomplete_member_role`,
+            {
+                "clanName": clanName,
+                "discordRoleId": role.id,
+                "discordRoleName": role.name,
+            },
+            { headers: this.header }
+        ));
+    }
+
+    public async getClans() {
+        const response = await axios.get<Clan[]>(
+            `${this.baseUri}/api/clans`,
+            {
+                headers: this.header,
+                validateStatus: status => (status >= 200 && status < 300) || status === 404
+            }
+        );
+
+        if (response.status === 200) {
+            return response.data;
+        } else {
+            return null;
+        }
+    }
+
+    public async getMembers(clanId: string) {
+        const response = await axios.get<Member[]>(
+            `${this.baseUri}/api/clans/${clanId}/members`,
+            {
+                headers: this.header,
+                validateStatus: status => (status >= 200 && status < 300) || status === 404
+            }
+        );
+
+        if (response.status === 200) {
+            return response.data;
+        } else {
+            return null;
+        }
+    }
+
+    public async getUncompleteMemberRole(clanId: string) {
+        const response = await axios.get<UncompleteMemberRole>(
+            `${this.baseUri}/api/clans/${clanId}/uncomplete_member_role`,
+            {
+                headers: this.header,
+                validateStatus: status => (status >= 200 && status < 300) || status === 404
+            }
+        );
+
+        if (response.status === 200) {
+            return response.data;
+        } else {
+            return null;
+        }
+    }
+
+    public async getActivityStatus(messageId: string, userId: string) {
+        const response = await axios.get<ActivityStatus>(
+            `${this.baseUri}/api/activities/messages/${messageId}/users/${userId}`,
             {
                 headers: this.header,
                 validateStatus: status => (status >= 200 && status < 300) || status === 404

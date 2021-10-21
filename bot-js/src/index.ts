@@ -5,9 +5,6 @@ import { PhraseConfig } from "./support/PhraseConfig";
 import { Client, Intents } from "discord.js";
 import { Sylph } from './Sylph';
 import { ApiClient } from './backend/ApiClient';
-import { DamageReportCommand } from './commands/DamageReportCommand';
-import { RegisterCooperateChannelCommand } from './commands/RegisterCooperateChannelCommand';
-import { CleanDamageReportCommand } from './commands/CleanDamageReportCommand';
 import {
     HelpCommand,
     RegisterClanCommand,
@@ -21,6 +18,10 @@ import {
     ReportTaskKillCommand,
     GetBossQuestionnaireResultCommand,
     PrepareDamageReportCommand,
+    RegisterUncompleteMemberRoleCommand,
+    CleanDamageReportCommand,
+    DamageReportCommand,
+    RegisterCooperateChannelCommand,
 } from "./commands";
 
 const phraseConfig = yaml.load(fs.readFileSync('src/resources/config.yaml', 'utf8'));
@@ -61,6 +62,7 @@ bot.addMessageCommand(new PrepareDamageReportCommand(phraseRepository, client, a
 bot.addMessageCommand(new DamageReportCommand(phraseRepository, client, apiClient));
 bot.addMessageCommand(new RegisterCooperateChannelCommand(phraseRepository, client, apiClient));
 bot.addMessageCommand(new CleanDamageReportCommand(phraseRepository, client, apiClient));
+bot.addMessageCommand(new RegisterUncompleteMemberRoleCommand(phraseRepository, client, apiClient));
 
 bot.addReactionCommand(new ReportChallengeCommand(phraseRepository, apiClient));
 bot.addReactionCommand(new ReportCarryOverCommand(phraseRepository, apiClient));
