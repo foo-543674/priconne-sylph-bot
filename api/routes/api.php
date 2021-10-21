@@ -4,6 +4,7 @@ use App\Http\Controllers\DeleteCarryOverController;
 use App\Http\Controllers\DeleteChallengeController;
 use App\Http\Controllers\DeleteDamageReportController;
 use App\Http\Controllers\DeleteTaskKillController;
+use App\Http\Controllers\GetActivityController;
 use App\Http\Controllers\GetClanBattleController;
 use App\Http\Controllers\GetClanController;
 use App\Http\Controllers\GetCooperateChannelController;
@@ -90,5 +91,6 @@ Route::middleware("auth.apikey")->group(function () {
         Route::delete("/", DeleteTaskKillController::class)->name("delete.task_kills");
     });
     Route::prefix("/activities/messages/{discordMessageId}/users/{discordUserId}")->group(function () {
+        Route::get("/", GetActivityController::class)->name("get.activities");
     });
 });
