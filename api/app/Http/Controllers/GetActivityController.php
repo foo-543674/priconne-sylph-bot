@@ -17,31 +17,21 @@ class GetActivityController extends Controller
      */
     public function __invoke(string $discordMessageId, string $discordUserId)
     {
-        return response()->json(
-            Activity::query()
-                ->whereHas('actedDate', function (Builder $query) use ($discordMessageId) {
-                    $query->whereHas('reportMessages', function (Builder $query) use ($discordMessageId) {
-                        $query->where('discord_message_id', $discordMessageId);
-                    });
-                })
-                ->whereHas('actedMember', function (Builder $query) use ($discordUserId) {
-                    $query->where('discord_user_id', $discordUserId);
-                })
-                ->get()
-                ->reduce(
-                    fn (array $accumulator, Activity $record) =>
-                    array_map(
-                        fn (int $value, string $type) => $record->type === $type
-                            ? $value++
-                            : $value,
-                        $accumulator, array_keys($accumulator)
-                    ),
-                    [
-                        Challenge::getTypeName() => 0,
-                        CarryOver::getTypeName() => 0,
-                        TaskKill::getTypeName() => 0,
-                    ]
-                )
-        );
+        $activities = Activity::query()
+            ->whereHas('actedDate', function (Builder $query) use ($discordMessageId) {
+                $query->whereHas('reportMessages', function (Builder $query) use ($discordMessageId) {
+                    $query->where('discord_message_id', $discordMessageId);
+                });
+            })
+            ->whereHas('actedMember', function (Builder $query) use ($discordUserId) {
+                $query->where('discord_user_id', $discordUserId);
+            })
+            ->get();
+
+        return response()->json([
+            Challenge::getTypeName() => $activities->where('type', Challenge::getTypeName())->count(),
+            CarryOver::getTypeName() => $activities->where('type', CarryOver::getTypeName())->count(),
+            TaskKill::getTypeName() => $activities->where('type', TaskKill::getTypeName())->count(),
+        ]);
     }
 }
