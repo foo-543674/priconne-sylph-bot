@@ -42,7 +42,6 @@ class GetActivityController extends Controller
                         TaskKill::getTypeName() => 0,
                     ]
                 )
-                ->all()
         );
     }
 }
