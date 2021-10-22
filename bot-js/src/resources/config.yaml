@@ -96,6 +96,7 @@ phrases:
     各値の間にはスペースを入れてね。メンションはいらないよ。
     🥺のリアクションがついたらメッセージの形式が間違ってるよ。上の例を参考に修正してね。
   cannot_get_role_message: ロールが見つからないよ。対象のロールに対してメンションをしてね。
+  cannot_use_command_in_dm_message: このコマンドはダイレクトメッセージでは使えないよ。サーバー内のテキストチャンネルで実行してね。
   first_challenge_stamp: 1️⃣
   second_challenge_stamp: 2️⃣
   third_challenge_stamp: 3️⃣

@@ -29,7 +29,12 @@ export class RegisterClanCommand implements MessageCommand {
         if (matches && matches.groups) {
             const name = matches.groups["clanName"];
 
-            await this.apiClient.registerClan(name);
+            if (!message.guildId) {
+                await message.reply(this.phraseRepository.get(PhraseKey.cannotUseCommandInDmMessage()));
+                return;
+            }
+
+            await this.apiClient.registerClan(name, message.guildId);
 
             await message.react(this.phraseRepository.get(PhraseKey.succeedReaction()));
         }

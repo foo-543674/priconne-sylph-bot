@@ -28,10 +28,13 @@ export class ApiClient {
     private readonly baseUri: string;
     private readonly header: object;
 
-    public async registerClan(name: string) {
+    public async registerClan(name: string, guildId: string) {
         return await ApiClient.sendToApi(async () => await axios.post(
             `${this.baseUri}/api/clans`,
-            { clanName: name },
+            {
+                clanName: name,
+                discordGuildId: guildId
+            },
             { headers: this.header }
         ));
     }

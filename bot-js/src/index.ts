@@ -1,11 +1,13 @@
 import yaml from "js-yaml";
 import fs from "fs";
+import cron from "node-cron"
 import { YamlPhraseRepository } from "./yaml/YamlPhraseRepository";
 import { PhraseConfig } from "./support/PhraseConfig";
 import { Client, Intents } from "discord.js";
 import { Sylph } from './Sylph';
 import { ApiClient } from './backend/ApiClient';
 import * as commands from "./commands";
+import * as batch from "./batch";
 
 const phraseConfig = yaml.load(fs.readFileSync('src/resources/config.yaml', 'utf8'));
 const phraseRepository = new YamlPhraseRepository(phraseConfig as PhraseConfig);
@@ -50,5 +52,12 @@ bot.addMessageCommand(new commands.RegisterUncompleteMemberRoleCommand(phraseRep
 bot.addReactionCommand(new commands.ReportChallengeCommand(phraseRepository, apiClient));
 bot.addReactionCommand(new commands.ReportCarryOverCommand(phraseRepository, apiClient));
 bot.addReactionCommand(new commands.ReportTaskKillCommand(phraseRepository, apiClient));
+
+cron.schedule("0 5 * * *", () => {
+    const command = new batch.AddUncompleteMemberRoleBatch(apiClient, client);
+    command.execute().catch(console.log);
+}, {
+    timezone: "Asia/Tokyo",
+})
 
 bot.login(process.env.DISCORD_TOKEN).catch(error => console.log(error));

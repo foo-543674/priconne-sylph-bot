@@ -195,6 +195,10 @@ export class PhraseKey {
         return new PhraseKey('cannot_get_role_message');
     }
 
+    public static cannotUseCommandInDmMessage() {
+        return new PhraseKey('cannot_use_command_in_dm_message');
+    }
+
     public toString(): string {
         return this.value;
     }
