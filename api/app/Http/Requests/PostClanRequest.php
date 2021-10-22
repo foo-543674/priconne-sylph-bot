@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Sylph\VO\DiscordGuildId;
 
 class PostClanRequest extends FormRequest
 {
@@ -27,6 +28,7 @@ class PostClanRequest extends FormRequest
     {
         return [
             "clanName" => ["required", "string"],
+            "discordGuildId" => ["required", "string"],
         ];
     }
 
@@ -35,11 +37,17 @@ class PostClanRequest extends FormRequest
     {
         return [
             'clanName' => 'クラン名',
+            'discordGuildId' => 'DiscordのサーバーID',
         ];
     }
 
     public function getClanName(): string
     {
         return $this->input("clanName");
+    }
+
+    public function getDiscordGuildId(): DiscordGuildId
+    {
+        return new DiscordGuildId($this->input("discordGuildId"));
     }
 }

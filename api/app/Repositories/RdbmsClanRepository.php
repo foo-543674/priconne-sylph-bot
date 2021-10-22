@@ -46,6 +46,7 @@ class RdbmsClanRepository implements ClanRepository
         ModelsClan::create([
             "id" => $value->getId()->__toString(),
             "name" => $value->getName(),
+            "discord_guild_id" => $value->getDiscordGuildId()->__toString(),
         ]);
     }
 }

@@ -15,7 +15,7 @@ class PostClanController extends Controller
      */
     public function __invoke(AddClanUsecase $usecase, PostClanRequest $request)
     {
-        $result = $usecase->execute($request->getClanName());
+        $result = $usecase->execute($request->getClanName(), $request->getDiscordGuildId());
 
         return response()->json($result);
     }

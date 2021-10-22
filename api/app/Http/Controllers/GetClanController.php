@@ -32,6 +32,7 @@ class GetClanController extends Controller
                 ->map(fn (Clan $record) => [
                     'id' => $record->id,
                     'name' => $record->name,
+                    'discordGuildId' => $record->discord_guild_id,
                 ])
                 ->all()
         );
