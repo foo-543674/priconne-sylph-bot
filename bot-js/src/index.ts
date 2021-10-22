@@ -5,24 +5,7 @@ import { PhraseConfig } from "./support/PhraseConfig";
 import { Client, Intents } from "discord.js";
 import { Sylph } from './Sylph';
 import { ApiClient } from './backend/ApiClient';
-import {
-    HelpCommand,
-    RegisterClanCommand,
-    RegisterMembersCommand,
-    RegisterWebhookCommand,
-    CreateChallengeReportCommand,
-    CreateBossQuestionnaireCommand,
-    BossNotificationCommand,
-    ReportChallengeCommand,
-    ReportCarryOverCommand,
-    ReportTaskKillCommand,
-    GetBossQuestionnaireResultCommand,
-    PrepareDamageReportCommand,
-    RegisterUncompleteMemberRoleCommand,
-    CleanDamageReportCommand,
-    DamageReportCommand,
-    RegisterCooperateChannelCommand,
-} from "./commands";
+import * as commands from "./commands";
 
 const phraseConfig = yaml.load(fs.readFileSync('src/resources/config.yaml', 'utf8'));
 const phraseRepository = new YamlPhraseRepository(phraseConfig as PhraseConfig);
@@ -50,22 +33,22 @@ if (!(process.env.API_URI && process.env.API_KEY && process.env.DISCORD_TOKEN)) 
 const apiClient = new ApiClient(process.env.API_URI, process.env.API_KEY);
 
 const bot = new Sylph(client, phraseRepository);
-bot.addMessageCommand(new HelpCommand(phraseRepository, client));
-bot.addMessageCommand(new RegisterClanCommand(phraseRepository, client, apiClient));
-bot.addMessageCommand(new RegisterMembersCommand(phraseRepository, apiClient, client));
-bot.addMessageCommand(new RegisterWebhookCommand(phraseRepository, client, apiClient));
-bot.addMessageCommand(new CreateChallengeReportCommand(phraseRepository, client, apiClient));
-bot.addMessageCommand(new CreateBossQuestionnaireCommand(phraseRepository, client));
-bot.addMessageCommand(new BossNotificationCommand(phraseRepository, client));
-bot.addMessageCommand(new GetBossQuestionnaireResultCommand(phraseRepository, client));
-bot.addMessageCommand(new PrepareDamageReportCommand(phraseRepository, client, apiClient));
-bot.addMessageCommand(new DamageReportCommand(phraseRepository, client, apiClient));
-bot.addMessageCommand(new RegisterCooperateChannelCommand(phraseRepository, client, apiClient));
-bot.addMessageCommand(new CleanDamageReportCommand(phraseRepository, client, apiClient));
-bot.addMessageCommand(new RegisterUncompleteMemberRoleCommand(phraseRepository, client, apiClient));
+bot.addMessageCommand(new commands.HelpCommand(phraseRepository, client));
+bot.addMessageCommand(new commands.RegisterClanCommand(phraseRepository, client, apiClient));
+bot.addMessageCommand(new commands.RegisterMembersCommand(phraseRepository, apiClient, client));
+bot.addMessageCommand(new commands.RegisterWebhookCommand(phraseRepository, client, apiClient));
+bot.addMessageCommand(new commands.CreateChallengeReportCommand(phraseRepository, client, apiClient));
+bot.addMessageCommand(new commands.CreateBossQuestionnaireCommand(phraseRepository, client));
+bot.addMessageCommand(new commands.BossNotificationCommand(phraseRepository, client));
+bot.addMessageCommand(new commands.GetBossQuestionnaireResultCommand(phraseRepository, client));
+bot.addMessageCommand(new commands.PrepareDamageReportCommand(phraseRepository, client, apiClient));
+bot.addMessageCommand(new commands.DamageReportCommand(phraseRepository, client, apiClient));
+bot.addMessageCommand(new commands.RegisterCooperateChannelCommand(phraseRepository, client, apiClient));
+bot.addMessageCommand(new commands.CleanDamageReportCommand(phraseRepository, client, apiClient));
+bot.addMessageCommand(new commands.RegisterUncompleteMemberRoleCommand(phraseRepository, client, apiClient));
 
-bot.addReactionCommand(new ReportChallengeCommand(phraseRepository, apiClient));
-bot.addReactionCommand(new ReportCarryOverCommand(phraseRepository, apiClient));
-bot.addReactionCommand(new ReportTaskKillCommand(phraseRepository, apiClient));
+bot.addReactionCommand(new commands.ReportChallengeCommand(phraseRepository, apiClient));
+bot.addReactionCommand(new commands.ReportCarryOverCommand(phraseRepository, apiClient));
+bot.addReactionCommand(new commands.ReportTaskKillCommand(phraseRepository, apiClient));
 
 bot.login(process.env.DISCORD_TOKEN).catch(error => console.log(error));
