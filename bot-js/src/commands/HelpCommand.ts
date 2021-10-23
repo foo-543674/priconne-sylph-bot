@@ -26,6 +26,7 @@ export class HelpCommand implements MessageCommand {
         PhraseKey.helpMessageRegisterDamageReportChannel(),
         PhraseKey.helpMessageRegisterCoopreateChannel(),
         PhraseKey.helpMessageCleanDamageReport(),
+        PhraseKey.helpMessageRegisterUncompleteMemberRole(),
     ];
 
     isMatchTo(message: Message): Promise<boolean> {

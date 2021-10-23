@@ -199,6 +199,10 @@ export class PhraseKey {
         return new PhraseKey('cannot_use_command_in_dm_message');
     }
 
+    public static helpMessageRegisterUncompleteMemberRole() {
+        return new PhraseKey('help_message_register_uncomplete_member_role');
+    }
+
     public toString(): string {
         return this.value;
     }
