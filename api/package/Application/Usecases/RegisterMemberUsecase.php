@@ -57,7 +57,7 @@ class RegisterMemberUsecase
             $this->memberRepository->save($newMember);
         }
 
-        $this->memberRegisteredEvent->invoke(...$this->memberRepository->getAll());
+        $this->memberRegisteredEvent->invoke($clan, ...$this->memberRepository->getByClanId($clan->getId()));
 
         return $newMembers;
     }

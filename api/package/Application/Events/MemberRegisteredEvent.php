@@ -5,6 +5,7 @@ namespace Sylph\Application\Events;
 use Illuminate\Support\Facades\Log;
 use Sylph\Application\Gateway\WebHookServer;
 use Sylph\Entities\Activity;
+use Sylph\Entities\Clan;
 use Sylph\Entities\Member;
 use Sylph\Repositories\ActivityRepository;
 use Sylph\Repositories\ClanBattleRepository;
@@ -26,10 +27,8 @@ class MemberRegisteredEvent
         //
     }
 
-    public function invoke(Member ...$members)
+    public function invoke(Clan $clan, Member ...$members)
     {
-        $clan = $this->clanRepository->getByMemberId($members[0]->getId());
-
         $webHooks = $this->webHookRepository->getByClanId($clan->getId());
 
         foreach ($webHooks as $webHook) {
