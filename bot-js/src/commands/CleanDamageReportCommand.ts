@@ -59,7 +59,7 @@ export class CleanDamageReportCommand implements MessageCommand {
                     return targetBossNumber === bossNumber;
                 })
 
-            const memtion = targetMessages.map(m => `@<${m.author.id}`).join(',');
+            const memtion = targetMessages.map(m => `<@${m.author.id}>`).join(',');
 
             for (const targetMessage of targetMessages) {
                 if (targetMessage[1].author.id === this.discordClient.user?.id) continue;
@@ -70,7 +70,7 @@ export class CleanDamageReportCommand implements MessageCommand {
             }
             await sleep(500);
 
-            await message.channel.send(`${memtion}${this.phraseRepository.get(PhraseKey.bossKnockoutMessage())}`);
+            await message.channel.send(`${memtion}${targetBossNumber}${this.phraseRepository.get(PhraseKey.bossKnockoutMessage())}`);
         }
     }
 }

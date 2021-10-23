@@ -2,7 +2,7 @@ import { ApiClient } from '../backend/ApiClient';
 import { Batch } from './Batch';
 import { Client } from 'discord.js';
 import { sleep } from '../support/AsyncTimer';
-import dateFn from "date-fns"
+import { isToday } from "date-fns"
 
 export class AddUncompleteMemberRoleBatch implements Batch {
     constructor(
@@ -12,9 +12,10 @@ export class AddUncompleteMemberRoleBatch implements Batch {
 
     }
     public async execute() {
+        console.log("add uncomplete member role batch started")
         const clanBattle = await this.apiClient.getInSessionClanBattle();
         if (!clanBattle) return;
-        if (!clanBattle.dates.some(date => dateFn.isToday(new Date(date.date)))) return;
+        if (!clanBattle.dates.some(date => isToday(new Date(date.date)))) return;
 
         const clans = await this.apiClient.getClans();
 
@@ -31,7 +32,7 @@ export class AddUncompleteMemberRoleBatch implements Batch {
 
             const role = await this.apiClient.getUncompleteMemberRole(clan.id);
             if (!role) continue;
-            const discordRole = await discordGuild.roles.fetch(role.id);
+            const discordRole = await discordGuild.roles.fetch(role.role.discordRoleId);
             if (!discordRole) continue;
 
             for (const discordMember of discordMembers.values()) {
