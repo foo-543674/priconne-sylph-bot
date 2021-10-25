@@ -9,7 +9,7 @@ export class GetClanParamter {
         return [
             this.name ? `name=${this.name}` : '',
             this.discordUserId ? `discord_user_id=${this.discordUserId}` : '',
-            this.name ? `report_channel_id=${this.reportChannelId}` : '',
+            this.reportChannelId ? `report_channel_id=${this.reportChannelId}` : '',
         ].filter(Boolean).join('&');
     }
 }
