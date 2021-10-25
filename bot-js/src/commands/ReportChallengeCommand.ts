@@ -43,15 +43,15 @@ export class ReportChallengeCommand implements ReactionCommand {
         if (status.Challenge < 3) return;
 
         await pipe(
-            TaskOption.fromTask(async () => await this.apiClient.getClans(new GetClanParamter(undefined, undefined, reaction.message.channelId))),
+            TaskOption.fromTask(async () => { console.log("get clan"); return await this.apiClient.getClans(new GetClanParamter(undefined, undefined, reaction.message.channelId)) }),
             TaskOption.chainNullableK(clans => clans),
             TaskOption.chainNullableK(clans => clans.length === 0 ? null : clans[0]),
-            TaskOption.chainTaskK(clan => async () => await this.apiClient.getUncompleteMemberRole(clan.id)),
+            TaskOption.chainTaskK(clan => async () => { console.log("get target role"); return await this.apiClient.getUncompleteMemberRole(clan.id) }),
             TaskOption.chainNullableK(role => role),
-            TaskOption.chainTaskK(role => async () => await reaction.message.guild?.roles.fetch(role.role.discordRoleId)),
+            TaskOption.chainTaskK(role => async () => { console.log("get role from discord"); return await reaction.message.guild?.roles.fetch(role.role.discordRoleId) }),
             TaskOption.chainNullableK(role => role),
             TaskOption.chain(role => pipe(
-                TaskOption.fromTask(async () => await reaction.message.guild?.members.fetch(user.id)),
+                TaskOption.fromTask(async () => { console.log("get members"); return await reaction.message.guild?.members.fetch(user.id) }),
                 TaskOption.chainNullableK(member => member),
                 TaskOption.chainTaskK(member => async () => await member.roles.remove(role))
             ))
