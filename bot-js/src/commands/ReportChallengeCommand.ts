@@ -37,6 +37,7 @@ export class ReportChallengeCommand implements ReactionCommand {
         if (!status) return;
 
         const { since, until } = getRangeOfDate(parseISO(status.date));
+        console.log(status.date);
         console.log(since);
         console.log(until);
         console.log(this.dateTimeProvider.getLocalDateTime());
