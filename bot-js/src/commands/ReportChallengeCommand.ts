@@ -51,6 +51,8 @@ export class ReportChallengeCommand implements ReactionCommand {
             TaskOption.chainTaskK(role => async () => {
                 console.log("get role from discord");
                 console.log(reaction.message.guild?.name);
+                console.log(role.role.discordRoleId);
+                console.log(role.role.name);
                 const foo = await reaction.message.guild?.roles.fetch(role.role.discordRoleId)
                 console.log(foo?.name);
                 return foo;
