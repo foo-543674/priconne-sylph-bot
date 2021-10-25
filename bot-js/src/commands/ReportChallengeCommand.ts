@@ -37,6 +37,9 @@ export class ReportChallengeCommand implements ReactionCommand {
         if (!status) return;
 
         const { since, until } = getRangeOfDate(parseISO(status.date));
+        console.log(since);
+        console.log(until);
+        console.log(this.dateTimeProvider.getLocalDateTime());
         if (!isBetween(this.dateTimeProvider.getLocalDateTime(), since, until)) return;
 
         //NOTE: 3凸完了してない場合
