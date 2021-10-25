@@ -8,11 +8,13 @@ import { ReactionCommand } from './ReactionCommand';
 import * as TaskOption from 'fp-ts/lib/TaskOption';
 import { getRangeOfDate, isBetween } from '../support/DateCalculate';
 import { parseISO } from 'date-fns';
+import { LocalDateTimeProvider } from '../support/LocalDateProvider';
 
 export class ReportChallengeCommand implements ReactionCommand {
     constructor(
         private phraseRepository: PhraseRepository,
         private apiClient: ApiClient,
+        private dateTimeProvider: LocalDateTimeProvider,
     ) {
     }
 
@@ -35,7 +37,7 @@ export class ReportChallengeCommand implements ReactionCommand {
         if (!status) return;
 
         const { since, until } = getRangeOfDate(parseISO(status.date));
-        if (!isBetween(new Date(), since, until)) return;
+        if (!isBetween(this.dateTimeProvider.getLocalDateTime(), since, until)) return;
 
         //NOTE: 3凸完了してない場合
         if (status.Challenge < 3) return;

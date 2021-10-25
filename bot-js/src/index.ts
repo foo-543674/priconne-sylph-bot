@@ -8,6 +8,7 @@ import { Sylph } from './Sylph';
 import { ApiClient } from './backend/ApiClient';
 import * as commands from "./commands";
 import * as batch from "./batch";
+import { DateFnsLocalDateProvider } from './date-fns/DateFnsLocalDateProvider';
 
 const phraseConfig = yaml.load(fs.readFileSync('src/resources/config.yaml', 'utf8'));
 const phraseRepository = new YamlPhraseRepository(phraseConfig as PhraseConfig);
@@ -33,6 +34,7 @@ if (!(process.env.API_URI && process.env.API_KEY && process.env.DISCORD_TOKEN)) 
 }
 
 const apiClient = new ApiClient(process.env.API_URI, process.env.API_KEY);
+const localDateTimeProvider = new DateFnsLocalDateProvider(process.env.TZ ?? 'Asia/Tokyo');
 
 const bot = new Sylph(client, phraseRepository);
 bot.addMessageCommand(new commands.HelpCommand(phraseRepository, client));
@@ -49,7 +51,7 @@ bot.addMessageCommand(new commands.RegisterCooperateChannelCommand(phraseReposit
 bot.addMessageCommand(new commands.CleanDamageReportCommand(phraseRepository, client, apiClient));
 bot.addMessageCommand(new commands.RegisterUncompleteMemberRoleCommand(phraseRepository, client, apiClient));
 
-bot.addReactionCommand(new commands.ReportChallengeCommand(phraseRepository, apiClient));
+bot.addReactionCommand(new commands.ReportChallengeCommand(phraseRepository, apiClient, localDateTimeProvider));
 bot.addReactionCommand(new commands.ReportCarryOverCommand(phraseRepository, apiClient));
 bot.addReactionCommand(new commands.ReportTaskKillCommand(phraseRepository, apiClient));
 
