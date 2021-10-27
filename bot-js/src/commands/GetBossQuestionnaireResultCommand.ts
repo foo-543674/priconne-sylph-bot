@@ -55,7 +55,7 @@ export class GetBossQuestionnaireResultCommand implements MessageCommand {
                 TaskOption.chain(targetReaction => TaskOption.fromTask(async () => await targetReaction.users.fetch())),
                 TaskOption.map(users => users.filter(user => user.id !== this.discordClient.user?.id).map(user => user.id)),
                 TaskOption.chain(userIds => TaskOption.fromTask(async () => await messageChannel.guild.members.fetch({ user: userIds }))),
-                TaskOption.map(guildMembers => guildMembers.map(member => member.nickname)),
+                TaskOption.map(guildMembers => guildMembers.map(member => member.nickname ?? member.user.username)),
                 TaskOption.map(names => names.join("\n")),
             )),
             TaskOption.chain(messageText => TaskOption.fromTask(async () => await message.channel.send(messageText)))
