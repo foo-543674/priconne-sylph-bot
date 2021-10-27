@@ -60,6 +60,8 @@ export class CleanDamageReportCommand implements MessageCommand {
                 })
 
             const memtion = targetMessages.map(m => `<@${m.author.id}>`).join(',');
+            await message.channel.send(`${memtion}${targetBossNumber}${this.phraseRepository.get(PhraseKey.bossKnockoutMessage())}`);
+            await sleep(500);
 
             for (const targetMessage of targetMessages) {
                 if (targetMessage[1].author.id === this.discordClient.user?.id) continue;
@@ -68,9 +70,6 @@ export class CleanDamageReportCommand implements MessageCommand {
                 //NOTE: Discordのリミットに引っかかるので、1秒待機
                 await sleep(500);
             }
-            await sleep(500);
-
-            await message.channel.send(`${memtion}${targetBossNumber}${this.phraseRepository.get(PhraseKey.bossKnockoutMessage())}`);
         }
     }
 }
