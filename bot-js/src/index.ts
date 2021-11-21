@@ -50,6 +50,7 @@ bot.addMessageCommand(new commands.DamageReportCommand(phraseRepository, client,
 bot.addMessageCommand(new commands.RegisterCooperateChannelCommand(phraseRepository, client, apiClient));
 bot.addMessageCommand(new commands.CleanDamageReportCommand(phraseRepository, client, apiClient));
 bot.addMessageCommand(new commands.RegisterUncompleteMemberRoleCommand(phraseRepository, client, apiClient));
+bot.addMessageCommand(new commands.BossSubjugationCommand(phraseRepository, client, apiClient));
 
 bot.addReactionCommand(new commands.ReportChallengeCommand(phraseRepository, apiClient, localDateTimeProvider));
 bot.addReactionCommand(new commands.ReportCarryOverCommand(phraseRepository, apiClient));

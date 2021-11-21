@@ -203,6 +203,10 @@ export class PhraseKey {
         return new PhraseKey('help_message_register_uncomplete_member_role');
     }
 
+    public static bossSubjugation() {
+        return new PhraseKey("boss_subjugation");
+    }
+
     public toString(): string {
         return this.value;
     }

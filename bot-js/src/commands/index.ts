@@ -12,6 +12,7 @@ export { RegisterUncompleteMemberRoleCommand } from "./RegisterUncompleteMemberR
 export { CleanDamageReportCommand } from "./CleanDamageReportCommand";
 export { DamageReportCommand } from './DamageReportCommand';
 export { RegisterCooperateChannelCommand } from './RegisterCooperateChannelCommand';
+export { BossSubjugationCommand } from './BossSubjugationCommand';
 
 export { ReactionCommand } from "./ReactionCommand";
 export { ReportChallengeCommand } from "./ReportChallengeCommand";

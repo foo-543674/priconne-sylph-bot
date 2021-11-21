@@ -10,9 +10,10 @@ phrases:
   get_boss_questionnaire_result: (?<bossNumber>[1-5])(ボス)?に?行きたい人を?教えて
   create_damage_report: ここを\[(?<clanName>[\s\S]+)\]のダメージ報告場所にするよ
   in_process_damage_report: ^(?<bossNumber>[1-5])ボス( (?<memberName>.+))? 進行中( (?<comment>.*))?$
-  finished_damage_report: ^(?<bossNumber>[1-5])ボス( (?<memberName>.+))? (?<damage>[0-9]+)( (?<comment>.*))?$
+  finished_damage_report: ^(?<bossNumber>[1-5])(ボス)?( (?<memberName>.+))? (?<damage>[0-9]+)( (?<comment>.*))?$
   register_cooperate_channel: ここを\[(?<clanName>[\s\S]+)\]の連携チャンネルにするよ
-  clean_damage_report: (?<bossNumber>[1-5])ボスのダメージ報告を掃除して
+  clean_damage_report: (?<bossNumber>[1-5])(ボス)?のダメージ報告を掃除して
+  boss_subjugation: (?<bossNumber>[1-5])(ボス)?討伐
   register_uncomplete_member_role: \[(?<clanName>[\s\S]+)\]の凸未完了者のロールを登録して
   challenge_report_guide: |-
     凸をしたら回数に応じてスタンプを押してね。

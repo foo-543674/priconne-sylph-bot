@@ -9,13 +9,13 @@ import { sleep } from '../support/AsyncTimer';
 import { ConvertFullWidth } from '../support/MessageParser';
 import { PhraseKey } from '../support/PhraseKey';
 
-export class CleanDamageReportCommand implements MessageCommand {
+export class BossSubjugationCommand implements MessageCommand {
     constructor(
         private phraseRepository: PhraseRepository,
         private discordClient: Client,
         private apiClient: ApiClient,
     ) {
-        this.commandPattern = new RegExp(this.phraseRepository.get(PhraseKey.cleanDamageReport()));
+        this.commandPattern = new RegExp(this.phraseRepository.get(PhraseKey.bossSubjugation()));
     }
 
     private readonly commandPattern: RegExp;
@@ -33,7 +33,7 @@ export class CleanDamageReportCommand implements MessageCommand {
     }
 
     async execute(message: Message): Promise<void> {
-        console.log("start clean damage report command");
+        console.log("start boss subjugation command");
 
         const [targetBossNumber] = getGroupOf(this.commandPattern, message.cleanContent, "bossNumber");
 
@@ -58,6 +58,10 @@ export class CleanDamageReportCommand implements MessageCommand {
 
                     return targetBossNumber === bossNumber;
                 })
+
+            const memtion = targetMessages.map(m => `<@${m.author.id}>`).join(',');
+            await message.channel.send(`${memtion}${targetBossNumber}${this.phraseRepository.get(PhraseKey.bossKnockoutMessage())}`);
+            await sleep(500);
 
             for (const targetMessage of targetMessages) {
                 if (targetMessage[1].author.id === this.discordClient.user?.id) continue;
