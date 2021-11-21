@@ -207,6 +207,10 @@ export class PhraseKey {
         return new PhraseKey("boss_subjugation");
     }
 
+    public static helpMessageBossSubjugation() {
+        return new PhraseKey("help_message_boss_subjugation");
+    }
+
     public toString(): string {
         return this.value;
     }

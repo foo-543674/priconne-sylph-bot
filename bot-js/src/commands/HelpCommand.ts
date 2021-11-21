@@ -26,6 +26,7 @@ export class HelpCommand implements MessageCommand {
         PhraseKey.helpMessageRegisterDamageReportChannel(),
         PhraseKey.helpMessageRegisterCoopreateChannel(),
         PhraseKey.helpMessageCleanDamageReport(),
+        PhraseKey.helpMessageBossSubjugation(),
         PhraseKey.helpMessageRegisterUncompleteMemberRole(),
     ];
 
