@@ -61,7 +61,7 @@ class RegisterMemberUsecase
             $this->memberRepository->delete($member);
         }
 
-        $updatedMembers = Enumerable::from($syncResult->getContinuationMembers())->union($newMembers)->toList();
+        $updatedMembers = array_merge($syncResult->getContinuationMembers(), $newMembers);
         $this->memberRegisteredEvent->invoke($clan, ...$updatedMembers);
 
         return $updatedMembers;
