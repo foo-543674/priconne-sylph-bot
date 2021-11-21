@@ -53,4 +53,10 @@ class RdbmsMemberRepository implements MemberRepository
             "clan_id" => $member->getClanId()->__toString(),
         ]);
     }
+
+    /** {@inheritdoc} */
+    public function delete(Member $member): void
+    {
+        ModelsMember::destroy($member->getId()->__toString());
+    }
 }

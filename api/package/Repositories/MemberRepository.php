@@ -40,4 +40,9 @@ interface MemberRepository
      * メンバーを永続化する
      */
     public function save(Member $member): void;
+
+    /**
+     * メンバーを削除する
+     */
+    public function delete(Member $member): void;
 }

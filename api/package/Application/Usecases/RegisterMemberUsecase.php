@@ -8,9 +8,11 @@ use Sylph\Application\Support\ErrorIgnition;
 use Sylph\Application\Support\MessageKey;
 use Sylph\Application\Support\UlidGenerator;
 use Sylph\Domain\DiscordUser;
+use Sylph\Domain\MemberSynchronizeResult;
 use Sylph\Entities\Member;
 use Sylph\Repositories\ClanRepository;
 use Sylph\Repositories\MemberRepository;
+use Sylph\VO\ClanId;
 use Sylph\VO\MemberId;
 use YaLinqo\Enumerable;
 
@@ -41,11 +43,9 @@ class RegisterMemberUsecase
             $this->errorIgnition->throwValidationError(MessageKey::CLAN_IS_NOT_EXISTS, $clanName);
         }
 
-        $newMembers = Enumerable::from($users)
-            ->where(fn (DiscordUser $user) => is_null($this->memberRepository->getByClanIdAndDiscordId(
-                $clan->getId(),
-                $user->getId()
-            )))
+        $currentMembers = $this->memberRepository->getByClanId($clan->getId());
+        $syncResult = new MemberSynchronizeResult($users, $currentMembers);
+        $newMembers = Enumerable::from($syncResult->getNewMembers())
             ->select(fn (DiscordUser $user) => new Member(
                 new MemberId($this->ulidGenerator->generate()),
                 $user->getName(),
@@ -53,12 +53,17 @@ class RegisterMemberUsecase
                 $clan->getId(),
             ))
             ->toList();
-        foreach ($newMembers as $newMember) {
-            $this->memberRepository->save($newMember);
+
+        foreach ($newMembers as $member) {
+            $this->memberRepository->save($member);
+        }
+        foreach ($syncResult->getLeftMembers() as $member) {
+            $this->memberRepository->delete($member);
         }
 
-        $this->memberRegisteredEvent->invoke($clan, ...$this->memberRepository->getByClanId($clan->getId()));
+        $updatedMembers = Enumerable::from($syncResult->getContinuationMembers())->union($newMembers)->toList();
+        $this->memberRegisteredEvent->invoke($clan, ...$updatedMembers);
 
-        return $newMembers;
+        return $updatedMembers;
     }
 }
