@@ -42,7 +42,7 @@ bot.addMessageCommand(new commands.RegisterClanCommand(phraseRepository, client,
 bot.addMessageCommand(new commands.RegisterMembersCommand(phraseRepository, apiClient, client));
 bot.addMessageCommand(new commands.RegisterWebhookCommand(phraseRepository, client, apiClient));
 bot.addMessageCommand(new commands.CreateChallengeReportCommand(phraseRepository, client, apiClient));
-bot.addMessageCommand(new commands.CreateBossQuestionnaireCommand(phraseRepository, client));
+bot.addMessageCommand(new commands.CreateBossQuestionnaireCommand(phraseRepository, client, apiClient));
 bot.addMessageCommand(new commands.BossNotificationCommand(phraseRepository, client));
 bot.addMessageCommand(new commands.GetBossQuestionnaireResultCommand(phraseRepository, client));
 bot.addMessageCommand(new commands.PrepareDamageReportCommand(phraseRepository, client, apiClient));
