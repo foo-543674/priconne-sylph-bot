@@ -50,6 +50,9 @@ RUN apt update \
  && apt update \
  && apt install -y docker-ce
 
+RUN curl -L https://github.com/docker/compose/releases/download/v2.2.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose \
+ && chmod +x /usr/local/bin/docker-compose
+
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 RUN adduser ${USER} \
