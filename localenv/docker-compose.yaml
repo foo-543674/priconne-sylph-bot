@@ -7,34 +7,24 @@ services:
       POSTGRES_USER: app_user
       POSTGRES_PASSWORD: password
       POSTGRES_DB: sylph
-    tmpfs:
-      - /var/lib/postgresql/data
-    
-  nginx:
-    image: nginx:1.19-alpine
-    ports:
-      - "8080:80"
     volumes:
-      - "./nginx/api.conf:/etc/nginx/conf.d/api.conf"
-      - "unix_socket:/var/run/php-fpm"
+      - "./database:/var/lib/postgresql/data"
 
-  api:
-    build:
-      context: ..
-      dockerfile: localenv/api/Dockerfile 
-    volumes:
-      - "unix_socket:/var/run/php-fpm"
-      
-  bot:
-    build:
-      context: bot
-    volumes:
-      - "../bot:/var/app"
- 
+  cache:
+    image: redis
+    hostname: redis
+
+  redis_commander:
+    image: rediscommander/redis-commander
+    restart: always
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "8081:8081"
+    depends_on:
+      - cache
+
 networks:
   default:
     external:
       name: sylph
-
-volumes:
-  unix_socket:
