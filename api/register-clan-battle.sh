@@ -1,0 +1,1 @@
+curl -X POST -H "Content-Type: application/json" -H "X-Authorization: $API_KEY" -d '{"since":"2022-01-01", "until":"2022-01-05"}' http://localhost:8000/api/clan_battles
