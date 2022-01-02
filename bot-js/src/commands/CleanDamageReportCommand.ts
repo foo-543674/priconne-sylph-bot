@@ -5,7 +5,6 @@ import { ApiClient } from '../backend/ApiClient';
 import { mentionedToMe } from '../Sylph';
 import { getGroupOf } from '../support/RegexHelper';
 import { CooperateChannel } from '../entities/CooperateChannel';
-import { sleep } from '../support/AsyncTimer';
 import { ConvertFullWidth } from '../support/MessageParser';
 import { PhraseKey } from '../support/PhraseKey';
 
@@ -63,8 +62,6 @@ export class CleanDamageReportCommand implements MessageCommand {
                 if (targetMessage[1].author.id === this.discordClient.user?.id) continue;
                 await targetMessage[1].delete();
                 await this.apiClient.deleteDamageReport(channel.id, targetMessage[1].id);
-                //NOTE: Discordのリミットに引っかかるので、1秒待機
-                await sleep(500);
             }
         }
     }

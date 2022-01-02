@@ -1,7 +1,6 @@
 import { ApiClient } from '../backend/ApiClient';
 import { Batch } from './Batch';
 import { Client } from 'discord.js';
-import { sleep } from '../support/AsyncTimer';
 import { isToday } from "date-fns"
 
 export class AddUncompleteMemberRoleBatch implements Batch {
@@ -37,8 +36,6 @@ export class AddUncompleteMemberRoleBatch implements Batch {
 
             for (const discordMember of discordMembers.values()) {
                 discordMember.roles.add(discordRole);
-                //NOTE: DiscordAPIのレート回避
-                await sleep(500);
             }
         }
     }

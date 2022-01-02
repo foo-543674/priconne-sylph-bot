@@ -7,6 +7,7 @@ import { PhraseKey } from '../support/PhraseKey';
 import { ApiClient } from '../backend/ApiClient';
 import { pipe } from 'fp-ts/lib/function';
 import * as TaskOption from 'fp-ts/lib/TaskOption';
+import { roleMension } from '../support/Memtion';
 
 export class CreateBossQuestionnaireCommand implements MessageCommand {
     constructor(
@@ -44,7 +45,7 @@ export class CreateBossQuestionnaireCommand implements MessageCommand {
             TaskOption.chainNullableK(role => role),
             TaskOption.fold(
                 () => TaskOption.some(this.phraseRepository.get(PhraseKey.bossQuestionnaireMessage())),
-                role => TaskOption.some(`<@&${role.role.discordRoleId}> ${this.phraseRepository.get(PhraseKey.bossQuestionnaireMessage())}`)
+                role => TaskOption.some(`${roleMension(role.role.discordRoleId)} ${this.phraseRepository.get(PhraseKey.bossQuestionnaireMessage())}`)
             ),
             TaskOption.chainTaskK(messageText => () => message.channel.send(messageText)),
             TaskOption.chainTaskK(sentMessage => async () => {

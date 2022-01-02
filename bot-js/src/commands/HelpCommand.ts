@@ -2,7 +2,6 @@ import { Client, Message } from 'discord.js';
 import { MessageCommand } from './MessageCommand';
 import { PhraseRepository } from '../support/PhraseRepository';
 import { mentionedToMe } from '../Sylph';
-import { sleep } from '../support/AsyncTimer';
 import { PhraseKey } from '../support/PhraseKey';
 
 export class HelpCommand implements MessageCommand {
@@ -42,8 +41,6 @@ export class HelpCommand implements MessageCommand {
 
         console.log(message.cleanContent);
         for (const messageKey of this.messageKeys) {
-            //NOTE: Discordのリミットに引っかかるので、1秒待機
-            await sleep(1000)
             await message.channel.send(this.phraseRepository.get(messageKey));
         }
     }

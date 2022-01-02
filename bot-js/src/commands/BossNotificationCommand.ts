@@ -8,6 +8,7 @@ import { collectMessagesUntil, isTextChannel } from '../support/DiscordHelper';
 import { mentionedToMe } from '../Sylph';
 import { PhraseKey } from '../support/PhraseKey';
 import { toBossNumber } from '../entities/BossNumber';
+import { userMension } from '../support/Memtion';
 
 export class BossNotificationCommand implements MessageCommand {
     constructor(
@@ -53,7 +54,7 @@ export class BossNotificationCommand implements MessageCommand {
                     targetMessage => TaskOption.fromNullable(targetMessage.reactions.resolve(this.phraseRepository.get(PhraseKey.bossStamp(toBossNumber(bossNumber))))),
                 ),
                 TaskOption.chainTaskK(targetReaction => async () => await targetReaction.users.fetch()),
-                TaskOption.map(users => users.filter(user => user.id !== this.discordClient.user?.id).map(user => `<@${user.id}>`)),
+                TaskOption.map(users => users.filter(user => user.id !== this.discordClient.user?.id).map(user => userMension(user.id))),
                 TaskOption.map(userIds => userIds.join(",")),
                 TaskOption.map(mentionText => `${mentionText}${bossNumber}${this.phraseRepository.get(PhraseKey.bossNotifyMessage())}`),
             )),

@@ -5,9 +5,9 @@ import { ApiClient } from '../backend/ApiClient';
 import { mentionedToMe } from '../Sylph';
 import { getGroupOf } from '../support/RegexHelper';
 import { CooperateChannel } from '../entities/CooperateChannel';
-import { sleep } from '../support/AsyncTimer';
 import { ConvertFullWidth } from '../support/MessageParser';
 import { PhraseKey } from '../support/PhraseKey';
+import { userMension } from '../support/Memtion';
 
 export class BossSubjugationCommand implements MessageCommand {
     constructor(
@@ -59,16 +59,13 @@ export class BossSubjugationCommand implements MessageCommand {
                     return targetBossNumber === bossNumber;
                 })
 
-            const memtion = targetMessages.map(m => `<@${m.author.id}>`).join(',');
+            const memtion = targetMessages.map(m => userMension(m.author.id)).join(',');
             await message.channel.send(`${memtion}${targetBossNumber}${this.phraseRepository.get(PhraseKey.bossKnockoutMessage())}`);
-            await sleep(500);
 
             for (const targetMessage of targetMessages) {
                 if (targetMessage[1].author.id === this.discordClient.user?.id) continue;
                 await targetMessage[1].delete();
                 await this.apiClient.deleteDamageReport(channel.id, targetMessage[1].id);
-                //NOTE: Discordのリミットに引っかかるので、1秒待機
-                await sleep(500);
             }
         }
     }

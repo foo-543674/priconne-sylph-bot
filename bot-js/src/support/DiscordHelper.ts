@@ -1,5 +1,4 @@
 import { Message, TextBasedChannels, TextChannel } from "discord.js";
-import { sleep } from './AsyncTimer';
 
 export function isTextChannel(channel: TextBasedChannels): channel is TextChannel {
     return channel.type === "GUILD_TEXT";
@@ -7,8 +6,6 @@ export function isTextChannel(channel: TextBasedChannels): channel is TextChanne
 
 export async function collectMessagesUntil(channel: TextBasedChannels, limit: number, predicate?: (message: Message) => boolean) {
     const fetchAndAppendTo = async (list: Message[], limit: number, before?: string): Promise<Message[]> => {
-        // NOTE: Discord APIのレート制限回避のために0.5秒待機
-        await sleep(500);
         if (limit <= 0) {
             return list;
         }
