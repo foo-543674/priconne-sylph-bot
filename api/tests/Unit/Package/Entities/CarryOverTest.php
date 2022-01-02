@@ -13,7 +13,7 @@ use Ulid\Ulid;
 /**
  * @group domain
  */
-class CarryOverest extends \PHPUnit\Framework\TestCase
+class CarryOverTest extends \PHPUnit\Framework\TestCase
 {
     use MockeryPHPUnitIntegration;
 

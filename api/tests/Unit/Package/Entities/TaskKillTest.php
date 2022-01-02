@@ -13,7 +13,7 @@ use Ulid\Ulid;
 /**
  * @group domain
  */
-class TaskKillest extends \PHPUnit\Framework\TestCase
+class TaskKillTest extends \PHPUnit\Framework\TestCase
 {
     use MockeryPHPUnitIntegration;
 
