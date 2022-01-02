@@ -7,8 +7,8 @@ services:
       POSTGRES_USER: app_user
       POSTGRES_PASSWORD: password
       POSTGRES_DB: sylph
-    volumes:
-      - "./database:/var/lib/postgresql/data"
+    tmpfs:
+      - "/var/lib/postgresql/data"
 
   cache:
     image: redis
