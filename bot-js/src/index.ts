@@ -26,10 +26,9 @@ const client = new Client({
     ],
     partials: ["REACTION", "CHANNEL", "GUILD_MEMBER", "MESSAGE", "USER"],
     restTimeOffset: 300,
-    retryLimit: 3
+    retryLimit: 3,
+    restGlobalRateLimit: 3,
 });
-
-client.on("rateLimit", console.log);
 
 if (!(process.env.API_URI && process.env.API_KEY && process.env.DISCORD_TOKEN)) {
     throw Error("Environment variable DISCORD_TOKEN, API_URI, API_KEY required.");

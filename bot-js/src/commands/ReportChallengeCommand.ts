@@ -18,7 +18,7 @@ export class ReportChallengeCommand implements ReactionCommand {
     ) {
     }
 
-    async isMatchTo(reaction: MessageReaction): Promise<boolean> {
+    async isTarget(reaction: MessageReaction): Promise<boolean> {
         return await this.apiClient.hasReportMessage(reaction.message.id)
             && (
                 reaction.emoji.toString() === this.phraseRepository.get(PhraseKey.firstChallengeStamp())
@@ -28,6 +28,7 @@ export class ReportChallengeCommand implements ReactionCommand {
     }
 
     async executeForAdd(reaction: MessageReaction, user: User): Promise<void> {
+        if (!(await this.isTarget(reaction))) return;
         console.log("report challenge");
 
         await this.apiClient.reportChallenge(reaction.message.id, user.id);
@@ -59,6 +60,7 @@ export class ReportChallengeCommand implements ReactionCommand {
     }
 
     async executeForRemove(reaction: MessageReaction, user: User): Promise<void> {
+        if (!(await this.isTarget(reaction))) return;
         console.log("cancel challenge");
 
         await this.apiClient.cancelChallenge(reaction.message.id, user.id);

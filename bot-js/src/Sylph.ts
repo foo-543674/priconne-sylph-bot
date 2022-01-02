@@ -1,9 +1,17 @@
-import { Client, PartialMessageReaction, MessageReaction, PartialUser, User, Message, PartialMessage } from 'discord.js';
+import {
+    Client,
+    PartialMessageReaction,
+    MessageReaction,
+    PartialUser,
+    User,
+    Message,
+    PartialMessage
+} from "discord.js";
 import { MessageCommand } from "./commands/MessageCommand";
-import { ReactionCommand } from './commands/ReactionCommand';
-import { ValidationError } from './support/ValidationError';
-import { PhraseRepository } from './support/PhraseRepository';
-import { PhraseKey } from './support/PhraseKey';
+import { ReactionCommand } from "./commands/ReactionCommand";
+import { ValidationError } from "./support/ValidationError";
+import { PhraseRepository } from "./support/PhraseRepository";
+import { PhraseKey } from "./support/PhraseKey";
 
 function isPartialReaction(reaction: PartialMessageReaction | MessageReaction): reaction is PartialMessageReaction {
     return reaction.partial;
@@ -12,8 +20,7 @@ function isPartialReaction(reaction: PartialMessageReaction | MessageReaction): 
 async function toReaction(reaction: PartialMessageReaction | MessageReaction) {
     if (isPartialReaction(reaction)) {
         return await reaction.fetch();
-    }
-    else {
+    } else {
         return reaction;
     }
 }
@@ -25,8 +32,7 @@ function isPartialUser(user: PartialUser | User): user is PartialUser {
 async function toUser(user: PartialUser | User) {
     if (isPartialUser(user)) {
         return await user.fetch();
-    }
-    else {
+    } else {
         return user;
     }
 }
@@ -38,8 +44,7 @@ function isPartialMessage(message: PartialMessage | Message): message is Partial
 async function toMessage(message: PartialMessage | Message) {
     if (isPartialMessage(message)) {
         return await message.fetch();
-    }
-    else {
+    } else {
         return message;
     }
 }
@@ -54,12 +59,12 @@ export type DiscordMessage = PartialMessage | Message;
 
 export class Sylph {
     constructor(private client: Client, private phraseRepository: PhraseRepository) {
-        this.client.on('ready', c => console.log(`${c.user.username} logged in`));
+        this.client.on("ready", (c) => console.log(`${c.user.username} logged in`));
 
-        this.client.on('messageCreate', m => this.onMessageCreate(m));
-        this.client.on('messageUpdate', (old, updated) => this.onMessageUpdate(old, updated));
-        this.client.on('messageReactionAdd', (r, u) => this.onReactionAdd(r, u));
-        this.client.on('messageReactionRemove', (r, u) => this.onReactionRemove(r, u));
+        this.client.on("messageCreate", (m) => this.onMessageCreate(m));
+        this.client.on("messageUpdate", (old, updated) => this.onMessageUpdate(old, updated));
+        this.client.on("messageReactionAdd", (r, u) => this.onReactionAdd(r, u));
+        this.client.on("messageReactionRemove", (r, u) => this.onReactionRemove(r, u));
     }
 
     private messageCommands: MessageCommand[] = [];
@@ -81,11 +86,11 @@ export class Sylph {
         console.log("message received");
 
         try {
-            await Promise.all(this.messageCommands.map(async command => {
-                if (await command.isMatchTo(message)) {
+            await Promise.all(
+                this.messageCommands.map(async (command) => {
                     await command.execute(message);
-                }
-            }))
+                })
+            );
         } catch (error) {
             if (error instanceof ValidationError) {
                 await message.reply(error.message);
@@ -99,16 +104,14 @@ export class Sylph {
     protected async onMessageUpdate(_: DiscordMessage, newMessage: DiscordMessage) {
         console.log("message updated");
 
-        const [actualNewMessage] = await Promise.all([
-            toMessage(newMessage),
-        ]);
+        const [actualNewMessage] = await Promise.all([toMessage(newMessage)]);
 
         try {
-            await Promise.all(this.messageCommands.map(async command => {
-                if (await command.isMatchTo(actualNewMessage)) {
+            await Promise.all(
+                this.messageCommands.map(async (command) => {
                     await command.execute(actualNewMessage);
-                }
-            }))
+                })
+            );
         } catch (error) {
             if (error instanceof ValidationError) {
                 await actualNewMessage.reply(error.message);
@@ -120,10 +123,7 @@ export class Sylph {
     }
 
     protected async onReactionAdd(reaction: DiscordReaction, user: DiscordUser) {
-        const [actualReaction, actualUser] = await Promise.all([
-            toReaction(reaction),
-            toUser(user),
-        ]);
+        const [actualReaction, actualUser] = await Promise.all([toReaction(reaction), toUser(user)]);
 
         console.log("reaction received");
 
@@ -132,21 +132,18 @@ export class Sylph {
         }
 
         try {
-            await Promise.all(this.reactionCommands.map(async command => {
-                if (await command.isMatchTo(actualReaction)) {
+            await Promise.all(
+                this.reactionCommands.map(async (command) => {
                     await command.executeForAdd(actualReaction, actualUser);
-                }
-            }));
+                })
+            );
         } catch (error) {
             console.log(error);
         }
     }
 
     protected async onReactionRemove(reaction: DiscordReaction, user: DiscordUser) {
-        const [actualReaction, actualUser] = await Promise.all([
-            toReaction(reaction),
-            toUser(user),
-        ]);
+        const [actualReaction, actualUser] = await Promise.all([toReaction(reaction), toUser(user)]);
 
         console.log("reaction received");
 
@@ -155,11 +152,11 @@ export class Sylph {
         }
 
         try {
-            await Promise.all(this.reactionCommands.map(async command => {
-                if (await command.isMatchTo(actualReaction)) {
+            await Promise.all(
+                this.reactionCommands.map(async (command) => {
                     await command.executeForRemove(actualReaction, actualUser);
-                }
-            }));
+                })
+            );
         } catch (error) {
             console.log(error);
         }

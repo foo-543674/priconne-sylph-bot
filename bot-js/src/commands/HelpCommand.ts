@@ -29,14 +29,8 @@ export class HelpCommand implements MessageCommand {
         PhraseKey.helpMessageRegisterUncompleteMemberRole(),
     ];
 
-    isMatchTo(message: Message): Promise<boolean> {
-        return Promise.resolve(
-            this.commandPattern.test(message.cleanContent)
-            && mentionedToMe(message, this.discordClient)
-        );
-    }
-
     async execute(message: Message): Promise<void> {
+        if (!this.commandPattern.test(message.cleanContent) || !mentionedToMe(message, this.discordClient)) return;
         console.log("start help command");
 
         console.log(message.cleanContent);

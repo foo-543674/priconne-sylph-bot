@@ -4,7 +4,6 @@ import { PhraseRepository } from '../support/PhraseRepository';
 import { ApiClient } from '../backend/ApiClient';
 import { mentionedToMe } from '../Sylph';
 import { getGroupOf } from '../support/RegexHelper';
-import { CooperateChannel } from '../entities/CooperateChannel';
 import { ConvertFullWidth } from '../support/MessageParser';
 import { PhraseKey } from '../support/PhraseKey';
 
@@ -19,26 +18,19 @@ export class CleanDamageReportCommand implements MessageCommand {
 
     private readonly commandPattern: RegExp;
 
-    async isMatchTo(message: Message): Promise<boolean> {
-        if (await this.apiClient.getCooperateChannel(message.channel.id)) {
-            return (
-                this.commandPattern.test(message.cleanContent)
-                && mentionedToMe(message, this.discordClient)
-            );
-        }
-        else {
-            return false;
-        }
-    }
-
     async execute(message: Message): Promise<void> {
+        const cooperateChannel = await this.apiClient.getCooperateChannel(message.channel.id);
+        if (!cooperateChannel) return;
+
+        if (!this.commandPattern.test(message.cleanContent) || !mentionedToMe(message, this.discordClient)) {
+            return;
+        }
         console.log("start clean damage report command");
 
         const [targetBossNumber] = getGroupOf(this.commandPattern, message.cleanContent, "bossNumber");
 
         if (!targetBossNumber) return;
 
-        const cooperateChannel = await this.apiClient.getCooperateChannel(message.channel.id) as CooperateChannel;
         const damageReportChannels = await this.apiClient.getDamageReportChannels(cooperateChannel.clanId);
 
         if (damageReportChannels.length <= 0) {

@@ -1,21 +1,21 @@
-import { Client, Message } from 'discord.js';
-import { MessageCommand } from './MessageCommand';
-import { PhraseRepository } from '../support/PhraseRepository';
-import { ApiClient } from '../backend/ApiClient';
-import { ConvertFullWidth } from '../support/MessageParser';
-import { PhraseKey } from '../support/PhraseKey';
+import { Client, Message } from "discord.js";
+import { MessageCommand } from "./MessageCommand";
+import { PhraseRepository } from "../support/PhraseRepository";
+import { ApiClient } from "../backend/ApiClient";
+import { ConvertFullWidth } from "../support/MessageParser";
+import { PhraseKey } from "../support/PhraseKey";
 
 export class DamageReportCommand implements MessageCommand {
     constructor(
         private phraseRepository: PhraseRepository,
         private discordClient: Client,
-        private apiClient: ApiClient,
+        private apiClient: ApiClient
     ) {
         this.inProcessCommandPattern = new RegExp(this.phraseRepository.get(PhraseKey.inProcessDamageReport()));
         this.finishedCommandPattern = new RegExp(this.phraseRepository.get(PhraseKey.finishedDamageReport()));
         this.myReactions = [
             this.phraseRepository.get(PhraseKey.succeedReaction()),
-            this.phraseRepository.get(PhraseKey.failedReaction()),
+            this.phraseRepository.get(PhraseKey.failedReaction())
         ];
     }
 
@@ -23,23 +23,15 @@ export class DamageReportCommand implements MessageCommand {
     private readonly finishedCommandPattern: RegExp;
     private readonly myReactions: string[];
 
-    async isMatchTo(message: Message): Promise<boolean> {
-        if (message.author.id === this.discordClient.user?.id) {
-            return false;
-        }
-
-        if (await this.apiClient.getDamageReportChannel(message.channel.id)) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
     async execute(message: Message): Promise<void> {
+        if (message.author.id === this.discordClient.user?.id) return;
+
+        const damageReportChannel = await this.apiClient.getDamageReportChannel(message.channel.id);
+        if (!damageReportChannel) return;
+
         console.log("damage report command");
 
-        this.myReactions.forEach(emoji => {
+        this.myReactions.forEach((emoji) => {
             const targetReaction = message.reactions.resolve(emoji);
             if (targetReaction) {
                 targetReaction.remove();
@@ -49,7 +41,7 @@ export class DamageReportCommand implements MessageCommand {
         const actualContent = ConvertFullWidth(message.cleanContent);
 
         const matchToInProcess = this.inProcessCommandPattern.exec(actualContent);
-        const matchToFinished = this.finishedCommandPattern.exec(actualContent)
+        const matchToFinished = this.finishedCommandPattern.exec(actualContent);
 
         if (matchToInProcess) {
             await this.reportForInProcess(matchToInProcess, message);
@@ -77,7 +69,7 @@ export class DamageReportCommand implements MessageCommand {
             bossNumber,
             message.author.id,
             memberName,
-            comment,
+            comment
         );
 
         await message.react(this.phraseRepository.get(PhraseKey.succeedReaction()));
@@ -102,7 +94,7 @@ export class DamageReportCommand implements MessageCommand {
             message.author.id,
             memberName,
             damage,
-            comment,
+            comment
         );
 
         await message.react(this.phraseRepository.get(PhraseKey.succeedReaction()));
