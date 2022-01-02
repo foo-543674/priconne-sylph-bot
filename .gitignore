@@ -3,3 +3,5 @@ logs
 
 # VSCode auto generated
 /.vscode
+
+.DS_Store
