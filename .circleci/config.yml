@@ -38,7 +38,7 @@ jobs:
         api-key: API_HEROKU_KEY
     - push-to-heroku:
         directory: api
-    - run: heroku run php artisan migrate
+    - run: heroku run php artisan migrate --app ${HEROKU_APP_NAME}
     - set-heroku-env:
         app-name: BOT_APP_NAME
         api-key: BOT_HEROKU_KEY
