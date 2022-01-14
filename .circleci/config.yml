@@ -12,8 +12,8 @@ commands:
       api-key:
         type: env_var_name
     steps:
-    - run: echo 'export HEROKU_API_KEY="${<< parameters.api-key >>}"' >> $BASH_ENV
     - run: echo 'export HOROKU_APP_NAME="${<< parameters.app-name >>}"' >> $BASH_ENV
+    - run: echo 'export HEROKU_API_KEY="${<< parameters.api-key >>}"' >> $BASH_ENV
   push-to-heroku:
     description: deploy specific directory to heroku via git
     parameters:
@@ -31,6 +31,7 @@ jobs:
     - set-heroku-env:
         app-name: BOT_APP_NAME
         api-key: BOT_HEROKU_KEY
+    - run: echo $HEROKU_APP_NAME
     - run: heroku ps:scale worker=0 --app ${HEROKU_APP_NAME}
     - set-heroku-env:
         app-name: API_APP_NAME
