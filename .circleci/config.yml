@@ -31,7 +31,7 @@ jobs:
     - set-heroku-env:
         app-name: BOT_APP_NAME
         api-key: BOT_HEROKU_KEY
-    - run: heroku ps:scale worker=0
+    - run: heroku ps:scale worker=0 --app ${HEROKU_APP_NAME}
     - set-heroku-env:
         app-name: API_APP_NAME
         api-key: API_HEROKU_KEY
@@ -43,7 +43,7 @@ jobs:
         api-key: BOT_HEROKU_KEY
     - push-to-heroku:
         directory: bot-js
-    - run: heroku ps:scale worker=1
+    - run: heroku ps:scale worker=1 --app ${HEROKU_APP_NAME}
 
 workflows:
   version: 2
