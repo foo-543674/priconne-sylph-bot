@@ -9,10 +9,7 @@ phrases:
   boss_notification: (?<bossNumber>[1-5])(ボス)?に?行きたい人に通知して
   get_boss_questionnaire_result: (?<bossNumber>[1-5])(ボス)?に?行きたい人を?教えて
   create_damage_report: ここを\[(?<clanName>[\s\S]+)\]のダメージ報告場所にするよ
-  in_process_damage_report: ^(?<bossNumber>[1-5])ボス( (?<memberName>.+))? 進行中( (?<comment>.*))?$
-  finished_damage_report: ^(?<bossNumber>[1-5])(ボス)?( (?<memberName>.+))? (?<damage>[0-9]+)( (?<comment>.*))?$
   register_cooperate_channel: ここを\[(?<clanName>[\s\S]+)\]の連携チャンネルにするよ
-  clean_damage_report: (?<bossNumber>[1-5])(ボス)?のダメージ報告を掃除して
   boss_subjugation: (?<bossNumber>[1-5])(ボス)?討伐
   register_uncomplete_member_role: \[(?<clanName>[\s\S]+)\]の凸未完了者のロールを登録して
   challenge_report_guide: |-
@@ -59,18 +56,13 @@ phrases:
     ---------------------------------------------------------------------------
   help_message_register_damage_report_channel: |-
     コマンド : ここを[クラン名]のダメージ報告場所にするよ
-    概要 : コマンドを入力したチャンネルをダメージ報告場所に設定します。このチャンネルで送られたメッセージはダメージ報告として処理されます。
+    概要 : コマンドを入力したチャンネルをダメージ報告場所に設定します。凸宣言用のUIを提供します。
     使用例 : ここを[テストクラン]のダメージ報告場所にするよ
     ---------------------------------------------------------------------------
   help_message_register_coopreate_channel: |-
     コマンド : ここを[クラン名]の連携チャンネルにするよ
     概要 : コマンドを入力したチャンネルをクランの連携用チャンネルに設定します。連携用チャンネルで実行されたコマンドは指定したクランに対するアクションと認識されます。
     使用例 : ここを[テストクラン]の連携用チャンネルにするよ
-    ---------------------------------------------------------------------------
-  help_message_clean_damage_report: |-
-    コマンド : (1~5の番号)ボスのダメージ報告を掃除して
-    概要 : 指定したボスのダメージ報告を削除します。このコマンドは連携用チャンネルに設定したチャンネルでのみ有効です。掃除をするチャンネルはダメージ報告場所として設定されたチャンネルです。
-    使用例 : 1ボスのダメージ報告を掃除して
     ---------------------------------------------------------------------------
   help_message_boss_subjugation: |-
     コマンド : (1~5の番号)ボス討伐
@@ -93,19 +85,8 @@ phrases:
   boss_knockout_message: ボスが倒れたよ。
   create_damage_report_message: |
     このチャンネルをダメージ報告場所として設定するよ。
-    
-    凸をする直前にここで"(1~5)ボス 進行中"と入力してね。代理の場合は"(1~5)ボス 名前 進行中"と入力してね。
-    例：1ボス 進行中 or 2ボス ふー 進行中
-    
-    終了5秒前や、最後のUB発動直後等のキリのいいタイミングで止めたら、進行中メッセージを編集してダメージを報告してね。
-    ダメージの後は補足情報等のテキストを入力してね。
-    例：
-      1ボス 2000 5秒前 ニャルUBあり
-      2ボス ふー 1500 5s 打ち切り
-      3ボス 0 事故救援求
-    
-    各値の間にはスペースを入れてね。メンションはいらないよ。
-    🥺のリアクションがついたらメッセージの形式が間違ってるよ。上の例を参考に修正してね。
+    凸をするボスのボタンを押すと、凸宣言の作成案内が開始されるよ。
+    コメントを追記する場合は、作成された凸宣言に返信をしてね。
   cannot_get_role_message: ロールが見つからないよ。対象のロールに対してメンションをしてね。
   cannot_use_command_in_dm_message: このコマンドはダイレクトメッセージでは使えないよ。サーバー内のテキストチャンネルで実行してね。
   first_challenge_stamp: 1️⃣
@@ -121,3 +102,29 @@ phrases:
   3_boss_stamp: 3️⃣
   4_boss_stamp: 4️⃣
   5_boss_stamp: 5️⃣
+  interaction_delete_prompt: 削除してね。
+  open_damage_input_form_label: ダメージ入力
+  damage_input_form_message: ダメージを入力してね。
+  damage_input_0_label: "0"
+  damage_input_1_label: "1"
+  damage_input_2_label: "2"
+  damage_input_3_label: "3"
+  damage_input_4_label: "4"
+  damage_input_5_label: "5"
+  damage_input_6_label: "6"
+  damage_input_7_label: "7"
+  damage_input_8_label: "8"
+  damage_input_9_label: "9"
+  damage_input_back_label: "←"
+  damage_input_apply_label: "決定"
+  delete_damage_report_label: "削除"
+  in_process_damage_report_template: "{bossNumber}ボス 進行中"
+  confirmed_damage_report_template: "{bossNumber}ボス {damage}"
+  regular_challenge: "本凸"
+  carry_over: 持ち越し
+  boss: ボス
+  nowloading_message: 処理中...
+  challenger_select_place_holder: 代理報告の時は、凸者を選択してね
+  start_challenge_prompt_template: "{bossNumber}ボスに凸するよ。"
+  challenging_boss_select_place_holder: 凸するボスを選んでね
+  in_deleting_message: "削除中"

@@ -5,6 +5,7 @@ namespace Sylph\Repositories;
 use Sylph\Entities\DamageReport;
 use Sylph\VO\DamageReportId;
 use Sylph\VO\DiscordChannelId;
+use Sylph\VO\DiscordInteractionAppId;
 use Sylph\VO\DiscordMessageId;
 
 /**

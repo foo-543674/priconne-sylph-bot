@@ -4,11 +4,33 @@ import cron from "node-cron";
 import { YamlPhraseRepository } from "./yaml/YamlPhraseRepository";
 import { PhraseConfig } from "./support/PhraseConfig";
 import { Client, Intents } from "discord.js";
-import { Sylph } from "./Sylph";
 import { ApiClient } from "./backend/ApiClient";
-import * as commands from "./commands";
 import * as batch from "./batch";
 import { DateFnsLocalDateProvider } from "./date-fns/DateFnsLocalDateProvider";
+import { MessageEventHandler } from "./MessageEventHandler";
+import { ReactionEventHandler } from "./ReactionEventHandler";
+import { InteractionEventHandler } from "./InteractionEventHandler";
+import { DamageInputCommand } from "./commands/interaction/DamageInputCommand";
+import { ReportTaskKillCommand } from "./commands/reaction/ReportTaskKillCommand";
+import { ReportCarryOverCommand } from "./commands/reaction/ReportCarryOverCommand";
+import { ReportChallengeCommand } from "./commands/reaction/ReportChallengeCommand";
+import { BossSubjugationCommand } from "./commands/message/BossSubjugationCommand";
+import { RegisterUncompleteMemberRoleCommand } from "./commands/message/RegisterUncompleteMemberRoleCommand";
+import { RegisterCooperateChannelCommand } from "./commands/message/RegisterCooperateChannelCommand";
+import { AddCommentToDamageReportCommand } from "./commands/message/AddCommentToDamageReportCommand";
+import { PrepareDamageReportCommand } from "./commands/message/PrepareDamageReportCommand";
+import { GetBossQuestionnaireResultCommand } from "./commands/message/GetBossQuestionnaireResultCommand";
+import { BossNotificationCommand } from "./commands/message/BossNotificationCommand";
+import { CreateBossQuestionnaireCommand } from "./commands/message/CreateBossQuestionnaireCommand";
+import { CreateChallengeReportCommand } from "./commands/message/CreateChallengeReportCommand";
+import { RegisterWebhookCommand } from "./commands/message/RegisterWebhookCommand";
+import { RegisterMembersCommand } from "./commands/message/RegisterMembersCommand";
+import { RegisterClanCommand } from "./commands/message/RegisterClanCommand";
+import { HelpCommand } from "./commands/message/HelpCommand";
+import { BossSelectButtonCommand } from "./commands/interaction/BossSelectButtonCommand";
+import { ChallengerSelectMenuCommand } from "./commands/interaction/ChallengerSelectMenuCommand";
+import { StartChallengeCommand } from "./commands/interaction/StartChallengeCommand";
+import { DeleteDamageReportCommand } from "./commands/interaction/DeleteDamageReportCommand";
 
 const phraseConfig = yaml.load(fs.readFileSync("src/resources/config.yaml", "utf8"));
 const phraseRepository = new YamlPhraseRepository(phraseConfig as PhraseConfig);
@@ -27,7 +49,7 @@ const client = new Client({
     partials: ["REACTION", "CHANNEL", "GUILD_MEMBER", "MESSAGE", "USER"],
     restTimeOffset: 300,
     retryLimit: 3,
-    restGlobalRateLimit: 3,
+    restGlobalRateLimit: 3
 });
 
 if (!(process.env.API_URI && process.env.API_KEY && process.env.DISCORD_TOKEN)) {
@@ -37,25 +59,41 @@ if (!(process.env.API_URI && process.env.API_KEY && process.env.DISCORD_TOKEN)) 
 const apiClient = new ApiClient(process.env.API_URI, process.env.API_KEY);
 const localDateTimeProvider = new DateFnsLocalDateProvider(process.env.TZ ?? "Asia/Tokyo");
 
-const bot = new Sylph(client, phraseRepository);
-bot.addMessageCommand(new commands.HelpCommand(phraseRepository, client));
-bot.addMessageCommand(new commands.RegisterClanCommand(phraseRepository, client, apiClient));
-bot.addMessageCommand(new commands.RegisterMembersCommand(phraseRepository, apiClient, client));
-bot.addMessageCommand(new commands.RegisterWebhookCommand(phraseRepository, client, apiClient));
-bot.addMessageCommand(new commands.CreateChallengeReportCommand(phraseRepository, client, apiClient));
-bot.addMessageCommand(new commands.CreateBossQuestionnaireCommand(phraseRepository, client, apiClient));
-bot.addMessageCommand(new commands.BossNotificationCommand(phraseRepository, client));
-bot.addMessageCommand(new commands.GetBossQuestionnaireResultCommand(phraseRepository, client));
-bot.addMessageCommand(new commands.PrepareDamageReportCommand(phraseRepository, client, apiClient));
-bot.addMessageCommand(new commands.DamageReportCommand(phraseRepository, client, apiClient));
-bot.addMessageCommand(new commands.RegisterCooperateChannelCommand(phraseRepository, client, apiClient));
-bot.addMessageCommand(new commands.CleanDamageReportCommand(phraseRepository, client, apiClient));
-bot.addMessageCommand(new commands.RegisterUncompleteMemberRoleCommand(phraseRepository, client, apiClient));
-bot.addMessageCommand(new commands.BossSubjugationCommand(phraseRepository, client, apiClient));
+const messaegEventHandler = new MessageEventHandler(
+    [
+        new HelpCommand(phraseRepository, client),
+        new RegisterClanCommand(phraseRepository, client, apiClient),
+        new RegisterMembersCommand(phraseRepository, apiClient, client),
+        new RegisterWebhookCommand(phraseRepository, client, apiClient),
+        new CreateChallengeReportCommand(phraseRepository, client, apiClient),
+        new CreateBossQuestionnaireCommand(phraseRepository, client, apiClient),
+        new BossNotificationCommand(phraseRepository, client),
+        new GetBossQuestionnaireResultCommand(phraseRepository, client),
+        new PrepareDamageReportCommand(phraseRepository, client, apiClient),
+        new AddCommentToDamageReportCommand(apiClient, phraseRepository, client),
+        new RegisterCooperateChannelCommand(phraseRepository, client, apiClient),
+        new RegisterUncompleteMemberRoleCommand(phraseRepository, client, apiClient),
+        new BossSubjugationCommand(phraseRepository, client, apiClient)
+    ],
+    phraseRepository
+);
+messaegEventHandler.listen(client);
 
-bot.addReactionCommand(new commands.ReportChallengeCommand(phraseRepository, apiClient, localDateTimeProvider));
-bot.addReactionCommand(new commands.ReportCarryOverCommand(phraseRepository, apiClient));
-bot.addReactionCommand(new commands.ReportTaskKillCommand(phraseRepository, apiClient));
+const reactionEventHandler = new ReactionEventHandler([
+    new ReportChallengeCommand(phraseRepository, apiClient, localDateTimeProvider),
+    new ReportCarryOverCommand(phraseRepository, apiClient),
+    new ReportTaskKillCommand(phraseRepository, apiClient)
+]);
+reactionEventHandler.listen(client);
+
+const interactionEventHandler = new InteractionEventHandler([
+    new BossSelectButtonCommand(apiClient, phraseRepository),
+    new ChallengerSelectMenuCommand(apiClient, phraseRepository),
+    new StartChallengeCommand(apiClient, phraseRepository),
+    new DamageInputCommand(phraseRepository, apiClient),
+    new DeleteDamageReportCommand(apiClient)
+]);
+interactionEventHandler.listen(client);
 
 cron.schedule(
     "0 5 * * *",
@@ -68,4 +106,5 @@ cron.schedule(
     }
 );
 
-bot.login(process.env.DISCORD_TOKEN).catch((error) => console.log(error));
+client.on("ready", (c) => console.log(`${c.user.username} logged in`));
+client.login(process.env.DISCORD_TOKEN).catch((error) => console.log(error));

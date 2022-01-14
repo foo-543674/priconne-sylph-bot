@@ -1,7 +1,7 @@
-import { BossNumber } from '../entities/BossNumber';
+import { BossNumber } from "../entities/BossNumber";
 
 export class PhraseKey {
-    private constructor(private value: string) { }
+    private constructor(private value: string) {}
 
     public static botName() {
         return new PhraseKey("bot_name");
@@ -43,20 +43,8 @@ export class PhraseKey {
         return new PhraseKey("create_damage_report");
     }
 
-    public static inProcessDamageReport() {
-        return new PhraseKey("in_process_damage_report");
-    }
-
-    public static finishedDamageReport() {
-        return new PhraseKey("finished_damage_report");
-    }
-
     public static registerCooperateChannel() {
         return new PhraseKey("register_cooperate_channel");
-    }
-
-    public static cleanDamageReport() {
-        return new PhraseKey("clean_damage_report");
     }
 
     public static challengeReportGuide() {
@@ -105,10 +93,6 @@ export class PhraseKey {
 
     public static helpMessageRegisterCoopreateChannel() {
         return new PhraseKey("help_message_register_coopreate_channel");
-    }
-
-    public static helpMessageCleanDamageReport() {
-        return new PhraseKey("help_message_clean_damage_report");
     }
 
     public static daysUnit() {
@@ -184,23 +168,23 @@ export class PhraseKey {
     }
 
     public static bossKnockoutMessage() {
-        return new PhraseKey('boss_knockout_message');
+        return new PhraseKey("boss_knockout_message");
     }
 
     public static registerUncompleteMemberRole() {
-        return new PhraseKey('register_uncomplete_member_role');
+        return new PhraseKey("register_uncomplete_member_role");
     }
 
     public static cannotGetRoleMessage() {
-        return new PhraseKey('cannot_get_role_message');
+        return new PhraseKey("cannot_get_role_message");
     }
 
     public static cannotUseCommandInDmMessage() {
-        return new PhraseKey('cannot_use_command_in_dm_message');
+        return new PhraseKey("cannot_use_command_in_dm_message");
     }
 
     public static helpMessageRegisterUncompleteMemberRole() {
-        return new PhraseKey('help_message_register_uncomplete_member_role');
+        return new PhraseKey("help_message_register_uncomplete_member_role");
     }
 
     public static bossSubjugation() {
@@ -209,6 +193,74 @@ export class PhraseKey {
 
     public static helpMessageBossSubjugation() {
         return new PhraseKey("help_message_boss_subjugation");
+    }
+
+    public static openDamageInputFormLabel() {
+        return new PhraseKey("open_damage_input_form_label");
+    }
+
+    public static interactionDeletePrompt() {
+        return new PhraseKey("interaction_delete_prompt");
+    }
+
+    public static damageInputFormMessage() {
+        return new PhraseKey("damage_input_form_message");
+    }
+
+    public static damageInputLabel(num: number) {
+        return new PhraseKey(`damage_input_${num}_label`);
+    }
+
+    public static damageInputBackLabel() {
+        return new PhraseKey("damage_input_back_label");
+    }
+
+    public static damageInputApplyLabel() {
+        return new PhraseKey("damage_input_apply_label");
+    }
+
+    public static deleteDamageReportLabel() {
+        return new PhraseKey("delete_damage_report_label");
+    }
+
+    public static inProcessDamageReportTemplate() {
+        return new PhraseKey("in_process_damage_report_template");
+    }
+
+    public static confirmedDamageReportTemplate() {
+        return new PhraseKey("confirmed_damage_report_template");
+    }
+
+    public static regularChallenge() {
+        return new PhraseKey("regular_challenge");
+    }
+
+    public static carryOver() {
+        return new PhraseKey("carry_over");
+    }
+
+    public static boss() {
+        return new PhraseKey("boss");
+    }
+
+    public static nowloadingMessage() {
+        return new PhraseKey("nowloading_message");
+    }
+
+    public static challengerSelectPlaceHolder() {
+        return new PhraseKey("challenger_select_place_holder");
+    }
+
+    public static startChallengePromptTemplate() {
+        return new PhraseKey("start_challenge_prompt_template");
+    }
+
+    public static challengingBossSelectPlaceHolder() {
+        return new PhraseKey("challenging_boss_select_place_holder");
+    }
+
+    public static inDeletingMessage(){
+        return new PhraseKey("in_deleting_message");
     }
 
     public toString(): string {

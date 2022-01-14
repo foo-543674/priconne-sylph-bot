@@ -9,6 +9,7 @@ import { Member } from "../entities/Member";
 import { UncompleteMemberRole } from "../entities/UncompleteMemberRole";
 import { ActivityStatus } from "../entities/ActivityStatus";
 import { GetClanParamter } from "./GetClanParameter";
+import { DamageReport, DamageReportDto } from "../entities/DamageReport";
 
 function isAxiosError(error: any): error is AxiosError {
     return !!error.isAxiosError;
@@ -16,6 +17,22 @@ function isAxiosError(error: any): error is AxiosError {
 
 export type ApiOption = {
     retryCount: number;
+};
+
+type DamageReportQuery = {
+    messageid?: string;
+    applicationId?: string;
+};
+
+type DamageReportRequestBody = {
+    messageId: string;
+    channelId: string;
+    applicationId: string;
+    discordUserId: string;
+    bossNumber: number;
+    damage?: number | null;
+    isCarryOver?: boolean;
+    comment?: string;
 };
 
 export class ApiClient {
@@ -109,52 +126,19 @@ export class ApiClient {
         return await this.getList<DamageReportChannel>(`/api/damage_report_channels?clan_id=${clanId}`);
     }
 
-    public async postInProcessDamageReport(
-        channelId: string,
-        messageId: string,
-        bossNumber: number,
-        discordUserId: string | null,
-        memberName: string | null,
-        comment: string
-    ) {
-        return await this.post("/api/damage_reports/in_process", {
-            discordChannelId: channelId,
-            discordMessageId: messageId,
-            bossNumber: bossNumber,
-            comment: comment,
-            ...(memberName
-                ? {
-                      memberName: memberName
-                  }
-                : {
-                      discordUserId: discordUserId
-                  })
-        });
-    }
-
-    public async postFinishedDamageReport(
-        channelId: string,
-        messageId: string,
-        bossNumber: number,
-        discordUserId: string | null,
-        memberName: string | null,
-        damage: number,
-        comment: string
-    ) {
-        return await this.post("/api/damage_reports/finished", {
-            discordChannelId: channelId,
-            discordMessageId: messageId,
-            bossNumber: bossNumber,
-            damage: damage,
-            comment: comment,
-            ...(memberName
-                ? {
-                      memberName: memberName
-                  }
-                : {
-                      discordUserId: discordUserId
-                  })
-        });
+    public async postDamageReport(value: DamageReportRequestBody): Promise<DamageReport> {
+        return DamageReport.fromDto(
+            await this.post<DamageReportDto>("/api/damage_reports", {
+                discordChannelId: value.channelId,
+                discordMessageId: value.messageId,
+                discordInteractionAppId: value.applicationId,
+                bossNumber: value.bossNumber,
+                comment: value.comment ?? "",
+                isCarryOver: value.isCarryOver ?? false,
+                discordUserId: value.discordUserId,
+                ...(value.damage ? { damage: value.damage } : {})
+            })
+        );
     }
 
     public async deleteDamageReport(channelId: string, messageId: string) {
@@ -194,6 +178,19 @@ export class ApiClient {
 
     public async getActivityStatus(messageId: string, userId: string): Promise<ActivityStatus | null> {
         return await this.getSingle<ActivityStatus>(`/api/activities/messages/${messageId}/users/${userId}`);
+    }
+
+    public async getDamageReports(channelId: string, query?: DamageReportQuery): Promise<DamageReport[]> {
+        const queryString = [
+            query && query.messageid ? `discord_message_id=${query.messageid}` : "",
+            query && query.applicationId ? `discord_application_id=${query.applicationId}` : ""
+        ]
+            .filter((q) => q !== "")
+            .join("&");
+
+        return (await this.getList<DamageReportDto>(`/api/damage_reports/${channelId}?${queryString}`)).map((dto) =>
+            DamageReport.fromDto(dto)
+        );
     }
 
     protected async exists(path: string, config?: AxiosRequestConfig, retriedCount: number = 0): Promise<boolean> {

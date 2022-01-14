@@ -17,11 +17,12 @@
     "axios": "^0.21.1",
     "date-fns": "^2.25.0",
     "date-fns-tz": "^1.1.6",
-    "discord.js": "^13.1.0",
+    "discord.js": "^13.5.0",
     "fp-ts": "^2.11.1",
     "js-yaml": "^4.1.0",
     "node-cron": "^3.0.0",
-    "typed-signals": "^2.3.0"
+    "typed-signals": "^2.3.0",
+    "typescript-string-operations": "^1.4.1"
   },
   "devDependencies": {
     "@types/js-yaml": "^4.0.3",

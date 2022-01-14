@@ -10,6 +10,7 @@ use App\Http\Controllers\GetClanController;
 use App\Http\Controllers\GetCooperateChannelController;
 use App\Http\Controllers\GetDamageReportChannelController;
 use App\Http\Controllers\GetDamageReportChannelListController;
+use App\Http\Controllers\GetDamageReportController;
 use App\Http\Controllers\GetMemberController;
 use App\Http\Controllers\GetReportMessageController;
 use App\Http\Controllers\GetUncompleteMemberRoleController;
@@ -20,6 +21,7 @@ use App\Http\Controllers\PostClanBattleController;
 use App\Http\Controllers\PostClanController;
 use App\Http\Controllers\PostCooperateChannelController;
 use App\Http\Controllers\PostDamageReportChannelController;
+use App\Http\Controllers\PostDamageReportController;
 use App\Http\Controllers\PostFinishedDamageReportController;
 use App\Http\Controllers\PostInProcessDamageReportController;
 use App\Http\Controllers\PostMemberController;
@@ -74,8 +76,8 @@ Route::middleware("auth.apikey")->group(function () {
         Route::get("/{discordChannelId}", GetCooperateChannelController::class)->name("get.cooperate_channels");
     });
     Route::prefix("/damage_reports")->group(function () {
-        Route::post("/in_process", PostInProcessDamageReportController::class)->name("post.in_process_damage_reports");
-        Route::post("/finished", PostFinishedDamageReportController::class)->name("post.finished_damage_reports");
+        Route::post("/", PostDamageReportController::class)->name("post.damage_reports");
+        Route::get("/{discordChannelId}", GetDamageReportController::class)->name("get.damage_reports");
         Route::delete("/{discordChannelId}/{discordMessageId}", DeleteDamageReportController::class)->name("delete.damage_reports");
     });
     Route::prefix("/uncomplete_member_role")->group(function () {

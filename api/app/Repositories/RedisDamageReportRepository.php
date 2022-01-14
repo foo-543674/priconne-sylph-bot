@@ -2,25 +2,29 @@
 
 namespace App\Repositories;
 
-use Illuminate\Support\Facades\Redis;
-use Sylph\Entities\DamageReport;
-use Sylph\Entities\FinishedDamageReport;
-use Sylph\Entities\InProcessDamageReport;
-use Sylph\Repositories\DamageReportRepository;
+use YaLinqo\Enumerable;
+use App\Support\UlidGenerator;
 use Sylph\VO\DiscordChannelId;
 use Sylph\VO\DiscordMessageId;
-use YaLinqo\Enumerable;
+use Sylph\Entities\DamageReport;
+use App\Repositories\DamageReportKey;
+use Illuminate\Support\Facades\Redis;
+use Sylph\Repositories\DamageReportRepository;
 
 class RedisDamageReportRepository implements DamageReportRepository
 {
-    private const KEY_PREFIX = "damage-report";
     private const BATTLE_TIME_OUT_LIMIT_SECOND = 60 * 60;
     private const KEY_EXPIRE_SECOND = self::BATTLE_TIME_OUT_LIMIT_SECOND + 30 * 60;
+
+    public function __construct(private UlidGenerator $ulidGenerator)
+    {
+        //
+    }
 
     /** {@inheritdoc} */
     public function getAll()
     {
-        $keys = Redis::keys(self::generateKey());
+        $keys = Redis::keys(DamageReportKey::createAllReportFilter());
         return Enumerable::from($keys)
             ->select(fn (string $key) => Redis::get($key))
             ->where(fn (mixed $value) => !is_null($value))
@@ -31,7 +35,7 @@ class RedisDamageReportRepository implements DamageReportRepository
     /** {@inheritdoc} */
     public function getByChannelId(DiscordChannelId $channelId)
     {
-        $keys = Redis::keys(self::generateKey($channelId));
+        $keys = Redis::keys(DamageReportKey::createChannelFilter($channelId));
         return Enumerable::from($keys)
             ->select(fn (string $key) => Redis::get($key))
             ->where(fn (mixed $value) => !is_null($value))
@@ -42,56 +46,33 @@ class RedisDamageReportRepository implements DamageReportRepository
     /** {@inheritdoc} */
     public function getByMessageId(DiscordChannelId $channelId, DiscordMessageId $messageId): ?DamageReport
     {
-        $key = self::generateKey($channelId, $messageId);
-        $value = Redis::get($key);
-
-        if (is_null($value)) {
-            return null;
-        } else {
-            return $this->parseJson($value);
-        }
+        $keys = Redis::keys(DamageReportKey::createChannelFilter($channelId));
+        /** @var DamageReport[] $reports */
+        return Enumerable::from($keys)
+            ->select(fn (string $key) => Redis::get($key))
+            ->where(fn (mixed $value) => !is_null($value))
+            ->select(fn (string $value) => $this->parseJson($value))
+            ->firstOrDefault(predicate: fn(DamageReport $report) => $messageId->equals($report->getMessageId()));
     }
 
     /** {@inheritdoc} */
     public function save(DamageReport $value): void
     {
-        $key = self::generateKey($value->getChannelId(), $value->getMessageId());
-        Redis::set($key, json_encode($value, JSON_UNESCAPED_UNICODE));
-        Redis::expire($key, self::KEY_EXPIRE_SECOND);
+        $key = new DamageReportKey($value->getChannelId(), $value->getId());
+        Redis::set($key->__toString(), json_encode($value, JSON_UNESCAPED_UNICODE));
+        Redis::expire($key->__toString(), self::KEY_EXPIRE_SECOND);
     }
 
     /** {@inheritdoc} */
     public function delete(DamageReport $value): void
     {
-        $key = self::generateKey($value->getChannelId(), $value->getMessageId());
-        Redis::del($key);
+        $key = new DamageReportKey($value->getChannelId(), $value->getId());
+        Redis::del($key->__toString());
     }
 
     protected function parseJson(string $json): DamageReport
     {
         $decoded = json_decode($json, true);
-        switch ($decoded['isInProcess']) {
-            case true:
-                return InProcessDamageReport::fromJson($decoded);
-            case false:
-                return FinishedDamageReport::fromJson($decoded);
-        }
-    }
-
-    protected static function generateKey(DiscordChannelId $channelId = null, DiscordMessageId $messageId = null): string
-    {
-        $base = self::KEY_PREFIX . "-";
-
-        if (is_null($channelId)) {
-            return $base . "*";
-        }
-
-        $hasChannelKey = $base . $channelId->__toString() . "-";
-
-        if (is_null($messageId)) {
-            return $hasChannelKey . "*";
-        }
-
-        return $hasChannelKey . $messageId->__toString();
+        return DamageReport::fromJson($decoded);
     }
 }
