@@ -2,11 +2,17 @@ import { SelectMenuInteraction } from "discord.js";
 import { ApiClient } from "../../backend/ApiClient";
 import { PhraseRepository } from "../../support/PhraseRepository";
 import { PhraseKey } from "../../support/PhraseKey";
-import { SelectMenuInteractionCommand, SelectMenuInteractionKey, selectMenu } from "./SelectMenuInteractionCommand";
+import {
+    SelectMenuInteractionCommand,
+    SelectMenuInteractionKey,
+    selectMenu,
+    SELECT_MENU_OPTIONS_LIMIT
+} from "./SelectMenuInteractionCommand";
 import { Member } from "../../entities/Member";
 import { getGroupOf } from "../../support/RegexHelper";
 import { userMension } from "../../support/DiscordHelper";
 import { String } from "typescript-string-operations";
+import { array } from "fp-ts";
 
 export class ChallengerSelectMenuCommand extends SelectMenuInteractionCommand {
     constructor(private apiClient: ApiClient, private phraseRepository: PhraseRepository) {
@@ -45,9 +51,13 @@ export class ChallengerSelectMenuCommand extends SelectMenuInteractionCommand {
 }
 
 export function challengerSelectMenu(phraseRepository: PhraseRepository, ...members: Member[]) {
-    return selectMenu(
-        "challengerSelect",
-        phraseRepository.get(PhraseKey.challengerSelectPlaceHolder()),
-        ...members.map((m) => ({ label: m.name, value: m.discord_user_id }))
-    );
+    return array
+        .chunksOf(SELECT_MENU_OPTIONS_LIMIT)(members)
+        .map((chunk) =>
+            selectMenu(
+                "challengerSelect",
+                phraseRepository.get(PhraseKey.challengerSelectPlaceHolder()),
+                ...chunk.map((m) => ({ label: m.name, value: m.discord_user_id }))
+            )
+        );
 }

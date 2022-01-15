@@ -48,7 +48,7 @@ export class BossSelectButtonCommand extends ButtonInteractionCommand {
                 bossNumber
             })}`,
             components: [
-                new MessageActionRow().addComponents(challengerSelectMenu(this.phraseRepository, ...members)),
+                new MessageActionRow().addComponents(...challengerSelectMenu(this.phraseRepository, ...members)),
                 new MessageActionRow()
                     .addComponents(startChallengeButton(this.phraseRepository))
                     .addComponents(startCarryOverButton(this.phraseRepository))
