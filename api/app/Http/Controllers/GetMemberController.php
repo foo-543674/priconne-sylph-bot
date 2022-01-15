@@ -15,6 +15,7 @@ class GetMemberController extends Controller
         return response()->json(
             Member::query()
                 ->where("clan_id", $clanId)
+                ->orderBy('discord_user_id', 'asc')
                 ->get()
                 ->map(fn (Member $record) => [
                     'id' => $record->id,

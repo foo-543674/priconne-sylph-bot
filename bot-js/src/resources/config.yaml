@@ -128,3 +128,4 @@ phrases:
   start_challenge_prompt_template: "{bossNumber}ボスに凸するよ。"
   challenging_boss_select_place_holder: 凸するボスを選んでね
   in_deleting_message: "削除中"
+  page_label: "{page}ページ目に移動"

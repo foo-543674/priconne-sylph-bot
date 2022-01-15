@@ -259,8 +259,12 @@ export class PhraseKey {
         return new PhraseKey("challenging_boss_select_place_holder");
     }
 
-    public static inDeletingMessage(){
+    public static inDeletingMessage() {
         return new PhraseKey("in_deleting_message");
+    }
+
+    public static pageLabel() {
+        return new PhraseKey("page_label");
     }
 
     public toString(): string {
