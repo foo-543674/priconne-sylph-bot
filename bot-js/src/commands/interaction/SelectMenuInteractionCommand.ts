@@ -8,7 +8,7 @@ function isKeyOfSelectMenuInteraction(value: string): value is SelectMenuInterac
     return selectMenuInteractionKeys.findIndex((k) => k === value) >= 0;
 }
 
-export const SELECT_MENU_OPTIONS_LIMIT = 3;
+export const SELECT_MENU_OPTIONS_LIMIT = 25;
 
 export function selectMenu(
     key: SelectMenuInteractionKey,
