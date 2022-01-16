@@ -1,21 +1,23 @@
-import { Client, Message } from 'discord.js';
-import { MessageCommand } from './MessageCommand';
-import { PhraseRepository } from '../../support/PhraseRepository';
-import * as TaskOption from 'fp-ts/lib/TaskOption';
-import { pipe } from 'fp-ts/lib/function';
-import { ValidationError } from '../../support/ValidationError';
-import { collectMessagesUntil, isMentionedToMe, isTextChannel } from '../../support/DiscordHelper';
-import { PhraseKey } from '../../support/PhraseKey';
-import { toBossNumber } from '../../entities/BossNumber';
+import { Client, Message, MessageEmbed } from "discord.js";
+import { MessageCommand } from "./MessageCommand";
+import { PhraseRepository } from "../../support/PhraseRepository";
+import { collectMessagesUntil, isMentionedToMe, isTextChannel } from "../../support/DiscordHelper";
+import { PhraseKey } from "../../support/PhraseKey";
+import { createBossQuestionnaireResultEmbed } from "../../support/createBossQuestionaireResultEmbed";
 
 export class GetBossQuestionnaireResultCommand implements MessageCommand {
-    constructor(
-        private phraseRepository: PhraseRepository,
-        private discordClient: Client,
-    ) {
+    constructor(private phraseRepository: PhraseRepository, private discordClient: Client) {
         this.commandPattern = new RegExp(this.phraseRepository.get(PhraseKey.getBossQuestionnaireResult()));
+        this.targetReactions = [
+            this.phraseRepository.get(PhraseKey.bossStamp(1)),
+            this.phraseRepository.get(PhraseKey.bossStamp(2)),
+            this.phraseRepository.get(PhraseKey.bossStamp(3)),
+            this.phraseRepository.get(PhraseKey.bossStamp(4)),
+            this.phraseRepository.get(PhraseKey.bossStamp(5))
+        ] as const;
     }
 
+    private readonly targetReactions: readonly string[];
     private readonly commandPattern: RegExp;
     private readonly fetchMessageLimit = 500;
 
@@ -23,39 +25,33 @@ export class GetBossQuestionnaireResultCommand implements MessageCommand {
         if (!this.commandPattern.test(message.cleanContent) || !isMentionedToMe(message, this.discordClient)) return;
         console.log("start get boss questionnaire result");
 
-        const messageChannel = message.channel;
+        const channel = message.channel;
 
-        if (!isTextChannel(messageChannel)) return;
+        if (!isTextChannel(channel)) return;
 
-        const isBossQuestionnaireMessage = (message: Message) => (
-            message.author.id === this.discordClient.user?.id
-            && !!message.cleanContent.match(this.phraseRepository.get(PhraseKey.bossQuestionnaireMessage()))
-        )
+        const isBossQuestionnaireMessage = (message: Message) =>
+            message.author.id === this.discordClient.user?.id &&
+            !!message.cleanContent.match(this.phraseRepository.get(PhraseKey.bossQuestionnaireMessage()));
 
-        await pipe(
-            TaskOption.fromNullable(this.commandPattern.exec(message.cleanContent)),
-            TaskOption.chainNullableK(m => m.groups),
-            TaskOption.map(g => g["bossNumber"]),
-            TaskOption.chain(bossNumber => pipe(
-                TaskOption.fromTask(async () => await collectMessagesUntil(
-                    messageChannel, this.fetchMessageLimit, isBossQuestionnaireMessage
-                )),
-                TaskOption.chainNullableK(messages => messages.find(isBossQuestionnaireMessage)),
-                TaskOption.fold(
-                    () => { throw new ValidationError(this.phraseRepository.get(PhraseKey.cannotFindBossQuestionnaireMessage())); },
-                    targetMessage => TaskOption.fromNullable(targetMessage.reactions.resolve(this.phraseRepository.get(PhraseKey.bossStamp(toBossNumber(bossNumber))))),
-                ),
-                TaskOption.chainTaskK(targetReaction => async () => await targetReaction.users.fetch()),
-                TaskOption.map(users => users.filter(user => user.id !== this.discordClient.user?.id).map(user => user.id)),
-                TaskOption.chainTaskK(userIds => async () => await messageChannel.guild.members.fetch({ user: userIds })),
-                TaskOption.map(guildMembers => guildMembers.map(member => member.nickname ?? member.user.username)),
-                TaskOption.map(names => names.join("\n")),
-            )),
-            TaskOption.chainTaskK(messageText => async () => {
-                if (messageText) {
-                    await message.channel.send(messageText);
-                }
-            })
-        )();
+        const questionnaireMessage = (
+            await collectMessagesUntil(channel, this.fetchMessageLimit, isBossQuestionnaireMessage)
+        ).find((m) => isBossQuestionnaireMessage(m));
+
+        if (!questionnaireMessage) {
+            await channel.send(this.phraseRepository.get(PhraseKey.cannotFindBossNumberMessage()));
+            return;
+        }
+
+        const inlineContents = await createBossQuestionnaireResultEmbed(
+            this.targetReactions,
+            questionnaireMessage,
+            [this.discordClient.user?.id ?? ""],
+            channel
+        );
+
+        const embed = new MessageEmbed().addFields(...inlineContents);
+        await channel.send({
+            embeds: [embed]
+        });
     }
 }

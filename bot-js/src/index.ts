@@ -32,6 +32,7 @@ import { ChallengerSelectMenuCommand } from "./commands/interaction/ChallengerSe
 import { StartChallengeCommand } from "./commands/interaction/StartChallengeCommand";
 import { DeleteDamageReportCommand } from "./commands/interaction/DeleteDamageReportCommand";
 import { RequestRescueCommand } from "./commands/interaction/RequestRescueCommand";
+import { QuestionaireReactionCommand } from "./commands/reaction/QuestionaireReactionCommand";
 
 const phraseConfig = yaml.load(fs.readFileSync("src/resources/config.yaml", "utf8"));
 const phraseRepository = new YamlPhraseRepository(phraseConfig as PhraseConfig);
@@ -83,7 +84,8 @@ messaegEventHandler.listen(client);
 const reactionEventHandler = new ReactionEventHandler([
     new ReportChallengeCommand(phraseRepository, apiClient, localDateTimeProvider),
     new ReportCarryOverCommand(phraseRepository, apiClient),
-    new ReportTaskKillCommand(phraseRepository, apiClient)
+    new ReportTaskKillCommand(phraseRepository, apiClient),
+    new QuestionaireReactionCommand(phraseRepository, client)
 ]);
 reactionEventHandler.listen(client);
 

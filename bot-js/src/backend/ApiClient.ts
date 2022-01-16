@@ -198,6 +198,7 @@ export class ApiClient {
             const response = await axios.get(path, {
                 ...config,
                 baseURL: this.baseUri,
+                validateStatus: (status) => (status >= 200 && status < 300) || status === 404,
                 headers: { ...config?.headers, ...this.header }
             });
 
