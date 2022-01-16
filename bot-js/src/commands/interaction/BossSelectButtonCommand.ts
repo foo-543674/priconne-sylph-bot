@@ -7,6 +7,7 @@ import { challengerSelectMenu } from "./ChallengerSelectMenuCommand";
 import { startChallengeButton, startCarryOverButton } from "./StartChallengeCommand";
 import { ButtonInteractionCommand, ButtonInteractionKey, button } from "./ButtonInteractionCommand";
 import { BossNumber } from "../../support/BossNumber";
+import { InvalidInteractionError } from "../../support/InvalidInteractionError";
 
 export class BossSelectButtonCommand extends ButtonInteractionCommand {
     constructor(private apiClient: ApiClient, private phraseRepository: PhraseRepository) {
@@ -37,10 +38,11 @@ export class BossSelectButtonCommand extends ButtonInteractionCommand {
 
     protected async createStartChallengeMessage(interaction: ButtonInteraction, bossNumber: BossNumber) {
         await interaction.deferReply({ ephemeral: true });
-        const channelId = interaction.channel?.id;
-        if (!channelId) return;
-        const damageReportChannel = await this.apiClient.getDamageReportChannel(channelId);
-        if (!damageReportChannel) return;
+        const channel = interaction.channel;
+        if (!channel) throw new InvalidInteractionError("interaction.channel should not be null", interaction);
+        const damageReportChannel = await this.apiClient.getDamageReportChannel(channel.id);
+        if (!damageReportChannel)
+            throw new InvalidInteractionError("damage report channel should be registered", interaction);
         const members = await this.apiClient.getMembers(damageReportChannel.clanId);
 
         await interaction.editReply({

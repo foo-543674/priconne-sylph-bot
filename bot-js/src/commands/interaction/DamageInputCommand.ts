@@ -5,6 +5,7 @@ import { PhraseRepository } from "../../support/PhraseRepository";
 import { PhraseKey } from "../../support/PhraseKey";
 import { ApiClient } from "../../backend/ApiClient";
 import { ButtonInteractionCommand } from "./ButtonInteractionCommand";
+import { InvalidInteractionError } from "../../support/InvalidInteractionError";
 
 export class DamageInputCommand extends ButtonInteractionCommand {
     constructor(private phraseRepository: PhraseRepository, private apiClient: ApiClient) {
@@ -74,24 +75,25 @@ export class DamageInputCommand extends ButtonInteractionCommand {
             components: []
         });
         const channel = interaction.channel;
-        if (!channel) return;
+        if (!channel) throw new InvalidInteractionError("interaction.channel should not be null", interaction);
 
-        if (!(interaction.message instanceof Message)) return;
-        const reportMessage = interaction.message.reference;
-        if (!reportMessage) return;
+        if (!(interaction.message instanceof Message))
+            throw new InvalidInteractionError("interaction.message should be instance of Message", interaction);
+        const reportMessage = await interaction.message.fetchReference();
 
         const report = (
             await this.apiClient.getDamageReports(channel.id, {
-                messageid: reportMessage.messageId
+                messageid: reportMessage.id
             })
-        ).find((report) => report.messageId === reportMessage.messageId);
-        if (!report) return;
-
-        const currentInput = new DamageInput(interaction.message.content);
-        if (currentInput.hasInput()) {
-            const message = await channel.messages.fetch(report.messageId);
-            const updatedReport = await this.apiClient.postDamageReport(report.setDamage(currentInput.toNumber()));
-            await message.edit(updatedReport.generateMessage(this.phraseRepository));
+        ).find((report) => report.messageId === reportMessage.id);
+        if (report) {
+            const currentInput = new DamageInput(interaction.message.content);
+            if (currentInput.hasInput()) {
+                const updatedReport = await this.apiClient.postDamageReport(report.setDamage(currentInput.toNumber()));
+                await reportMessage.edit(updatedReport.generateMessage(this.phraseRepository));
+            }
+        } else {
+            await reportMessage.delete();
         }
     }
 }

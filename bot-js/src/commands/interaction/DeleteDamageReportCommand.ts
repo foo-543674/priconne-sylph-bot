@@ -15,8 +15,9 @@ export class DeleteDamageReportCommand extends ButtonInteractionCommand {
         if (key !== "deleteDamageReport" && key !== "confirmedDeleteDamageReport") return;
 
         if (!(interaction.message instanceof Message))
-            throw new InvalidInteractionError("interaction.message should be Message");
-        if (!interaction.channel) throw new InvalidInteractionError("interaction.channel should not be null");
+            throw new InvalidInteractionError("interaction.message should be Message", interaction);
+        if (!interaction.channel)
+            throw new InvalidInteractionError("interaction.channel should not be null", interaction);
 
         switch (key) {
             case "deleteDamageReport":
@@ -57,9 +58,5 @@ export function deleteDamageReportButton(phraseRepository: PhraseRepository) {
 }
 
 export function confirmedDeleteDamageReportButton(phraseRepository: PhraseRepository) {
-    return button(
-        "confirmedDeleteDamageReport",
-        phraseRepository.get(PhraseKey.deleteDamageReportLabel()),
-        "DANGER"
-    );
+    return button("confirmedDeleteDamageReport", phraseRepository.get(PhraseKey.deleteDamageReportLabel()), "DANGER");
 }

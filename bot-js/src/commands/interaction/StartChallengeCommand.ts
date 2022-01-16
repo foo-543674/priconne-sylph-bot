@@ -7,6 +7,7 @@ import { getGroupOf } from "../../support/RegexHelper";
 import { openDamageInputFormButton } from "./DamageInputCommand";
 import { deleteDamageReportButton } from "./DeleteDamageReportCommand";
 import { getMentionedUserId } from "../../support/DiscordHelper";
+import { InvalidInteractionError } from "../../support/InvalidInteractionError";
 
 export class StartChallengeCommand extends ButtonInteractionCommand {
     constructor(private apiClient: ApiClient, private phraseRepository: PhraseRepository) {
@@ -33,7 +34,7 @@ export class StartChallengeCommand extends ButtonInteractionCommand {
             components: []
         });
         const channel = interaction.channel;
-        if (!channel) return;
+        if (!channel) throw new InvalidInteractionError("interaction.channel should not be null", interaction);
 
         const messageContent = interaction.message.content;
         const [bossNumber] = getGroupOf(
@@ -41,7 +42,8 @@ export class StartChallengeCommand extends ButtonInteractionCommand {
             messageContent,
             "bossNumber"
         );
-        if (!bossNumber) return;
+        if (!bossNumber)
+            throw new InvalidInteractionError("interaction should not related to this message", interaction);
         const challengerId = getMentionedUserId(messageContent);
         const userId = challengerId ? challengerId : interaction.user.id;
 
