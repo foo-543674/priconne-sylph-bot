@@ -136,7 +136,7 @@ export class ApiClient {
                 comment: value.comment ?? "",
                 isCarryOver: value.isCarryOver ?? false,
                 discordUserId: value.discordUserId,
-                ...(value.damage ? { damage: value.damage } : {})
+                ...(value.damage !== null && value.damage !== undefined ? { damage: value.damage } : {})
             })
         );
     }
