@@ -104,7 +104,7 @@ phrases:
   5_boss_stamp: 5️⃣
   interaction_delete_prompt: 削除してね。
   open_damage_input_form_label: ダメージ入力
-  damage_input_form_message: ダメージを入力してね。
+  damage_input_form_message: ダメージを万単位(下4桁省略)で入力してね。
   damage_input_0_label: "0"
   damage_input_1_label: "1"
   damage_input_2_label: "2"
