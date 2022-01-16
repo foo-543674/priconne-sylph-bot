@@ -223,6 +223,10 @@ export class PhraseKey {
         return new PhraseKey("delete_damage_report_label");
     }
 
+    public static confirmDeleteDamageReportMessage() {
+        return new PhraseKey("confirm_delete_damage_report_message");
+    }
+
     public static inProcessDamageReportTemplate() {
         return new PhraseKey("in_process_damage_report_template");
     }

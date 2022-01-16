@@ -29,7 +29,7 @@ export class StartChallengeCommand extends ButtonInteractionCommand {
 
     public async createDamageReport(interaction: ButtonInteraction, isCarryOver: boolean) {
         await interaction.update({
-            content: this.phraseRepository.get(PhraseKey.nowloadingMessage()),
+            content: this.phraseRepository.get(PhraseKey.interactionDeletePrompt()),
             components: []
         });
         const channel = interaction.channel;
@@ -50,17 +50,14 @@ export class StartChallengeCommand extends ButtonInteractionCommand {
         const damageReport = await this.apiClient.postDamageReport({
             channelId: channel.id,
             messageId: reportMessage.id,
-            interactionMessageId: interaction.message.id,
+            interactionMessageId: reportMessage.id,
             bossNumber: Number(bossNumber),
             discordUserId: userId,
             isCarryOver: isCarryOver
         });
 
         await reportMessage.edit({
-            content: damageReport.generateMessage(this.phraseRepository)
-        });
-        await interaction.editReply({
-            content: "ダメージが確定したら入力してね。",
+            content: damageReport.generateMessage(this.phraseRepository),
             components: [
                 new MessageActionRow()
                     .addComponents(openDamageInputFormButton(this.phraseRepository))

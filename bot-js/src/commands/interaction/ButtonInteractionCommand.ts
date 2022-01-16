@@ -21,6 +21,7 @@ const buttonInteractionKeys = [
     "damageInputApply",
     "openInputDamageForm",
     "deleteDamageReport",
+    "confirmedDeleteDamageReport",
     "startChallenge",
     "startCarryOver",
 ] as const;

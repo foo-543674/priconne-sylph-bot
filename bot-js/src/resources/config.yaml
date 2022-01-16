@@ -118,6 +118,7 @@ phrases:
   damage_input_back_label: "←"
   damage_input_apply_label: "決定"
   delete_damage_report_label: "削除"
+  confirm_delete_damage_report_message: 自分のではないダメージ報告を消そうとしてるよ。間違えた場合は下にある"これらのメッセージを削除する"を押してね。ダメージ報告を削除しても問題ない場合は削除ボタンを押してね。
   in_process_damage_report_template: "{bossNumber}ボス 進行中"
   confirmed_damage_report_template: "{bossNumber}ボス {damage}"
   regular_challenge: "本凸"

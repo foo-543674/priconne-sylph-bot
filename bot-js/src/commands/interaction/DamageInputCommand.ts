@@ -1,11 +1,10 @@
 import { ButtonInteractionKey, button } from "./ButtonInteractionCommand";
-import { ButtonInteraction, MessageActionRow, MessageButton } from "discord.js";
+import { ButtonInteraction, MessageActionRow, MessageButton, Message } from "discord.js";
 import { DamageInput } from "../../support/DamageInput";
 import { PhraseRepository } from "../../support/PhraseRepository";
 import { PhraseKey } from "../../support/PhraseKey";
 import { ApiClient } from "../../backend/ApiClient";
 import { ButtonInteractionCommand } from "./ButtonInteractionCommand";
-import { deleteDamageReportButton } from "./DeleteDamageReportCommand";
 
 export class DamageInputCommand extends ButtonInteractionCommand {
     constructor(private phraseRepository: PhraseRepository, private apiClient: ApiClient) {
@@ -46,9 +45,10 @@ export class DamageInputCommand extends ButtonInteractionCommand {
     }
 
     public async openDamageInputForm(interaction: ButtonInteraction) {
-        await interaction.update({
+        await interaction.reply({
             content: this.phraseRepository.get(PhraseKey.damageInputFormMessage()),
-            components: damageInputForm(this.phraseRepository)
+            components: damageInputForm(this.phraseRepository),
+            ephemeral: true
         });
     }
 
@@ -70,25 +70,22 @@ export class DamageInputCommand extends ButtonInteractionCommand {
 
     protected async apply(interaction: ButtonInteraction) {
         await interaction.update({
-            content: this.phraseRepository.get(PhraseKey.nowloadingMessage()),
+            content: this.phraseRepository.get(PhraseKey.interactionDeletePrompt()),
             components: []
-        })
+        });
         const channel = interaction.channel;
         if (!channel) return;
 
-        const report = (
-            await this.apiClient.getDamageReports(channel.id, { interactionMessageId: interaction.message.id })
-        ).find((report) => report.interactionMessageId === interaction.message.id);
-        if (!report) return;
+        if (!(interaction.message instanceof Message)) return;
+        const reportMessage = interaction.message.reference;
+        if (!reportMessage) return;
 
-        await interaction.editReply({
-            content: "ダメージが確定したら入力してね。",
-            components: [
-                new MessageActionRow()
-                    .addComponents(openDamageInputFormButton(this.phraseRepository))
-                    .addComponents(deleteDamageReportButton(this.phraseRepository))
-            ]
-        });
+        const report = (
+            await this.apiClient.getDamageReports(channel.id, {
+                messageid: reportMessage.messageId
+            })
+        ).find((report) => report.messageId === reportMessage.messageId);
+        if (!report) return;
 
         const currentInput = new DamageInput(interaction.message.content);
         if (currentInput.hasInput()) {
