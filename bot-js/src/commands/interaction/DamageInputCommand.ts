@@ -5,6 +5,7 @@ import { PhraseRepository } from "../../support/PhraseRepository";
 import { PhraseKey } from "../../support/PhraseKey";
 import { ApiClient } from "../../backend/ApiClient";
 import { ButtonInteractionCommand } from "./ButtonInteractionCommand";
+import { deleteDamageReportButton } from "./DeleteDamageReportCommand";
 
 export class DamageInputCommand extends ButtonInteractionCommand {
     constructor(private phraseRepository: PhraseRepository, private apiClient: ApiClient) {
@@ -45,10 +46,9 @@ export class DamageInputCommand extends ButtonInteractionCommand {
     }
 
     public async openDamageInputForm(interaction: ButtonInteraction) {
-        await interaction.reply({
+        await interaction.update({
             content: this.phraseRepository.get(PhraseKey.damageInputFormMessage()),
-            components: damageInputForm(this.phraseRepository),
-            ephemeral: true
+            components: damageInputForm(this.phraseRepository)
         });
     }
 
@@ -70,19 +70,25 @@ export class DamageInputCommand extends ButtonInteractionCommand {
 
     protected async apply(interaction: ButtonInteraction) {
         await interaction.update({
-            content: this.phraseRepository.get(PhraseKey.interactionDeletePrompt()),
+            content: this.phraseRepository.get(PhraseKey.nowloadingMessage()),
             components: []
-        });
+        })
         const channel = interaction.channel;
         if (!channel) return;
 
-        if (!("reference" in interaction.message)) return;
-        const reportMessageRef = interaction.message.reference;
-        if (!reportMessageRef) return;
         const report = (
-            await this.apiClient.getDamageReports(channel.id, { messageid: reportMessageRef.messageId })
-        ).find((report) => report.messageId === reportMessageRef.messageId);
+            await this.apiClient.getDamageReports(channel.id, { interactionMessageId: interaction.message.id })
+        ).find((report) => report.interactionMessageId === interaction.message.id);
         if (!report) return;
+
+        await interaction.editReply({
+            content: "ダメージが確定したら入力してね。",
+            components: [
+                new MessageActionRow()
+                    .addComponents(openDamageInputFormButton(this.phraseRepository))
+                    .addComponents(deleteDamageReportButton(this.phraseRepository))
+            ]
+        });
 
         const currentInput = new DamageInput(interaction.message.content);
         if (currentInput.hasInput()) {

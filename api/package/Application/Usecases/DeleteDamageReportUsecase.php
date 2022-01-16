@@ -29,14 +29,14 @@ class DeleteDamageReportUsecase
 
     public function execute(
         DiscordChannelId $channelId,
-        DiscordMessageId $messageId,
+        DiscordMessageId $interactionMessageId,
     ): void {
         $channel = $this->damageReportChannelRepository->getByChannelId($channelId);
         if (is_null($channel)) {
             $this->errorIgnition->throwValidationError(MessageKey::DAMAGE_REPORT_CHANNEL_NOT_EXISTS);
         }
 
-        $report = $this->damageReportRepository->getByMessageId($channelId, $messageId);
+        $report = $this->damageReportRepository->getByInteractionMessageId($channelId, $interactionMessageId);
         if (is_null($report)) {
             //NOTE: あくまで一時データなので、勝手に消えてても問題ない。
             return;

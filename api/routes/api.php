@@ -70,6 +70,8 @@ Route::middleware("auth.apikey")->group(function () {
         Route::post("/", PostDamageReportChannelController::class)->name("post.damage_report_channels");
         Route::get("/", GetDamageReportChannelListController::class)->name("get.damage_report_channels_list");
         Route::get("/{discordChannelId}", GetDamageReportChannelController::class)->name("get.damage_report_channels");
+        Route::get("/{discordChannelId}/reports", GetDamageReportController::class)->name("get.damage_reports");
+        Route::delete("/{discordChannelId}/reports/{discordMessageId}", DeleteDamageReportController::class)->name("delete.damage_reports");
     });
     Route::prefix("/cooperate_channels")->group(function () {
         Route::post("/", PostCooperateChannelController::class)->name("post.cooperate_channels");
@@ -77,8 +79,6 @@ Route::middleware("auth.apikey")->group(function () {
     });
     Route::prefix("/damage_reports")->group(function () {
         Route::post("/", PostDamageReportController::class)->name("post.damage_reports");
-        Route::get("/{discordChannelId}", GetDamageReportController::class)->name("get.damage_reports");
-        Route::delete("/{discordChannelId}/{discordMessageId}", DeleteDamageReportController::class)->name("delete.damage_reports");
     });
     Route::prefix("/uncomplete_member_role")->group(function () {
         Route::post("/", PostUncompleteMemberRoleController::class)->name("post.uncomplete_member_roles");

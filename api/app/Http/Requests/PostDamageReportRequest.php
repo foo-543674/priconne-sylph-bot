@@ -7,7 +7,6 @@ use Sylph\VO\BossNumber;
 use Sylph\VO\DiscordUserId;
 use Sylph\VO\DiscordChannelId;
 use Sylph\VO\DiscordMessageId;
-use Sylph\VO\DiscordInteractionAppId;
 use Illuminate\Foundation\Http\FormRequest;
 use Sylph\Application\Usecases\ReportDamageInput;
 
@@ -35,7 +34,7 @@ class PostDamageReportRequest extends FormRequest
         return [
             "discordChannelId" => ["required", "string"],
             "discordMessageId" => ["required", "string"],
-            "discordInteractionAppId" => ["required", "string"],
+            "interactionMessageId" => ["required", "string"],
             "bossNumber" => ["required", "numeric", "between:1,5"],
             "discordUserId" => ["required", "string"],
             "damage" => ["numeric", "min:0"],
@@ -50,7 +49,7 @@ class PostDamageReportRequest extends FormRequest
         return [
             "discordChannelId" => 'DiscordのチャンネルID',
             "discordMessageId" => 'DiscordのメッセージID',
-            "discordInteractionAppId" => 'Discordのコマンドの通しID',
+            "interactionMessageId" => 'DiscordのInteractionのリプライのメッセージID',
             "bossNumber" => 'ボス番号',
             "discordUserId" => 'DiscordのユーザーID',
             "damage" => 'ダメージ',
@@ -65,7 +64,7 @@ class PostDamageReportRequest extends FormRequest
         return new ReportDamageInput(
             new DiscordChannelId($this->input('discordChannelId')),
             new DiscordMessageId($this->input('discordMessageId')),
-            new DiscordInteractionAppId($this->input('discordInteractionAppId')),
+            new DiscordMessageId($this->input('interactionMessageId')),
             new BossNumber($this->input('bossNumber')),
             $this->has('damage') ? new Damage($this->input('damage')) : null,
             new DiscordUserId($this->input('discordUserId')),

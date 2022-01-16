@@ -28,8 +28,8 @@ class GetDamageReportController extends Controller
             ->where(fn (DamageReport $item) => $request->has('discord_message_id')
                 ? $item->getMessageId()->equals(new DiscordMessageId($request->query('discord_message_id')))
                 : true)
-            ->where(fn (DamageReport $item) => $request->has('discord_application_id')
-                ? $item->getApplicationId()->equals(new DiscordInteractionAppId($request->query('discord_application_id')))
+            ->where(fn (DamageReport $item) => $request->has('interaction_message_id')
+                ? $item->getInteractionMessageId()->equals(new DiscordMessageId($request->query('interaction_message_id')))
                 : true)
             ->toList();
 

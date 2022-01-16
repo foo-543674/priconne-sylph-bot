@@ -7,7 +7,7 @@ export type DamageReportDto = {
     id: string;
     messageId: string;
     channelId: string;
-    applicationId: string;
+    interactionMessageId: string;
     discordUserId: string;
     bossNumber: number;
     memberId: string;
@@ -22,7 +22,7 @@ export class DamageReport {
         public readonly id: string,
         public readonly messageId: string,
         public readonly channelId: string,
-        public readonly applicationId: string,
+        public readonly interactionMessageId: string,
         public readonly discordUserId: string,
         public readonly bossNumber: number,
         public readonly memberId: string,
@@ -37,7 +37,7 @@ export class DamageReport {
             dto.id,
             dto.messageId,
             dto.channelId,
-            dto.applicationId,
+            dto.interactionMessageId,
             dto.discordUserId,
             dto.bossNumber,
             dto.memberId,
@@ -53,7 +53,7 @@ export class DamageReport {
             this.id,
             this.messageId,
             this.channelId,
-            this.applicationId,
+            this.interactionMessageId,
             this.discordUserId,
             this.bossNumber,
             this.memberId,
@@ -69,7 +69,7 @@ export class DamageReport {
             this.id,
             this.messageId,
             this.channelId,
-            this.applicationId,
+            this.interactionMessageId,
             this.discordUserId,
             this.bossNumber,
             this.memberId,

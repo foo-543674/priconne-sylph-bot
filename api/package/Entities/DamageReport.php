@@ -22,7 +22,7 @@ class DamageReport implements JsonSerializable
         private DamageReportId $id,
         private DiscordMessageId $messageId,
         private DiscordChannelId $channelId,
-        private DiscordInteractionAppId $applicationId,
+        private DiscordMessageId $interactionMessageId,
         private DiscordUserId $discordUserId,
         private BossNumber $bossNumber,
         private MemberId $memberId,
@@ -48,9 +48,9 @@ class DamageReport implements JsonSerializable
         return $this->channelId;
     }
 
-    public function getApplicationId(): DiscordInteractionAppId
+    public function getInteractionMessageId(): DiscordMessageId
     {
-        return $this->applicationId;
+        return $this->interactionMessageId;
     }
 
     public function getDiscordUserId(): DiscordUserId
@@ -95,7 +95,7 @@ class DamageReport implements JsonSerializable
             "id" => $this->id->__toString(),
             "messageId" => $this->messageId->__toString(),
             "channelId" => $this->channelId->__toString(),
-            "applicationId" => $this->applicationId->__toString(),
+            "interactionMessageId" => $this->interactionMessageId->__toString(),
             "discordUserId" => $this->discordUserId->__toString(),
             "bossNumber" => $this->bossNumber->toInt(),
             "memberId" => $this->memberId->__toString(),
@@ -112,7 +112,7 @@ class DamageReport implements JsonSerializable
             new DamageReportId(Ulid::fromString($source["id"])),
             new DiscordMessageId($source["messageId"]),
             new DiscordChannelId($source["channelId"]),
-            new DiscordInteractionAppId($source["applicationId"]),
+            new DiscordMessageId($source["interactionMessageId"]),
             new DiscordUserId($source["discordUserId"]),
             new BossNumber($source["bossNumber"]),
             new MemberId(Ulid::fromString($source["memberId"])),

@@ -8,12 +8,11 @@ use Sylph\VO\DiscordChannelId;
 use Sylph\VO\DiscordMessageId;
 use Sylph\Application\Support\ReadOnlyProperty;
 use Sylph\VO\Damage;
-use Sylph\VO\DiscordInteractionAppId;
 
 /**
  * @property-read DiscordChannelId $channelId
  * @property-read DiscordMessageId $messageId
- * @property-read DiscordInteractionAppId $applicationId
+ * @property-read DiscordMessageId $interactionMessageId
  * @property-read BossNumber $bossNumber
  * @property-read Damage|null $damage
  * @property-read DiscordUserId $userId
@@ -26,7 +25,7 @@ class ReportDamageInput
     public function __construct(
         private DiscordChannelId $channelId,
         private DiscordMessageId $messageId,
-        private DiscordInteractionAppId $applicationId,
+        private DiscordMessageId $interactionMessageId,
         private BossNumber $bossNumber,
         private ?Damage $damage,
         private DiscordUserId $userId,

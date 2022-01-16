@@ -46,7 +46,7 @@ class ReportDamageUsecase
             ($existsReport ? $existsReport->getId() : new DamageReportId($this->ulidGenerator->generate())),
             $input->messageId,
             $channel->getDiscordChannelId(),
-            $input->applicationId,
+            $input->interactionMessageId,
             $member->getDiscordUserId(),
             $input->bossNumber,
             $member->getId(),

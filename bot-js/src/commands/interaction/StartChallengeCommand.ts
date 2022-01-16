@@ -16,17 +16,9 @@ export class StartChallengeCommand extends ButtonInteractionCommand {
     protected async executeInteraction(key: ButtonInteractionKey, interaction: ButtonInteraction): Promise<void> {
         switch (key) {
             case "startChallenge":
-                await interaction.update({
-                    content: this.phraseRepository.get(PhraseKey.interactionDeletePrompt()),
-                    components: []
-                });
                 await this.createDamageReport(interaction, false);
                 break;
             case "startCarryOver":
-                await interaction.update({
-                    content: this.phraseRepository.get(PhraseKey.interactionDeletePrompt()),
-                    components: []
-                });
                 await this.createDamageReport(interaction, true);
                 break;
 
@@ -36,6 +28,10 @@ export class StartChallengeCommand extends ButtonInteractionCommand {
     }
 
     public async createDamageReport(interaction: ButtonInteraction, isCarryOver: boolean) {
+        await interaction.update({
+            content: this.phraseRepository.get(PhraseKey.nowloadingMessage()),
+            components: []
+        });
         const channel = interaction.channel;
         if (!channel) return;
 
@@ -54,14 +50,17 @@ export class StartChallengeCommand extends ButtonInteractionCommand {
         const damageReport = await this.apiClient.postDamageReport({
             channelId: channel.id,
             messageId: reportMessage.id,
-            applicationId: interaction.applicationId,
+            interactionMessageId: interaction.message.id,
             bossNumber: Number(bossNumber),
             discordUserId: userId,
             isCarryOver: isCarryOver
         });
 
         await reportMessage.edit({
-            content: damageReport.generateMessage(this.phraseRepository),
+            content: damageReport.generateMessage(this.phraseRepository)
+        });
+        await interaction.editReply({
+            content: "ダメージが確定したら入力してね。",
             components: [
                 new MessageActionRow()
                     .addComponents(openDamageInputFormButton(this.phraseRepository))

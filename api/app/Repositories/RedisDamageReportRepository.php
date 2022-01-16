@@ -52,7 +52,19 @@ class RedisDamageReportRepository implements DamageReportRepository
             ->select(fn (string $key) => Redis::get($key))
             ->where(fn (mixed $value) => !is_null($value))
             ->select(fn (string $value) => $this->parseJson($value))
-            ->firstOrDefault(predicate: fn(DamageReport $report) => $messageId->equals($report->getMessageId()));
+            ->firstOrDefault(predicate: fn (DamageReport $report) => $messageId->equals($report->getMessageId()));
+    }
+
+    /** {@inheritdoc} */
+    public function getByInteractionMessageId(DiscordChannelId $channelId, DiscordMessageId $messageId): ?DamageReport
+    {
+        $keys = Redis::keys(DamageReportKey::createChannelFilter($channelId));
+        /** @var DamageReport[] $reports */
+        return Enumerable::from($keys)
+            ->select(fn (string $key) => Redis::get($key))
+            ->where(fn (mixed $value) => !is_null($value))
+            ->select(fn (string $value) => $this->parseJson($value))
+            ->firstOrDefault(predicate: fn (DamageReport $report) => $messageId->equals($report->getInteractionMessageId()));
     }
 
     /** {@inheritdoc} */

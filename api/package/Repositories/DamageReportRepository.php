@@ -33,6 +33,11 @@ interface DamageReportRepository
     public function getByMessageId(DiscordChannelId $channelId, DiscordMessageId $messageId): ?DamageReport;
 
     /**
+     * InteractionのメッセージIDで指定したダメージ報告を取得する
+     */
+    public function getByInteractionMessageId(DiscordChannelId $channelId, DiscordMessageId $messageId): ?DamageReport;
+
+    /**
      * ダメージ報告を永続化する
      */
     public function save(DamageReport $value): void;

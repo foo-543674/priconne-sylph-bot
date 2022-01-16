@@ -21,13 +21,13 @@ export type ApiOption = {
 
 type DamageReportQuery = {
     messageid?: string;
-    applicationId?: string;
+    interactionMessageId?: string;
 };
 
 type DamageReportRequestBody = {
     messageId: string;
     channelId: string;
-    applicationId: string;
+    interactionMessageId: string;
     discordUserId: string;
     bossNumber: number;
     damage?: number | null;
@@ -131,7 +131,7 @@ export class ApiClient {
             await this.post<DamageReportDto>("/api/damage_reports", {
                 discordChannelId: value.channelId,
                 discordMessageId: value.messageId,
-                discordInteractionAppId: value.applicationId,
+                interactionMessageId: value.interactionMessageId,
                 bossNumber: value.bossNumber,
                 comment: value.comment ?? "",
                 isCarryOver: value.isCarryOver ?? false,
@@ -142,7 +142,7 @@ export class ApiClient {
     }
 
     public async deleteDamageReport(channelId: string, messageId: string) {
-        return await this.delete(`/api/damage_reports/${channelId}/${messageId}`);
+        return await this.delete(`/api/damage_report_channels/${channelId}/reports/${messageId}`);
     }
 
     public async registerCooperateChannel(clanName: string, channelId: string) {
@@ -183,14 +183,14 @@ export class ApiClient {
     public async getDamageReports(channelId: string, query?: DamageReportQuery): Promise<DamageReport[]> {
         const queryString = [
             query && query.messageid ? `discord_message_id=${query.messageid}` : "",
-            query && query.applicationId ? `discord_application_id=${query.applicationId}` : ""
+            query && query.interactionMessageId ? `interaction_message_id=${query.interactionMessageId}` : ""
         ]
             .filter((q) => q !== "")
             .join("&");
 
-        return (await this.getList<DamageReportDto>(`/api/damage_reports/${channelId}?${queryString}`)).map((dto) =>
-            DamageReport.fromDto(dto)
-        );
+        return (
+            await this.getList<DamageReportDto>(`/api/damage_report_channels/${channelId}/reports?${queryString}`)
+        ).map((dto) => DamageReport.fromDto(dto));
     }
 
     protected async exists(path: string, config?: AxiosRequestConfig, retriedCount: number = 0): Promise<boolean> {

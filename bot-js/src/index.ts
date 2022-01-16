@@ -91,7 +91,7 @@ const interactionEventHandler = new InteractionEventHandler([
     new ChallengerSelectMenuCommand(apiClient, phraseRepository),
     new StartChallengeCommand(apiClient, phraseRepository),
     new DamageInputCommand(phraseRepository, apiClient),
-    new DeleteDamageReportCommand(apiClient)
+    new DeleteDamageReportCommand(apiClient, phraseRepository)
 ]);
 interactionEventHandler.listen(client);
 
