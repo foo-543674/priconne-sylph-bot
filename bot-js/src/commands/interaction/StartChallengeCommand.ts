@@ -8,6 +8,7 @@ import { openDamageInputFormButton } from "./DamageInputCommand";
 import { deleteDamageReportButton } from "./DeleteDamageReportCommand";
 import { getMentionedUserId } from "../../support/DiscordHelper";
 import { InvalidInteractionError } from "../../support/InvalidInteractionError";
+import { requestRescueButton } from "./RequestRescueCommand";
 
 export class StartChallengeCommand extends ButtonInteractionCommand {
     constructor(private apiClient: ApiClient, private phraseRepository: PhraseRepository) {
@@ -63,6 +64,7 @@ export class StartChallengeCommand extends ButtonInteractionCommand {
             components: [
                 new MessageActionRow()
                     .addComponents(openDamageInputFormButton(this.phraseRepository))
+                    .addComponents(requestRescueButton(this.phraseRepository))
                     .addComponents(deleteDamageReportButton(this.phraseRepository))
             ]
         });

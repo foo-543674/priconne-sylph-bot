@@ -24,6 +24,7 @@ const buttonInteractionKeys = [
     "confirmedDeleteDamageReport",
     "startChallenge",
     "startCarryOver",
+    "requestRescue",
 ] as const;
 export type ButtonInteractionKey = typeof buttonInteractionKeys[number];
 

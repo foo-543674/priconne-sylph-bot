@@ -271,6 +271,14 @@ export class PhraseKey {
         return new PhraseKey("page_label");
     }
 
+    public static requestRescueLabel() {
+        return new PhraseKey("request_rescue_label");
+    }
+
+    public static requestRescueMessage(): PhraseKey {
+        return new PhraseKey("request_rescue_message");
+    }
+
     public toString(): string {
         return this.value;
     }

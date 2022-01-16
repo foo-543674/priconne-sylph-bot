@@ -130,3 +130,5 @@ phrases:
   challenging_boss_select_place_holder: 凸するボスを選んでね
   in_deleting_message: "削除中"
   page_label: "{page}ページ目に移動"
+  request_rescue_label: 救援要請
+  request_rescue_message: 救援求

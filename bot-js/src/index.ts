@@ -31,6 +31,7 @@ import { BossSelectButtonCommand } from "./commands/interaction/BossSelectButton
 import { ChallengerSelectMenuCommand } from "./commands/interaction/ChallengerSelectMenuCommand";
 import { StartChallengeCommand } from "./commands/interaction/StartChallengeCommand";
 import { DeleteDamageReportCommand } from "./commands/interaction/DeleteDamageReportCommand";
+import { RequestRescueCommand } from "./commands/interaction/RequestRescueCommand";
 
 const phraseConfig = yaml.load(fs.readFileSync("src/resources/config.yaml", "utf8"));
 const phraseRepository = new YamlPhraseRepository(phraseConfig as PhraseConfig);
@@ -91,7 +92,8 @@ const interactionEventHandler = new InteractionEventHandler([
     new ChallengerSelectMenuCommand(apiClient, phraseRepository),
     new StartChallengeCommand(apiClient, phraseRepository),
     new DamageInputCommand(phraseRepository, apiClient),
-    new DeleteDamageReportCommand(apiClient, phraseRepository)
+    new DeleteDamageReportCommand(apiClient, phraseRepository),
+    new RequestRescueCommand(apiClient, phraseRepository)
 ]);
 interactionEventHandler.listen(client);
 
