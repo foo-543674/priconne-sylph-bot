@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosRequestConfig } from "axios";
+import { AxiosError, AxiosInstance, AxiosRequestConfig } from "axios";
 import { GuildMember, Role } from "discord.js";
 import { ValidationError } from "../support/ValidationError";
 import { ClanBattle } from "../entities/ClanBattle";
@@ -10,6 +10,7 @@ import { UncompleteMemberRole } from "../entities/UncompleteMemberRole";
 import { ActivityStatus } from "../entities/ActivityStatus";
 import { GetClanParamter } from "./GetClanParameter";
 import { DamageReport, DamageReportDto } from "../entities/DamageReport";
+import { setup } from "axios-cache-adapter";
 
 function isAxiosError(error: any): error is AxiosError {
     return !!error.isAxiosError;
@@ -37,39 +38,73 @@ type DamageReportRequestBody = {
 
 export class ApiClient {
     constructor(baseUri: string, apiKey: string, private option?: ApiOption) {
-        this.header = {
-            "Content-Type": "application/json",
-            "X-Authorization": apiKey
-        };
-        this.baseUri = baseUri.replace(/\/$/, "");
+        this.httpClient = setup({
+            baseURL: baseUri.replace(/\/$/, ""),
+            headers: {
+                "Content-Type": "application/json",
+                "X-Authorization": apiKey
+            },
+            cache: {
+                maxAge: 30 * 60 * 1000, // ミリ秒
+                exclude: {
+                    query: false,
+                    filter: (request: AxiosRequestConfig) => {
+                        return (
+                            request.headers &&
+                            "Cache-Control" in request.headers &&
+                            request.headers["Cache-Control"] === "no-cache"
+                        );
+                    }
+                },
+                invalidate: async (config, request) => {
+                    if (request.clearCacheEntry) {
+                        console.log(config.store);
+                        // @ts-ignore キャッシュのストアの型情報がないので型チェックをスキップ
+                        await config.store.clear();
+                        console.log(config.store);
+                    }
+                }
+            }
+        });
     }
 
-    private readonly baseUri: string;
-    private readonly header: object;
+    private readonly httpClient: AxiosInstance;
 
     public async registerClan(name: string, guildId: string) {
-        return await this.post("/api/clans", {
-            clanName: name,
-            discordGuildId: guildId
-        });
+        return await this.post(
+            "/api/clans",
+            {
+                clanName: name,
+                discordGuildId: guildId
+            },
+            { clearCacheEntry: true }
+        );
     }
 
     public async registerMembers(clanName: string, ...members: GuildMember[]) {
-        return await this.post("/api/members", {
-            clanName: clanName,
-            users: members.map((member) => ({
-                discordId: member.id,
-                name: member.displayName
-            }))
-        });
+        return await this.post(
+            "/api/members",
+            {
+                clanName: clanName,
+                users: members.map((member) => ({
+                    discordId: member.id,
+                    name: member.displayName
+                }))
+            },
+            { clearCacheEntry: true }
+        );
     }
 
     public async registerReportMessage(clanName: string, channelId: string, ...messageIds: string[]) {
-        return await this.post("/api/report_channels", {
-            clanName: clanName,
-            discordChannelId: channelId,
-            discordMessageIds: messageIds
-        });
+        return await this.post(
+            "/api/report_channels",
+            {
+                clanName: clanName,
+                discordChannelId: channelId,
+                discordMessageIds: messageIds
+            },
+            { clearCacheEntry: true }
+        );
     }
 
     public async registerWebhook(clanName: string, destination: string) {
@@ -112,10 +147,14 @@ export class ApiClient {
     }
 
     public async registerDamageReportChannel(clanName: string, channelId: string) {
-        return await this.post("/api/damage_report_channels", {
-            clanName: clanName,
-            discordChannelId: channelId
-        });
+        return await this.post(
+            "/api/damage_report_channels",
+            {
+                clanName: clanName,
+                discordChannelId: channelId
+            },
+            { clearCacheEntry: true }
+        );
     }
 
     public async getDamageReportChannel(channelId: string) {
@@ -146,10 +185,14 @@ export class ApiClient {
     }
 
     public async registerCooperateChannel(clanName: string, channelId: string) {
-        return await this.post("/api/cooperate_channels", {
-            clanName: clanName,
-            discordChannelId: channelId
-        });
+        return await this.post(
+            "/api/cooperate_channels",
+            {
+                clanName: clanName,
+                discordChannelId: channelId
+            },
+            { clearCacheEntry: true }
+        );
     }
 
     public async getCooperateChannel(channelId: string): Promise<CooperateChannel | null> {
@@ -157,11 +200,15 @@ export class ApiClient {
     }
 
     public async registerUncompleteMemberRole(clanName: string, role: Role) {
-        return await this.post("/api/uncomplete_member_role", {
-            clanName: clanName,
-            discordRoleId: role.id,
-            discordRoleName: role.name
-        });
+        return await this.post(
+            "/api/uncomplete_member_role",
+            {
+                clanName: clanName,
+                discordRoleId: role.id,
+                discordRoleName: role.name
+            },
+            { clearCacheEntry: true }
+        );
     }
 
     public async getClans(param?: GetClanParamter): Promise<Clan[]> {
@@ -177,7 +224,11 @@ export class ApiClient {
     }
 
     public async getActivityStatus(messageId: string, userId: string): Promise<ActivityStatus | null> {
-        return await this.getSingle<ActivityStatus>(`/api/activities/messages/${messageId}/users/${userId}`);
+        return await this.getSingle<ActivityStatus>(`/api/activities/messages/${messageId}/users/${userId}`, {
+            headers: {
+                "Cache-Control": "no-cache"
+            }
+        });
     }
 
     public async getDamageReports(channelId: string, query?: DamageReportQuery): Promise<DamageReport[]> {
@@ -189,17 +240,20 @@ export class ApiClient {
             .join("&");
 
         return (
-            await this.getList<DamageReportDto>(`/api/damage_report_channels/${channelId}/reports?${queryString}`)
+            await this.getList<DamageReportDto>(`/api/damage_report_channels/${channelId}/reports?${queryString}`, {
+                headers: {
+                    "Cache-Control": "no-cache"
+                }
+            })
         ).map((dto) => DamageReport.fromDto(dto));
     }
 
     protected async exists(path: string, config?: AxiosRequestConfig, retriedCount: number = 0): Promise<boolean> {
         try {
-            const response = await axios.get(path, {
+            const response = await this.httpClient.get(path, {
                 ...config,
-                baseURL: this.baseUri,
                 validateStatus: (status) => (status >= 200 && status < 300) || status === 404,
-                headers: { ...config?.headers, ...this.header }
+                headers: { ...config?.headers }
             });
 
             return response.status === 200;
@@ -211,10 +265,9 @@ export class ApiClient {
 
     protected async getList<T>(path: string, config?: AxiosRequestConfig, retriedCount: number = 0): Promise<T[]> {
         try {
-            const response = await axios.get<T[]>(path, {
+            const response = await this.httpClient.get<T[]>(path, {
                 ...config,
-                baseURL: this.baseUri,
-                headers: { ...config?.headers, ...this.header }
+                headers: { ...config?.headers }
             });
 
             return response.data;
@@ -231,11 +284,10 @@ export class ApiClient {
         retriedCount: number = 0
     ): Promise<T | null> {
         try {
-            const response = await axios.get<T>(path, {
+            const response = await this.httpClient.get<T>(path, {
                 ...config,
-                baseURL: this.baseUri,
                 validateStatus: (status) => (status >= 200 && status < 300) || status === 404,
-                headers: { ...config?.headers, ...this.header }
+                headers: { ...config?.headers }
             });
 
             if (response.status === 200) {
@@ -257,10 +309,9 @@ export class ApiClient {
         retriedCount: number = 0
     ): Promise<T> {
         try {
-            const response = await axios.post<T>(path, data, {
+            const response = await this.httpClient.post<T>(path, data, {
                 ...config,
-                baseURL: this.baseUri,
-                headers: { ...config?.headers, ...this.header }
+                headers: { ...config?.headers }
             });
             return response.data;
         } catch (error) {
@@ -282,10 +333,9 @@ export class ApiClient {
 
     protected async delete<T>(path: string, config?: AxiosRequestConfig, retriedCount: number = 0): Promise<T> {
         try {
-            const response = await axios.delete<T>(path, {
+            const response = await this.httpClient.delete<T>(path, {
                 ...config,
-                baseURL: this.baseUri,
-                headers: { ...config?.headers, ...this.header }
+                headers: { ...config?.headers }
             });
             return response.data;
         } catch (error) {
