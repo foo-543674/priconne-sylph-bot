@@ -58,10 +58,8 @@ export class ApiClient {
                 },
                 invalidate: async (config, request) => {
                     if (request.clearCacheEntry) {
-                        console.log(config.store);
                         // @ts-ignore キャッシュのストアの型情報がないので型チェックをスキップ
                         await config.store.clear();
-                        console.log(config.store);
                     }
                 }
             }
