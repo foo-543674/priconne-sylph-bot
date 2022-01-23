@@ -1,6 +1,7 @@
 import { pipe } from "fp-ts/lib/function";
 import * as TaskOption from "fp-ts/lib/TaskOption";
 import { Message, TextChannel } from "discord.js";
+import { GuildMemberResolver } from "./GuildMemberResolver";
 
 export async function createBossQuestionnaireResultEmbed(
     targetEmojis: readonly string[],
@@ -8,6 +9,7 @@ export async function createBossQuestionnaireResultEmbed(
     excludeUserIds: readonly string[],
     channel: TextChannel
 ) {
+    const memberResolver = new GuildMemberResolver(channel.guild);
     return await Promise.all(
         targetEmojis.map(
             async (targetEmoji) =>
@@ -17,9 +19,7 @@ export async function createBossQuestionnaireResultEmbed(
                     TaskOption.map((users) =>
                         users.filter((user) => !excludeUserIds.includes(user.id)).map((user) => user.id)
                     ),
-                    TaskOption.chainTaskK(
-                        (userIds) => async () => await channel.guild.members.fetch({ user: userIds })
-                    ),
+                    TaskOption.chainTaskK((userIds) => async () => await memberResolver.resolve(...userIds)),
                     TaskOption.map((guildMembers) =>
                         guildMembers.map((member) => member.nickname ?? member.user.username)
                     ),
