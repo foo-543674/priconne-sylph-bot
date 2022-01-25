@@ -43,6 +43,7 @@
 		"pmneo.tsimporter",
 		"mike-co.import-sorter",
 		"stringham.move-ts",
-		"esbenp.prettier-vscode"
+		"esbenp.prettier-vscode",
+		"xdebug.php-debug"
 	],
 }
