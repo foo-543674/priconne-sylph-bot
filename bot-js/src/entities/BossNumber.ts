@@ -1,7 +1,8 @@
 export type BossNumber = 1 | 2 | 3 | 4 | 5;
+export const bossNumbers: BossNumber[] = [1, 2, 3, 4, 5];
 
 export function isBossNumber(value: number): value is BossNumber {
-    return (1 <= value && value <= 5);
+    return bossNumbers.findIndex((num) => num === value) >= 0;
 }
 
 export function toBossNumber(value: string): BossNumber {
@@ -9,8 +10,7 @@ export function toBossNumber(value: string): BossNumber {
 
     if (isBossNumber(parsedValue)) {
         return parsedValue;
-    }
-    else {
+    } else {
         throw new Error(`${parsedValue} is not boss number`);
     }
 }

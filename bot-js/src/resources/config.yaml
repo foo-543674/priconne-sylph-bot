@@ -131,3 +131,4 @@ phrases:
   page_label: "{page}ページ目に移動"
   request_rescue_label: 救援要請
   request_rescue_message: 救援求
+  no_challenger_message: 希望者なし

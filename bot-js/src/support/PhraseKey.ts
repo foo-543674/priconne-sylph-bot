@@ -279,6 +279,10 @@ export class PhraseKey {
         return new PhraseKey("request_rescue_message");
     }
 
+    public static noChallengerMessage(): PhraseKey {
+        return new PhraseKey("no_challenger_message");
+    }
+
     public toString(): string {
         return this.value;
     }

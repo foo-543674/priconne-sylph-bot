@@ -6,8 +6,8 @@ import { String } from "typescript-string-operations";
 import { challengerSelectMenu } from "./ChallengerSelectMenuCommand";
 import { startChallengeButton, startCarryOverButton } from "./StartChallengeCommand";
 import { ButtonInteractionCommand, ButtonInteractionKey, button } from "./ButtonInteractionCommand";
-import { BossNumber } from "../../support/BossNumber";
 import { InvalidInteractionError } from "../../support/InvalidInteractionError";
+import { BossNumber } from "../../entities/BossNumber";
 
 export class BossSelectButtonCommand extends ButtonInteractionCommand {
     constructor(private apiClient: ApiClient, private phraseRepository: PhraseRepository) {

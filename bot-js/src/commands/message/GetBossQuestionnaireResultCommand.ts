@@ -3,21 +3,22 @@ import { MessageCommand } from "./MessageCommand";
 import { PhraseRepository } from "../../support/PhraseRepository";
 import { collectMessagesUntil, isMentionedToMe, isTextChannel } from "../../support/DiscordHelper";
 import { PhraseKey } from "../../support/PhraseKey";
-import { createBossQuestionnaireResultEmbed } from "../../support/createBossQuestionaireResultEmbed";
+import { createBossQuestionnaireResult } from "../../support/createBossQuestionnaireResult";
+import { BossStamp } from "../../entities/BossStamp";
 
 export class GetBossQuestionnaireResultCommand implements MessageCommand {
     constructor(private phraseRepository: PhraseRepository, private discordClient: Client) {
         this.commandPattern = new RegExp(this.phraseRepository.get(PhraseKey.getBossQuestionnaireResult()));
-        this.targetReactions = [
-            this.phraseRepository.get(PhraseKey.bossStamp(1)),
-            this.phraseRepository.get(PhraseKey.bossStamp(2)),
-            this.phraseRepository.get(PhraseKey.bossStamp(3)),
-            this.phraseRepository.get(PhraseKey.bossStamp(4)),
-            this.phraseRepository.get(PhraseKey.bossStamp(5))
+        this.targetStamps = [
+            new BossStamp(1, phraseRepository),
+            new BossStamp(2, phraseRepository),
+            new BossStamp(3, phraseRepository),
+            new BossStamp(4, phraseRepository),
+            new BossStamp(5, phraseRepository)
         ] as const;
     }
 
-    private readonly targetReactions: readonly string[];
+    private readonly targetStamps: readonly BossStamp[];
     private readonly commandPattern: RegExp;
     private readonly fetchMessageLimit = 500;
 
@@ -42,14 +43,15 @@ export class GetBossQuestionnaireResultCommand implements MessageCommand {
             return;
         }
 
-        const inlineContents = await createBossQuestionnaireResultEmbed(
-            this.targetReactions,
+        const result = await createBossQuestionnaireResult(
+            this.targetStamps,
             questionnaireMessage,
-            [this.discordClient.user?.id ?? ""],
-            channel
+            this.discordClient.user ? [this.discordClient.user.id] : [],
+            channel,
+            this.phraseRepository
         );
 
-        const embed = new MessageEmbed().addFields(...inlineContents);
+        const embed = new MessageEmbed().addFields(...result.generateEmbed());
         await channel.send({
             embeds: [embed]
         });

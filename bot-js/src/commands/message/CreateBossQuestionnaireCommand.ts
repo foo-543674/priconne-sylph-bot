@@ -7,12 +7,15 @@ import { ApiClient } from "../../backend/ApiClient";
 import { pipe } from "fp-ts/lib/function";
 import * as TaskOption from "fp-ts/lib/TaskOption";
 import { roleMension } from "../../support/DiscordHelper";
+import { BossQuestionnaire } from "../../entities/BossQuestionnaire";
+import { ThreadSafeCache } from "../../support/ThreadSafeCache";
 
 export class CreateBossQuestionnaireCommand implements MessageCommand {
     constructor(
         private phraseRepository: PhraseRepository,
         private discordClient: Client,
-        private apiClient: ApiClient
+        private apiClient: ApiClient,
+        private cache: ThreadSafeCache<BossQuestionnaire>
     ) {
         this.commandPattern = new RegExp(this.phraseRepository.get(PhraseKey.createBossQuestionnaire()));
     }
@@ -52,6 +55,11 @@ export class CreateBossQuestionnaireCommand implements MessageCommand {
                 await sentMessage.react(this.phraseRepository.get(PhraseKey.bossStamp(3)));
                 await sentMessage.react(this.phraseRepository.get(PhraseKey.bossStamp(4)));
                 await sentMessage.react(this.phraseRepository.get(PhraseKey.bossStamp(5)));
+                this.cache.set(
+                    sentMessage.id,
+                    new BossQuestionnaire(sentMessage.id, this.phraseRepository),
+                    30 * 60 * 1000 // 30分
+                );
             })
         )();
     }
