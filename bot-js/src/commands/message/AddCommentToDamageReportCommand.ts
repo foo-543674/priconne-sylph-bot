@@ -31,6 +31,9 @@ export class AddCommentToDamageReportCommand implements MessageCommand {
             await reportMessage.edit(updatedReport.generateMessage(this.phraseRepository));
         }
 
-        await message.delete();
+        // NOTE: メッセージ作成後に即削除するとクライアント側でメッセージが消えなくなる現象があるのでディレイを設ける
+        setTimeout(async () => {
+            await message.delete();
+        }, 1000);
     }
 }
