@@ -1,10 +1,11 @@
 import { Client, Message, MessageEmbed } from "discord.js";
 import { MessageCommand } from "./MessageCommand";
 import { PhraseRepository } from "../../support/PhraseRepository";
-import { collectMessagesUntil, isMentionedToMe, isTextChannel } from "../../support/DiscordHelper";
+import { isMentionedToMe, isTextChannel } from "../../support/DiscordHelper";
 import { PhraseKey } from "../../support/PhraseKey";
 import { createBossQuestionnaireResult } from "../../support/createBossQuestionnaireResult";
 import { BossStamp } from "../../entities/BossStamp";
+import { fetchBossQuestionnaireMessage } from "../../support/fetchBossQuestionnaire";
 
 export class GetBossQuestionnaireResultCommand implements MessageCommand {
     constructor(private phraseRepository: PhraseRepository, private discordClient: Client) {
@@ -20,7 +21,6 @@ export class GetBossQuestionnaireResultCommand implements MessageCommand {
 
     private readonly targetStamps: readonly BossStamp[];
     private readonly commandPattern: RegExp;
-    private readonly fetchMessageLimit = 500;
 
     async execute(message: Message): Promise<void> {
         if (!this.commandPattern.test(message.cleanContent) || !isMentionedToMe(message, this.discordClient)) return;
@@ -30,13 +30,9 @@ export class GetBossQuestionnaireResultCommand implements MessageCommand {
 
         if (!isTextChannel(channel)) return;
 
-        const isBossQuestionnaireMessage = (message: Message) =>
-            message.author.id === this.discordClient.user?.id &&
-            !!message.cleanContent.match(this.phraseRepository.get(PhraseKey.bossQuestionnaireMessage()));
-
         const questionnaireMessage = (
-            await collectMessagesUntil(channel, this.fetchMessageLimit, isBossQuestionnaireMessage)
-        ).find((m) => isBossQuestionnaireMessage(m));
+            await fetchBossQuestionnaireMessage(channel, this.phraseRepository, this.discordClient.user)
+        ).find((_) => true); // NOTE: 最初の一件を取得する;
 
         if (!questionnaireMessage) {
             await channel.send(this.phraseRepository.get(PhraseKey.cannotFindBossNumberMessage()));
