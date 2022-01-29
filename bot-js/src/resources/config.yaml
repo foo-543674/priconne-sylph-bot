@@ -118,6 +118,8 @@ phrases:
   damage_input_apply_label: "決定"
   delete_damage_report_label: "削除"
   confirm_delete_damage_report_message: 自分のではないダメージ報告を消そうとしてるよ。間違えた場合は下にある"これらのメッセージを削除する"を押してね。ダメージ報告を削除しても問題ない場合は削除ボタンを押してね。
+  no_clan_members_message: クランメンバーが一人も登録されてないよ。メンバー登録コマンドで登録してね。
+  not_clan_member_message: クランメンバーとして登録されてないよ。メンバー登録コマンドで登録してもらってね。
   in_process_damage_report_template: "{bossNumber}ボス 進行中"
   confirmed_damage_report_template: "{bossNumber}ボス {damage}"
   regular_challenge: "本凸"

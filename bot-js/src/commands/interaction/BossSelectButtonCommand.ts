@@ -45,6 +45,11 @@ export class BossSelectButtonCommand extends ButtonInteractionCommand {
             throw new InvalidInteractionError("damage report channel should be registered", interaction);
         const members = await this.apiClient.getMembers(damageReportChannel.clanId);
 
+        if (members.length <= 0) {
+            await interaction.editReply(this.phraseRepository.get(PhraseKey.noClanMembersMessage()));
+            return;
+        }
+
         await interaction.editReply({
             content: `${String.Format(this.phraseRepository.get(PhraseKey.startChallengePromptTemplate()), {
                 bossNumber

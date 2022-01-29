@@ -283,6 +283,14 @@ export class PhraseKey {
         return new PhraseKey("no_challenger_message");
     }
 
+    public static noClanMembersMessage(): PhraseKey {
+        return new PhraseKey("no_clan_members_message");
+    }
+
+    public static notClanMemberMessage(): PhraseKey {
+        return new PhraseKey("not_clan_member_message");
+    }
+
     public toString(): string {
         return this.value;
     }
