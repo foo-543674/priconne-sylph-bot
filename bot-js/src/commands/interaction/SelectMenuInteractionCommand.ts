@@ -1,4 +1,5 @@
 import { Interaction, SelectMenuInteraction, MessageSelectMenu, MessageSelectOptionData } from "discord.js";
+import { ValidationError } from "../../support/ValidationError";
 import { InteractionCommand } from "./InteractionCommand";
 
 const selectMenuInteractionKeys = ["challengerSelect"] as const;
@@ -21,7 +22,16 @@ export function selectMenu(
 export abstract class SelectMenuInteractionCommand implements InteractionCommand {
     public async execute(interaction: Interaction): Promise<void> {
         if (interaction.isSelectMenu() && isKeyOfSelectMenuInteraction(interaction.customId)) {
-            await this.executeInteraction(interaction.customId, interaction);
+            try {
+                await this.executeInteraction(interaction.customId, interaction);
+            } catch (error) {
+                if (error instanceof ValidationError) {
+                    if (interaction.replied) interaction.editReply(error.message);
+                    else interaction.reply(error.message);
+                } else {
+                    throw error;
+                }
+            }
         }
     }
 

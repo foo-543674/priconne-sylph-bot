@@ -1,5 +1,6 @@
 import { Interaction, MessageButton, MessageButtonStyleResolvable, ButtonInteraction } from "discord.js";
 import { InteractionCommand } from "./InteractionCommand";
+import { ValidationError } from "../../support/ValidationError";
 
 const buttonInteractionKeys = [
     "challengeBoss1",
@@ -24,7 +25,7 @@ const buttonInteractionKeys = [
     "confirmedDeleteDamageReport",
     "startChallenge",
     "startCarryOver",
-    "requestRescue",
+    "requestRescue"
 ] as const;
 export type ButtonInteractionKey = typeof buttonInteractionKeys[number];
 
@@ -39,7 +40,16 @@ export function button(key: ButtonInteractionKey, label: string, style: MessageB
 export abstract class ButtonInteractionCommand implements InteractionCommand {
     public async execute(interaction: Interaction): Promise<void> {
         if (interaction.isButton() && isKeyOfButtonInteraction(interaction.customId)) {
-            await this.executeInteraction(interaction.customId, interaction);
+            try {
+                await this.executeInteraction(interaction.customId, interaction);
+            } catch (error) {
+                if (error instanceof ValidationError) {
+                    if (interaction.replied) interaction.editReply(error.message);
+                    else interaction.reply(error.message);
+                } else {
+                    throw error;
+                }
+            }
         }
     }
 
