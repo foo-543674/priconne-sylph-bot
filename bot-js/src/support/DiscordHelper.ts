@@ -2,18 +2,32 @@ import {
     Client,
     Message,
     MessageReaction,
+    MessageReference,
     PartialMessage,
     PartialMessageReaction,
     PartialUser,
+    Snowflake,
     TextBasedChannel,
     TextChannel,
     User
 } from "discord.js";
 import { getGroupOf } from "./RegexHelper";
+import { MessageComponentInteraction } from "discord.js";
 
 export type DiscordReaction = PartialMessageReaction | MessageReaction;
 export type DiscordUser = PartialUser | User;
 export type DiscordMessage = PartialMessage | Message;
+
+export type HasIdMessageReference = MessageReference & {
+    guildId: Snowflake;
+    messageId: Snowflake;
+};
+export type HasReferenceMessage = Message & {
+    reference: HasIdMessageReference;
+};
+export type HasReferenceMessageInteraction = MessageComponentInteraction & {
+    message: HasReferenceMessage;
+};
 
 export const userMension = (id: string) => `<@${id}>`;
 export const roleMension = (id: string) => `<@&${id}>`;
@@ -67,4 +81,14 @@ export async function collectMessagesUntil(
     };
 
     return await fetchAndAppendTo([], limit);
+}
+
+export function hasReference(message: Message): message is HasReferenceMessage {
+    return message.reference != null;
+}
+
+export function hasReferenceInteraction(
+    interaction: MessageComponentInteraction
+): interaction is HasReferenceMessageInteraction {
+    return interaction.message instanceof Message && hasReference(interaction.message);
 }

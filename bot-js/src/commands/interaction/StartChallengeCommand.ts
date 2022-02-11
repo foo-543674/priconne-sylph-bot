@@ -4,11 +4,11 @@ import { ApiClient } from "../../backend/ApiClient";
 import { PhraseRepository } from "../../support/PhraseRepository";
 import { PhraseKey } from "../../support/PhraseKey";
 import { getGroupOf } from "../../support/RegexHelper";
-import { openDamageInputFormButton } from "./DamageInputCommand";
 import { deleteDamageReportButton } from "./DeleteDamageReportCommand";
 import { getMentionedUserId } from "../../support/DiscordHelper";
 import { InvalidInteractionError } from "../../support/InvalidInteractionError";
 import { requestRescueButton } from "./RequestRescueCommand";
+import { openDamageInputFormButton } from "./OpenDamageInputForm";
 
 export class StartChallengeCommand extends ButtonInteractionCommand {
     constructor(private apiClient: ApiClient, private phraseRepository: PhraseRepository) {

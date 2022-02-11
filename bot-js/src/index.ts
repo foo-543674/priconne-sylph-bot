@@ -10,7 +10,7 @@ import { DateFnsLocalDateProvider } from "./date-fns/DateFnsLocalDateProvider";
 import { MessageEventHandler } from "./MessageEventHandler";
 import { ReactionEventHandler } from "./ReactionEventHandler";
 import { InteractionEventHandler } from "./InteractionEventHandler";
-import { DamageInputCommand } from "./commands/interaction/DamageInputCommand";
+import { NumberInputCommand } from "./commands/interaction/NumberInputCommand";
 import { ReportTaskKillCommand } from "./commands/reaction/ReportTaskKillCommand";
 import { ReportCarryOverCommand } from "./commands/reaction/ReportCarryOverCommand";
 import { ReportChallengeCommand } from "./commands/reaction/ReportChallengeCommand";
@@ -35,6 +35,7 @@ import { RequestRescueCommand } from "./commands/interaction/RequestRescueComman
 import { QuestionaireReactionCommand } from "./commands/reaction/QuestionaireReactionCommand";
 import { ThreadSafeCache } from "./support/ThreadSafeCache";
 import { BossQuestionnaire } from "./entities/BossQuestionnaire";
+import { OpenDamageInputForm } from "./commands/interaction/OpenDamageInputForm";
 
 const phraseConfig = yaml.load(fs.readFileSync("src/resources/config.yaml", "utf8"));
 const phraseRepository = new YamlPhraseRepository(phraseConfig as PhraseConfig);
@@ -93,11 +94,13 @@ const reactionEventHandler = new ReactionEventHandler([
 ]);
 reactionEventHandler.listen(client);
 
+const numberInputCommand = new NumberInputCommand();
 const interactionEventHandler = new InteractionEventHandler([
     new BossSelectButtonCommand(apiClient, phraseRepository),
     new ChallengerSelectMenuCommand(apiClient, phraseRepository),
     new StartChallengeCommand(apiClient, phraseRepository),
-    new DamageInputCommand(phraseRepository, apiClient),
+    numberInputCommand,
+    new OpenDamageInputForm(phraseRepository, apiClient, numberInputCommand),
     new DeleteDamageReportCommand(apiClient, phraseRepository),
     new RequestRescueCommand(apiClient, phraseRepository)
 ]);
