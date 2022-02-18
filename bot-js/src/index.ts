@@ -35,6 +35,8 @@ import { RequestRescueCommand } from "./commands/interaction/RequestRescueComman
 import { QuestionaireReactionCommand } from "./commands/reaction/QuestionaireReactionCommand";
 import { ThreadSafeCache } from "./support/ThreadSafeCache";
 import { BossQuestionnaire } from "./entities/BossQuestionnaire";
+import { RequestPinCommand } from "./commands/message/RequestPinCommand";
+import { RequestUnpinCommand } from "./commands/message/RequestUnpinCommand";
 
 const phraseConfig = yaml.load(fs.readFileSync("src/resources/config.yaml", "utf8"));
 const phraseRepository = new YamlPhraseRepository(phraseConfig as PhraseConfig);
@@ -79,7 +81,9 @@ const messaegEventHandler = new MessageEventHandler(
         new AddCommentToDamageReportCommand(apiClient, phraseRepository, client),
         new RegisterCooperateChannelCommand(phraseRepository, client, apiClient),
         new RegisterUncompleteMemberRoleCommand(phraseRepository, client, apiClient),
-        new BossSubjugationCommand(phraseRepository, client, apiClient)
+        new BossSubjugationCommand(phraseRepository, client, apiClient),
+        new RequestPinCommand(phraseRepository, client),
+        new RequestUnpinCommand(phraseRepository, client)
     ],
     phraseRepository
 );
