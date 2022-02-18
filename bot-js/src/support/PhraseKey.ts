@@ -291,6 +291,14 @@ export class PhraseKey {
         return new PhraseKey("not_clan_member_message");
     }
 
+    public static requestPin(): PhraseKey {
+        return new PhraseKey("request_pin");
+    }
+
+    public static requestUnpin(): PhraseKey {
+        return new PhraseKey("request_unpin");
+    }
+
     public toString(): string {
         return this.value;
     }
