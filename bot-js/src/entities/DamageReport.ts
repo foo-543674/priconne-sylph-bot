@@ -80,6 +80,22 @@ export class DamageReport {
         );
     }
 
+    public retry(phraseRepository: PhraseRepository): DamageReport {
+        return new DamageReport(
+            this.id,
+            this.messageId,
+            this.channelId,
+            this.interactionMessageId,
+            this.discordUserId,
+            this.bossNumber,
+            this.memberId,
+            true,
+            null,
+            this.isCarryOver,
+            phraseRepository.get(PhraseKey.retryChallengeLabel())
+        );
+    }
+
     public generateMessage(phraseRepository: PhraseRepository): string {
         const base = String.Format(
             phraseRepository.get(

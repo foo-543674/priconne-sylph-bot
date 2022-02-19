@@ -29,6 +29,7 @@ const buttonInteractionKeys = [
     "openCreateCarryOverForm",
     "deleteCarryOver",
     "confirmedDeleteCarryOver",
+    "retryChallenge",
 ] as const;
 export type ButtonInteractionKey = typeof buttonInteractionKeys[number];
 

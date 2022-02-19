@@ -148,3 +148,4 @@ phrases:
   input_carry_over_seconds_prompt: 持ち越し秒数を入れてね。1分は60秒にして。(例:1分10秒→70)
   time_out_input_message: 入力に時間がかかり過ぎたから、この命令は無効になったよ。このメッセージを削除して、やり直してね。
   confirm_delete_carry_over_message: 自分のではない持ち越しを消そうとしてるよ。間違えた場合は下にある"これらのメッセージを削除する"を押してね。持ち越しを削除しても問題ない場合は削除ボタンを押してね。
+  retry_challenge_label: 再凸

@@ -9,6 +9,7 @@ import { getMentionedUserId } from "../../support/DiscordHelper";
 import { InvalidInteractionError } from "../../support/InvalidInteractionError";
 import { requestRescueButton } from "./RequestRescueCommand";
 import { openDamageInputFormButton } from "./OpenDamageInputFormCommand";
+import { retryChallengeButton } from './RetryChallengeCommand';
 
 export class StartChallengeCommand extends ButtonInteractionCommand {
     constructor(private apiClient: ApiClient, private phraseRepository: PhraseRepository) {
@@ -68,6 +69,7 @@ export class StartChallengeCommand extends ButtonInteractionCommand {
                 new MessageActionRow()
                     .addComponents(openDamageInputFormButton(this.phraseRepository))
                     .addComponents(requestRescueButton(this.phraseRepository))
+                    .addComponents(retryChallengeButton(this.phraseRepository))
                     .addComponents(deleteDamageReportButton(this.phraseRepository))
             ]
         });

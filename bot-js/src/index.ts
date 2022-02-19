@@ -39,6 +39,7 @@ import { ChallengedTypeSelectCommand } from "./commands/interaction/ChallengedTy
 import { OpenCreateCarryOverFormCommand } from "./commands/interaction/OpenCreateCarryOverFormCommand";
 import { DeleteCarryOverCommand } from "./commands/interaction/DeleteCarryOverCommand";
 import { AddCommentToCarryOverCommand } from "./commands/message/AddCommentToCarryOverCommand";
+import { RetryChallengeCommand } from "./commands/interaction/RetryChallengeCommand";
 
 const phraseConfig = yaml.load(fs.readFileSync("src/resources/config.yaml", "utf8"));
 const phraseRepository = new YamlPhraseRepository(phraseConfig as PhraseConfig);
@@ -109,7 +110,8 @@ const interactionEventHandler = new InteractionEventHandler([
     new OpenCreateCarryOverFormCommand(phraseRepository, apiClient, numberInputCommand, challengedTypeSelectCommand),
     new DeleteDamageReportCommand(apiClient, phraseRepository),
     new RequestRescueCommand(apiClient, phraseRepository),
-    new DeleteCarryOverCommand(apiClient, phraseRepository)
+    new DeleteCarryOverCommand(apiClient, phraseRepository),
+    new RetryChallengeCommand(apiClient, phraseRepository)
 ]);
 interactionEventHandler.listen(client);
 

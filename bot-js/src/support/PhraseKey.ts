@@ -312,6 +312,10 @@ export class PhraseKey {
         return new PhraseKey("confirm_delete_carry_over_message");
     }
 
+    public static retryChallengeLabel(): PhraseKey {
+        return new PhraseKey("retry_challenge_label");
+    }
+
     public toString(): string {
         return this.value;
     }
