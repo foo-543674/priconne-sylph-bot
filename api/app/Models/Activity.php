@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Sylph\Entities\Activity as EntitiesActivity;
 use Sylph\Entities\CarryOver;
 use Sylph\Entities\Challenge;
+use Sylph\Entities\OldCarryOver;
 use Sylph\Entities\TaskKill;
 use Sylph\VO\ActivityId;
 use Sylph\VO\ClanBattleDateId;
@@ -60,14 +61,14 @@ class Activity extends Model
                     new ClanBattleDateId(Ulid::fromString($this->acted_date_id)),
                 );
 
-            case CarryOver::getTypeName():
-                return new CarryOver(
+            case TaskKill::getTypeName():
+                return new TaskKill(
                     new ActivityId(Ulid::fromString($this->id)),
                     new MemberId(Ulid::fromString($this->acted_member_id)),
                     new ClanBattleDateId(Ulid::fromString($this->acted_date_id)),
                 );
 
-            case TaskKill::getTypeName():
+            case OldCarryOver::getTypeName():
                 return new TaskKill(
                     new ActivityId(Ulid::fromString($this->id)),
                     new MemberId(Ulid::fromString($this->acted_member_id)),

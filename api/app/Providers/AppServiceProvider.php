@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Infrastructure\CarbonDateTimeProvider;
 use App\Infrastructure\LaravelWebHookServer;
 use App\Repositories\RdbmsActivityRepository;
 use App\Repositories\RdbmsClanBattleRepository;
@@ -12,14 +13,17 @@ use App\Repositories\RdbmsMemberRepository;
 use App\Repositories\RdbmsReportChannelRepository;
 use App\Repositories\RdbmsUncompleteMemberRoleRepository;
 use App\Repositories\RdbmsWebHookRepository;
+use App\Repositories\RedisCarryOverRepository;
 use App\Repositories\RedisDamageReportRepository;
 use App\Support\MessageResolverFromConfig;
 use App\Support\UlidGenerator;
 use Illuminate\Support\ServiceProvider;
 use Sylph\Application\Gateway\WebHookServer;
+use Sylph\Application\Support\DateTimeProvider;
 use Sylph\Application\Support\MessageResolver;
 use Sylph\Application\Support\UlidGenerator as UlidGeneratorInterface;
 use Sylph\Repositories\ActivityRepository;
+use Sylph\Repositories\CarryOverRepository;
 use Sylph\Repositories\ClanBattleRepository;
 use Sylph\Repositories\ClanRepository;
 use Sylph\Repositories\CooperateChannelRepository;
@@ -54,11 +58,13 @@ class AppServiceProvider extends ServiceProvider
         DamageReportRepository::class => RedisDamageReportRepository::class,
         CooperateChannelRepository::class => RdbmsCooperateChannelRepository::class,
         UncompleteMemberRoleRepository::class => RdbmsUncompleteMemberRoleRepository::class,
+        CarryOverRepository::class => RedisCarryOverRepository::class,
 
         // Supports
         UlidGeneratorInterface::class => UlidGenerator::class,
         MessageResolver::class => MessageResolverFromConfig::class,
         WebHookServer::class => LaravelWebHookServer::class,
+        DateTimeProvider::class => CarbonDateTimeProvider::class,
     ];
 
     /**

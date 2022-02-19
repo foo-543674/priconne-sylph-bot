@@ -5,15 +5,15 @@ import { PhraseRepository } from "../../support/PhraseRepository";
 import { PhraseKey } from "../../support/PhraseKey";
 import { InvalidInteractionError } from "../../support/InvalidInteractionError";
 
-export class RequestRescueCommand extends ButtonInteractionCommand {
+export class RetryChallengeCommand extends ButtonInteractionCommand {
     constructor(private apiClient: ApiClient, private phraseRepository: PhraseRepository) {
         super();
     }
 
     protected async executeInteraction(key: ButtonInteractionKey, interaction: ButtonInteraction): Promise<void> {
-        if (key !== "requestRescue") return;
+        if (key !== "retryChallenge") return;
 
-        console.log("request rescue button clicked");
+        console.log("retry challenge button clicked");
 
         const channel = interaction.channel;
         if (!channel) throw new InvalidInteractionError("interaction.channel should not be null", interaction);
@@ -31,9 +31,7 @@ export class RequestRescueCommand extends ButtonInteractionCommand {
         ).find((report) => report.messageId === interaction.message.id);
 
         if (report) {
-            const updatedReport = await this.apiClient.postDamageReport(
-                report.setDamage(0).setComment(this.phraseRepository.get(PhraseKey.requestRescueMessage()))
-            );
+            const updatedReport = await this.apiClient.postDamageReport(report.retry(this.phraseRepository));
             await message.edit(updatedReport.generateMessage(this.phraseRepository));
         } else {
             await message.delete();
@@ -41,6 +39,6 @@ export class RequestRescueCommand extends ButtonInteractionCommand {
     }
 }
 
-export function requestRescueButton(phraseRepository: PhraseRepository) {
-    return button("requestRescue", phraseRepository.get(PhraseKey.requestRescueLabel()), "SECONDARY");
+export function retryChallengeButton(phraseRepository: PhraseRepository) {
+    return button("retryChallenge", phraseRepository.get(PhraseKey.retryChallengeLabel()), "SECONDARY");
 }

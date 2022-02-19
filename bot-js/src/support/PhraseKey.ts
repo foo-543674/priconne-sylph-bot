@@ -1,4 +1,5 @@
 import { BossNumber } from "../entities/BossNumber";
+import { ChallengedType } from "../entities/ChallengedType";
 
 export class PhraseKey {
     private constructor(private value: string) {}
@@ -143,14 +144,6 @@ export class PhraseKey {
         return new PhraseKey("third_challenge_stamp");
     }
 
-    public static firstCarryOverStamp() {
-        return new PhraseKey("first_carry_over_stamp");
-    }
-
-    public static secondCarryOverStamp() {
-        return new PhraseKey("second_carry_over_stamp");
-    }
-
     public static taskKillStamp() {
         return new PhraseKey("task_kill_stamp");
     }
@@ -219,8 +212,8 @@ export class PhraseKey {
         return new PhraseKey("damage_input_apply_label");
     }
 
-    public static deleteDamageReportLabel() {
-        return new PhraseKey("delete_damage_report_label");
+    public static deleteLabel() {
+        return new PhraseKey("delete_label");
     }
 
     public static confirmDeleteDamageReportMessage() {
@@ -289,6 +282,38 @@ export class PhraseKey {
 
     public static notClanMemberMessage(): PhraseKey {
         return new PhraseKey("not_clan_member_message");
+    }
+
+    public static createCarryOverUiLabel(): PhraseKey {
+        return new PhraseKey("create_carry_over_ui_label");
+    }
+
+    public static challengedTypeLabel(type: ChallengedType): PhraseKey {
+        return new PhraseKey(`${type}_label`);
+    }
+
+    public static inputCarryOverSecondsPrompt(): PhraseKey {
+        return new PhraseKey("input_carry_over_seconds_prompt");
+    }
+
+    public static timeOutInputMessage(): PhraseKey {
+        return new PhraseKey("time_out_input_message");
+    }
+
+    public static selectChallengedTypeSelectMessage(): PhraseKey {
+        return new PhraseKey("select_challenged_type_select_message");
+    }
+
+    public static inputCarryOverChallengedTypePrompt(): PhraseKey {
+        return new PhraseKey("input_carry_over_challenged_type_prompt");
+    }
+
+    public static confirmDeleteCarryOverMessage(): PhraseKey {
+        return new PhraseKey("confirm_delete_carry_over_message");
+    }
+
+    public static retryChallengeLabel(): PhraseKey {
+        return new PhraseKey("retry_challenge_label");
     }
 
     public static requestPin(): PhraseKey {

@@ -4,11 +4,12 @@ import { ApiClient } from "../../backend/ApiClient";
 import { PhraseRepository } from "../../support/PhraseRepository";
 import { PhraseKey } from "../../support/PhraseKey";
 import { getGroupOf } from "../../support/RegexHelper";
-import { openDamageInputFormButton } from "./DamageInputCommand";
 import { deleteDamageReportButton } from "./DeleteDamageReportCommand";
 import { getMentionedUserId } from "../../support/DiscordHelper";
 import { InvalidInteractionError } from "../../support/InvalidInteractionError";
 import { requestRescueButton } from "./RequestRescueCommand";
+import { openDamageInputFormButton } from "./OpenDamageInputFormCommand";
+import { retryChallengeButton } from './RetryChallengeCommand';
 
 export class StartChallengeCommand extends ButtonInteractionCommand {
     constructor(private apiClient: ApiClient, private phraseRepository: PhraseRepository) {
@@ -45,6 +46,9 @@ export class StartChallengeCommand extends ButtonInteractionCommand {
         );
         if (!bossNumber)
             throw new InvalidInteractionError("interaction should not related to this message", interaction);
+
+        console.log("start challenge button clicked");
+
         const challengerId = getMentionedUserId(messageContent);
         const userId = challengerId ? challengerId : interaction.user.id;
 
@@ -65,6 +69,7 @@ export class StartChallengeCommand extends ButtonInteractionCommand {
                 new MessageActionRow()
                     .addComponents(openDamageInputFormButton(this.phraseRepository))
                     .addComponents(requestRescueButton(this.phraseRepository))
+                    .addComponents(retryChallengeButton(this.phraseRepository))
                     .addComponents(deleteDamageReportButton(this.phraseRepository))
             ]
         });

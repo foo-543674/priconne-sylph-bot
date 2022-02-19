@@ -13,8 +13,8 @@ use Sylph\Repositories\DamageReportRepository;
 
 class RedisDamageReportRepository implements DamageReportRepository
 {
-    private const BATTLE_TIME_OUT_LIMIT_SECOND = 60 * 60;
-    private const KEY_EXPIRE_SECOND = self::BATTLE_TIME_OUT_LIMIT_SECOND + 30 * 60;
+    private const BATTLE_TIME_OUT_LIMIT_SECOND = 60 * 60; //1時間=3600秒
+    private const KEY_EXPIRE_SECOND = self::BATTLE_TIME_OUT_LIMIT_SECOND + (60 * 30); //1時間30分
 
     public function __construct(private UlidGenerator $ulidGenerator)
     {
