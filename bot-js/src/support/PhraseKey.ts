@@ -305,7 +305,7 @@ export class PhraseKey {
     }
 
     public static inputCarryOverChallengedTypePrompt(): PhraseKey {
-        return new PhraseKey("select_challenged_type_select_message");
+        return new PhraseKey("input_carry_over_challenged_type_prompt");
     }
 
     public static confirmDeleteCarryOverMessage(): PhraseKey {
@@ -314,6 +314,14 @@ export class PhraseKey {
 
     public static retryChallengeLabel(): PhraseKey {
         return new PhraseKey("retry_challenge_label");
+    }
+
+    public static requestPin(): PhraseKey {
+        return new PhraseKey("request_pin");
+    }
+
+    public static requestUnpin(): PhraseKey {
+        return new PhraseKey("request_unpin");
     }
 
     public toString(): string {

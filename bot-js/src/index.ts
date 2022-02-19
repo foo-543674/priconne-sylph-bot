@@ -40,6 +40,8 @@ import { OpenCreateCarryOverFormCommand } from "./commands/interaction/OpenCreat
 import { DeleteCarryOverCommand } from "./commands/interaction/DeleteCarryOverCommand";
 import { AddCommentToCarryOverCommand } from "./commands/message/AddCommentToCarryOverCommand";
 import { RetryChallengeCommand } from "./commands/interaction/RetryChallengeCommand";
+import { RequestPinCommand } from "./commands/message/RequestPinCommand";
+import { RequestUnpinCommand } from "./commands/message/RequestUnpinCommand";
 
 const phraseConfig = yaml.load(fs.readFileSync("src/resources/config.yaml", "utf8"));
 const phraseRepository = new YamlPhraseRepository(phraseConfig as PhraseConfig);
@@ -85,7 +87,9 @@ const messaegEventHandler = new MessageEventHandler(
         new RegisterCooperateChannelCommand(phraseRepository, client, apiClient),
         new RegisterUncompleteMemberRoleCommand(phraseRepository, client, apiClient),
         new BossSubjugationCommand(phraseRepository, client, apiClient),
-        new AddCommentToCarryOverCommand(apiClient, phraseRepository, client)
+        new AddCommentToCarryOverCommand(apiClient, phraseRepository, client),
+        new RequestPinCommand(phraseRepository, client),
+        new RequestUnpinCommand(phraseRepository, client)
     ],
     phraseRepository
 );
