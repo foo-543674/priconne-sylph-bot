@@ -13,6 +13,7 @@ import { DamageReport, DamageReportDto } from "../entities/DamageReport";
 import { setup } from "axios-cache-adapter";
 import { FormationType } from "../entities/FormationType";
 import { CarryOver, CarryOverDto } from "../entities/CarryOver";
+import { BossNumber } from "../entities/BossNumber";
 
 function isAxiosError(error: any): error is AxiosError {
     return !!error.isAxiosError;
@@ -290,6 +291,13 @@ export class ApiClient {
                 }
             })
         ).map((dto) => DamageReport.fromDto(dto));
+    }
+
+    public async postBossSubjugation(channelId: string, bossNumber: BossNumber) {
+        await this.post(`/api/boss_subjugation`, {
+            bossNumber,
+            discordChannelId: channelId
+        });
     }
 
     protected async exists(path: string, config?: AxiosRequestConfig, retriedCount: number = 0): Promise<boolean> {

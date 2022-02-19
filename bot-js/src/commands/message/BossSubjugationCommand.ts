@@ -6,6 +6,7 @@ import { getGroupOf } from "../../support/RegexHelper";
 import { PhraseKey } from "../../support/PhraseKey";
 import { userMension } from "../../support/DiscordHelper";
 import { isMentionedToMe } from "../../support/DiscordHelper";
+import { toBossNumber } from "../../entities/BossNumber";
 
 export class BossSubjugationCommand implements MessageCommand {
     constructor(
@@ -37,6 +38,8 @@ export class BossSubjugationCommand implements MessageCommand {
             await message.reply(this.phraseRepository.get(PhraseKey.noDamageReportChannelsMessage()));
             return;
         }
+
+        await this.apiClient.postBossSubjugation(cooperateChannel.discordChannelId, toBossNumber(targetBossNumber));
 
         for (const damageReportChannel of damageReportChannels) {
             if (!message.guild?.channels.resolve(damageReportChannel.discordChannelId)) continue;
