@@ -2,11 +2,9 @@
 
 namespace Sylph\Application\Usecases;
 
-use JsonSerializable;
 use Sylph\Application\Events\DamageReportRemovedEvent;
 use Sylph\Application\Support\ErrorIgnition;
 use Sylph\Application\Support\MessageKey;
-use Sylph\Application\Support\UlidGenerator;
 use Sylph\Repositories\DamageReportChannelRepository;
 use Sylph\Repositories\DamageReportRepository;
 use Sylph\VO\DiscordChannelId;
@@ -22,7 +20,6 @@ class DeleteDamageReportUsecase
         private DamageReportChannelRepository $damageReportChannelRepository,
         private ErrorIgnition $errorIgnition,
         private DamageReportRemovedEvent $damageReportRemovedEvent,
-        private UlidGenerator $ulidGenerator,
     ) {
         //
     }

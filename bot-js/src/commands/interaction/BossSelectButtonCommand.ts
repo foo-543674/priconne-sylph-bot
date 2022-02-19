@@ -3,7 +3,7 @@ import { ApiClient } from "../../backend/ApiClient";
 import { PhraseRepository } from "../../support/PhraseRepository";
 import { PhraseKey } from "../../support/PhraseKey";
 import { String } from "typescript-string-operations";
-import { challengerSelectMenu } from "./ChallengerSelectMenuCommand";
+import { challengerSelectMenu } from "./MemberSelectMenuCommand";
 import { startChallengeButton, startCarryOverButton } from "./StartChallengeCommand";
 import { ButtonInteractionCommand, ButtonInteractionKey, button } from "./ButtonInteractionCommand";
 import { InvalidInteractionError } from "../../support/InvalidInteractionError";
@@ -43,6 +43,9 @@ export class BossSelectButtonCommand extends ButtonInteractionCommand {
         const damageReportChannel = await this.apiClient.getDamageReportChannel(channel.id);
         if (!damageReportChannel)
             throw new InvalidInteractionError("damage report channel should be registered", interaction);
+
+        console.log("challenge boss button was clicked");
+
         const members = await this.apiClient.getMembers(damageReportChannel.clanId);
 
         if (members.length <= 0) {

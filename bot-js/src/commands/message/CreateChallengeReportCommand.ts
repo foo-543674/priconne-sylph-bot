@@ -1,16 +1,17 @@
-import { Client, Message } from 'discord.js';
-import { MessageCommand } from './MessageCommand';
-import { PhraseRepository } from '../../support/PhraseRepository';
-import { ApiClient } from '../../backend/ApiClient';
-import { ValidationError } from '../../support/ValidationError';
-import { PhraseKey } from '../../support/PhraseKey';
-import { isMentionedToMe } from '../../support/DiscordHelper';
+import { Client, Message, MessageActionRow } from "discord.js";
+import { MessageCommand } from "./MessageCommand";
+import { PhraseRepository } from "../../support/PhraseRepository";
+import { ApiClient } from "../../backend/ApiClient";
+import { ValidationError } from "../../support/ValidationError";
+import { PhraseKey } from "../../support/PhraseKey";
+import { isMentionedToMe } from "../../support/DiscordHelper";
+import { openCreateCarryOverFormButton } from "../interaction/OpenCreateCarryOverFormCommand";
 
 export class CreateChallengeReportCommand implements MessageCommand {
     constructor(
         private phraseRepository: PhraseRepository,
         private discordClient: Client,
-        private apiClient: ApiClient,
+        private apiClient: ApiClient
     ) {
         this.commandPattern = new RegExp(this.phraseRepository.get(PhraseKey.createChallengeReport()));
     }
@@ -29,22 +30,27 @@ export class CreateChallengeReportCommand implements MessageCommand {
                 throw new ValidationError(this.phraseRepository.get(PhraseKey.noInSessionClanBattleMessage()));
             }
 
-            await message.channel.send(this.phraseRepository.get(PhraseKey.challengeReportGuide()));
+            await message.channel.send({
+                content: this.phraseRepository.get(PhraseKey.challengeReportGuide()),
+                components: [new MessageActionRow().addComponents(openCreateCarryOverFormButton(this.phraseRepository))]
+            });
 
-            const messageIds = await Promise.all(clanBattle.dates.map(async (_, index) => {
-                const sentMessage = await message.channel.send(
-                    this.phraseRepository.get(PhraseKey.daysUnit()).replace("{day}", (index + 1).toString())
-                );
+            const messageIds = await Promise.all(
+                clanBattle.dates.map(async (_, index) => {
+                    const sentMessage = await message.channel.send({
+                        content: this.phraseRepository
+                            .get(PhraseKey.daysUnit())
+                            .replace("{day}", (index + 1).toString())
+                    });
 
-                await sentMessage.react(this.phraseRepository.get(PhraseKey.firstChallengeStamp()));
-                await sentMessage.react(this.phraseRepository.get(PhraseKey.secondChallengeStamp()));
-                await sentMessage.react(this.phraseRepository.get(PhraseKey.thirdChallengeStamp()));
-                await sentMessage.react(this.phraseRepository.get(PhraseKey.firstCarryOverStamp()));
-                await sentMessage.react(this.phraseRepository.get(PhraseKey.secondCarryOverStamp()));
-                await sentMessage.react(this.phraseRepository.get(PhraseKey.taskKillStamp()));
+                    await sentMessage.react(this.phraseRepository.get(PhraseKey.firstChallengeStamp()));
+                    await sentMessage.react(this.phraseRepository.get(PhraseKey.secondChallengeStamp()));
+                    await sentMessage.react(this.phraseRepository.get(PhraseKey.thirdChallengeStamp()));
+                    await sentMessage.react(this.phraseRepository.get(PhraseKey.taskKillStamp()));
 
-                return sentMessage.id;
-            }));
+                    return sentMessage.id;
+                })
+            );
 
             await this.apiClient.registerReportMessage(clanName, message.channel.id, ...messageIds);
 

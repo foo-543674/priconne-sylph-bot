@@ -4,14 +4,12 @@ import { PhraseRepository } from "../../support/PhraseRepository";
 import { PhraseKey } from "../../support/PhraseKey";
 import { ApiClient } from "../../backend/ApiClient";
 import { ButtonInteractionCommand } from "./ButtonInteractionCommand";
-import { numberInputForm, NumberInputFormSet } from "./NumberInputCommand";
-import { NumberInput } from "../../support/NumberInput";
-import { appendTo, NumberChar, NumberString, subNumber, toNumber } from "../../support/NumberString";
-import { EmptyString, isEmptyString } from "../../support/EmplyString";
+import { NumberInput, numberInputForm, NumberInputFormSet } from "./NumberInputCommand";
+import { NumberChar, NumericString } from "../../support/NumberString";
 import { HasReferenceMessageInteraction } from "../../support/DiscordHelper";
 import { InvalidInteractionError } from "../../support/InvalidInteractionError";
 
-export class OpenDamageInputForm extends ButtonInteractionCommand {
+export class OpenDamageInputFormCommand extends ButtonInteractionCommand {
     constructor(
         private phraseRepository: PhraseRepository,
         private apiClient: ApiClient,
@@ -23,9 +21,12 @@ export class OpenDamageInputForm extends ButtonInteractionCommand {
     protected async executeInteraction(key: ButtonInteractionKey, interaction: ButtonInteraction): Promise<void> {
         if (key !== "openInputDamageForm") return;
 
-        const input = new DamageInput(this.phraseRepository, this.apiClient);
+        console.log("open input damage button clicked");
 
-        await this.numberInputFormSet.addNew(interaction, input, {
+        const input = new DamageInput(this.phraseRepository, this.apiClient);
+        this.numberInputFormSet.addNew(interaction, input);
+
+        await interaction.reply({
             content: input.content,
             components: numberInputForm(this.phraseRepository),
             ephemeral: true
@@ -40,27 +41,26 @@ export function openDamageInputFormButton(phraseRepository: PhraseRepository) {
 export class DamageInput implements NumberInput {
     constructor(private phraseRepository: PhraseRepository, private apiClient: ApiClient) {}
 
-    private current: NumberString | EmptyString = "";
+    private current: NumericString = new NumericString();
 
     public get hasInput(): boolean {
-        return isEmptyString(this.current);
+        return !this.current.isEmpty;
     }
 
     public get content(): string {
-        return this.hasInput ? this.phraseRepository.get(PhraseKey.damageInputFormMessage()) : this.current;
+        return this.hasInput ? `${this.current}` : this.phraseRepository.get(PhraseKey.damageInputFormMessage());
     }
 
     public addInput(input: NumberChar): void {
-        this.current = isEmptyString(this.current) ? input : appendTo(this.current, input);
+        this.current = this.current.append(input);
     }
 
     public backward(): void {
-        if (isEmptyString(this.current)) return;
-        this.current = subNumber(this.current, 0, this.current.length - 1);
+        this.current = this.current.backward();
     }
 
     public async apply(interaction: HasReferenceMessageInteraction, referenceMessage: Message): Promise<void> {
-        if (isEmptyString(this.current)) return;
+        if (!this.hasInput) return;
         await interaction.update({
             content: this.phraseRepository.get(PhraseKey.interactionDeletePrompt()),
             components: []
@@ -74,7 +74,7 @@ export class DamageInput implements NumberInput {
             })
         ).find((report) => report.messageId === referenceMessage.id);
         if (report) {
-            const updatedReport = await this.apiClient.postDamageReport(report.setDamage(toNumber(this.current)));
+            const updatedReport = await this.apiClient.postDamageReport(report.setDamage(this.current.toNumber()));
             await referenceMessage.edit(updatedReport.generateMessage(this.phraseRepository));
         }
     }

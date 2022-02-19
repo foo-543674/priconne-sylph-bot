@@ -13,6 +13,8 @@ export class RequestRescueCommand extends ButtonInteractionCommand {
     protected async executeInteraction(key: ButtonInteractionKey, interaction: ButtonInteraction): Promise<void> {
         if (key !== "requestRescue") return;
 
+        console.log("request rescue button clicked");
+
         const channel = interaction.channel;
         if (!channel) throw new InvalidInteractionError("interaction.channel should not be null", interaction);
 

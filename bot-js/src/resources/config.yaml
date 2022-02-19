@@ -91,8 +91,6 @@ phrases:
   first_challenge_stamp: 1️⃣
   second_challenge_stamp: 2️⃣
   third_challenge_stamp: 3️⃣
-  first_carry_over_stamp: ☑️
-  second_carry_over_stamp: ✅
   task_kill_stamp: ⚠️
   succeed_reaction: 👍
   failed_reaction: 🥺
@@ -116,7 +114,7 @@ phrases:
   damage_input_9_label: "9"
   damage_input_back_label: "←"
   damage_input_apply_label: "決定"
-  delete_damage_report_label: "削除"
+  delete_label: "削除"
   confirm_delete_damage_report_message: 自分のではないダメージ報告を消そうとしてるよ。間違えた場合は下にある"これらのメッセージを削除する"を押してね。ダメージ報告を削除しても問題ない場合は削除ボタンを押してね。
   no_clan_members_message: クランメンバーが一人も登録されてないよ。メンバー登録コマンドで登録してね。
   not_clan_member_message: クランメンバーとして登録されてないよ。メンバー登録コマンドで登録してもらってね。
@@ -134,3 +132,19 @@ phrases:
   request_rescue_label: 救援要請
   request_rescue_message: 救援求
   no_challenger_message: 希望者なし
+  select_challenged_type_select_message: ボスと物理or魔法を選んでね
+  create_carry_over_ui_label: 持ち越し作成
+  1b_label: 1ボス-物理
+  1m_label: 1ボス-魔法
+  2b_label: 2ボス-物理
+  2m_label: 2ボス-魔法
+  3b_label: 3ボス-物理
+  3m_label: 3ボス-魔法
+  4b_label: 4ボス-物理
+  4m_label: 4ボス-魔法
+  5b_label: 5ボス-物理
+  5m_label: 5ボス-魔法
+  input_carry_over_challenged_type_prompt: 凸したボスと、物理 or 魔法を選択してください。
+  input_carry_over_seconds_prompt: 持ち越し秒数を入れてね。1分は60秒にして。(例:1分10秒→70)
+  time_out_input_message: 入力に時間がかかり過ぎたから、この命令は無効になったよ。このメッセージを削除して、やり直してね。
+  confirm_delete_carry_over_message: 自分のではない持ち越しを消そうとしてるよ。間違えた場合は下にある"これらのメッセージを削除する"を押してね。持ち越しを削除しても問題ない場合は削除ボタンを押してね。

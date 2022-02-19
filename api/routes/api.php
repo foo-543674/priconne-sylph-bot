@@ -5,6 +5,7 @@ use App\Http\Controllers\DeleteChallengeController;
 use App\Http\Controllers\DeleteDamageReportController;
 use App\Http\Controllers\DeleteTaskKillController;
 use App\Http\Controllers\GetActivityController;
+use App\Http\Controllers\GetCarryOverController;
 use App\Http\Controllers\GetClanBattleController;
 use App\Http\Controllers\GetClanController;
 use App\Http\Controllers\GetCooperateChannelController;
@@ -62,6 +63,8 @@ Route::middleware("auth.apikey")->group(function () {
     });
     Route::prefix("/report_channels")->group(function () {
         Route::post("/", PostReportChannelController::class)->name("post.report_channels");
+        Route::delete("/{discordChannelId}/carry_overs/{discordMessageId}", DeleteCarryOverController::class)->name("delete.carry_overs");
+        Route::get("/{discordChannelId}/carry_overs", GetCarryOverController::class)->name("delete.carry_overs");
     });
     Route::prefix("/report_messages")->group(function () {
         Route::get("/{discordMessageId}", GetReportMessageController::class)->name("get.report_messages");
@@ -80,6 +83,9 @@ Route::middleware("auth.apikey")->group(function () {
     Route::prefix("/damage_reports")->group(function () {
         Route::post("/", PostDamageReportController::class)->name("post.damage_reports");
     });
+    Route::prefix("/carry_overs")->group(function () {
+        Route::post("/", PostCarryOverController::class)->name("post.carry_overs");
+    });
     Route::prefix("/uncomplete_member_role")->group(function () {
         Route::post("/", PostUncompleteMemberRoleController::class)->name("post.uncomplete_member_roles");
     });
@@ -89,10 +95,6 @@ Route::middleware("auth.apikey")->group(function () {
     Route::prefix("/challenges/messages/{discordMessageId}/users/{discordUserId}")->group(function () {
         Route::post("/", PostChallengeController::class)->name("post.challenges");
         Route::delete("/", DeleteChallengeController::class)->name("delete.challenges");
-    });
-    Route::prefix("/carry_overs/messages/{discordMessageId}/users/{discordUserId}")->group(function () {
-        Route::post("/", PostCarryOverController::class)->name("post.carry_overs");
-        Route::delete("/", DeleteCarryOverController::class)->name("delete.carry_overs");
     });
     Route::prefix("/task_kills/messages/{discordMessageId}/users/{discordUserId}")->group(function () {
         Route::post("/", PostTaskKillController::class)->name("post.task_kills");

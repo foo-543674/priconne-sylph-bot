@@ -12,7 +12,6 @@ import { ReactionEventHandler } from "./ReactionEventHandler";
 import { InteractionEventHandler } from "./InteractionEventHandler";
 import { NumberInputCommand } from "./commands/interaction/NumberInputCommand";
 import { ReportTaskKillCommand } from "./commands/reaction/ReportTaskKillCommand";
-import { ReportCarryOverCommand } from "./commands/reaction/ReportCarryOverCommand";
 import { ReportChallengeCommand } from "./commands/reaction/ReportChallengeCommand";
 import { BossSubjugationCommand } from "./commands/message/BossSubjugationCommand";
 import { RegisterUncompleteMemberRoleCommand } from "./commands/message/RegisterUncompleteMemberRoleCommand";
@@ -28,14 +27,18 @@ import { RegisterMembersCommand } from "./commands/message/RegisterMembersComman
 import { RegisterClanCommand } from "./commands/message/RegisterClanCommand";
 import { HelpCommand } from "./commands/message/HelpCommand";
 import { BossSelectButtonCommand } from "./commands/interaction/BossSelectButtonCommand";
-import { ChallengerSelectMenuCommand } from "./commands/interaction/ChallengerSelectMenuCommand";
+import { MemberSelectMenuCommand } from "./commands/interaction/MemberSelectMenuCommand";
 import { StartChallengeCommand } from "./commands/interaction/StartChallengeCommand";
 import { DeleteDamageReportCommand } from "./commands/interaction/DeleteDamageReportCommand";
 import { RequestRescueCommand } from "./commands/interaction/RequestRescueCommand";
 import { QuestionaireReactionCommand } from "./commands/reaction/QuestionaireReactionCommand";
 import { ThreadSafeCache } from "./support/ThreadSafeCache";
 import { BossQuestionnaire } from "./entities/BossQuestionnaire";
-import { OpenDamageInputForm } from "./commands/interaction/OpenDamageInputForm";
+import { OpenDamageInputFormCommand } from "./commands/interaction/OpenDamageInputFormCommand";
+import { ChallengedTypeSelectCommand } from "./commands/interaction/ChallengedTypeSelectCommand";
+import { OpenCreateCarryOverFormCommand } from "./commands/interaction/OpenCreateCarryOverFormCommand";
+import { DeleteCarryOverCommand } from "./commands/interaction/DeleteCarryOverCommand";
+import { AddCommentToCarryOverCommand } from "./commands/message/AddCommentToCarryOverCommand";
 
 const phraseConfig = yaml.load(fs.readFileSync("src/resources/config.yaml", "utf8"));
 const phraseRepository = new YamlPhraseRepository(phraseConfig as PhraseConfig);
@@ -80,7 +83,8 @@ const messaegEventHandler = new MessageEventHandler(
         new AddCommentToDamageReportCommand(apiClient, phraseRepository, client),
         new RegisterCooperateChannelCommand(phraseRepository, client, apiClient),
         new RegisterUncompleteMemberRoleCommand(phraseRepository, client, apiClient),
-        new BossSubjugationCommand(phraseRepository, client, apiClient)
+        new BossSubjugationCommand(phraseRepository, client, apiClient),
+        new AddCommentToCarryOverCommand(apiClient, phraseRepository, client)
     ],
     phraseRepository
 );
@@ -88,21 +92,24 @@ messaegEventHandler.listen(client);
 
 const reactionEventHandler = new ReactionEventHandler([
     new ReportChallengeCommand(phraseRepository, apiClient, localDateTimeProvider),
-    new ReportCarryOverCommand(phraseRepository, apiClient),
     new ReportTaskKillCommand(phraseRepository, apiClient),
     new QuestionaireReactionCommand(phraseRepository, client, bossQuestionnaireCache)
 ]);
 reactionEventHandler.listen(client);
 
-const numberInputCommand = new NumberInputCommand();
+const numberInputCommand = new NumberInputCommand(phraseRepository);
+const challengedTypeSelectCommand = new ChallengedTypeSelectCommand(phraseRepository);
 const interactionEventHandler = new InteractionEventHandler([
     new BossSelectButtonCommand(apiClient, phraseRepository),
-    new ChallengerSelectMenuCommand(apiClient, phraseRepository),
+    new MemberSelectMenuCommand(apiClient, phraseRepository),
     new StartChallengeCommand(apiClient, phraseRepository),
     numberInputCommand,
-    new OpenDamageInputForm(phraseRepository, apiClient, numberInputCommand),
+    challengedTypeSelectCommand,
+    new OpenDamageInputFormCommand(phraseRepository, apiClient, numberInputCommand),
+    new OpenCreateCarryOverFormCommand(phraseRepository, apiClient, numberInputCommand, challengedTypeSelectCommand),
     new DeleteDamageReportCommand(apiClient, phraseRepository),
-    new RequestRescueCommand(apiClient, phraseRepository)
+    new RequestRescueCommand(apiClient, phraseRepository),
+    new DeleteCarryOverCommand(apiClient, phraseRepository)
 ]);
 interactionEventHandler.listen(client);
 

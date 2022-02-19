@@ -8,7 +8,7 @@ import { deleteDamageReportButton } from "./DeleteDamageReportCommand";
 import { getMentionedUserId } from "../../support/DiscordHelper";
 import { InvalidInteractionError } from "../../support/InvalidInteractionError";
 import { requestRescueButton } from "./RequestRescueCommand";
-import { openDamageInputFormButton } from "./OpenDamageInputForm";
+import { openDamageInputFormButton } from "./OpenDamageInputFormCommand";
 
 export class StartChallengeCommand extends ButtonInteractionCommand {
     constructor(private apiClient: ApiClient, private phraseRepository: PhraseRepository) {
@@ -45,6 +45,9 @@ export class StartChallengeCommand extends ButtonInteractionCommand {
         );
         if (!bossNumber)
             throw new InvalidInteractionError("interaction should not related to this message", interaction);
+
+        console.log("start challenge button clicked");
+
         const challengerId = getMentionedUserId(messageContent);
         const userId = challengerId ? challengerId : interaction.user.id;
 

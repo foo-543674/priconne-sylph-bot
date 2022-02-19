@@ -2,25 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PostCarryOverRequest;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Sylph\Application\Usecases\ReportCarryOverUsecase;
-use Sylph\VO\DiscordMessageId;
-use Sylph\VO\DiscordUserId;
+use Sylph\Application\Usecases\CreateCarryOverUsecase;
 
 class PostCarryOverController extends Controller
 {
     /**
      * @return JsonResponse|Response
      */
-    public function __invoke(
-        ReportCarryOverUsecase $usecase,
-        string $discordMessageId,
-        string $discordUserId
-    ) {
-        $usecase->execute(new DiscordMessageId($discordMessageId), new DiscordUserId($discordUserId));
+    public function __invoke(CreateCarryOverUsecase $usecase, PostCarryOverRequest $request)
+    {
+        $result = $usecase->execute($request->createInput());
 
-        return response()->noContent();
+        return response()->json($result);
     }
 }

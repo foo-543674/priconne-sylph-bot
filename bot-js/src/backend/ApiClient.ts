@@ -11,6 +11,8 @@ import { ActivityStatus } from "../entities/ActivityStatus";
 import { GetClanParamter } from "./GetClanParameter";
 import { DamageReport, DamageReportDto } from "../entities/DamageReport";
 import { setup } from "axios-cache-adapter";
+import { FormationType } from "../entities/FormationType";
+import { CarryOver, CarryOverDto } from "../entities/CarryOver";
 
 function isAxiosError(error: any): error is AxiosError {
     return !!error.isAxiosError;
@@ -33,6 +35,22 @@ type DamageReportRequestBody = {
     bossNumber: number;
     damage?: number | null;
     isCarryOver?: boolean;
+    comment?: string;
+};
+
+type CarryOverQuery = {
+    messageid?: string;
+    interactionMessageId?: string;
+};
+
+type CarryOverRequestBody = {
+    channelId: string;
+    messageId: string;
+    interactionMessageId: string;
+    discordUserId: string;
+    bossNumber: number;
+    challengedType: FormationType;
+    second: number;
     comment?: string;
 };
 
@@ -128,12 +146,23 @@ export class ApiClient {
         return await this.delete(`/api/challenges/messages/${messageId}/users/${userId}`);
     }
 
-    public async reportCarryOver(messageId: string, userId: string) {
-        return await this.post(`/api/carry_overs/messages/${messageId}/users/${userId}`, null);
+    public async postCarryOver(value: CarryOverRequestBody): Promise<CarryOver> {
+        return CarryOver.fromDto(
+            await this.post<CarryOverDto>(`/api/carry_overs`, {
+                discordChannelId: value.channelId,
+                discordMessageId: value.messageId,
+                interactionMessageId: value.interactionMessageId,
+                discordUserId: value.discordUserId,
+                bossNumber: value.bossNumber,
+                challengedType: value.challengedType,
+                second: value.second,
+                comment: value.comment ?? ""
+            })
+        );
     }
 
-    public async cancelCarryOver(messageId: string, userId: string) {
-        return await this.delete(`/api/carry_overs/messages/${messageId}/users/${userId}`);
+    public async deleteCarryOver(channelId: string, messageId: string) {
+        return await this.delete(`/api/report_channels/${channelId}/carry_overs/${messageId}`);
     }
 
     public async reportTaskKill(messageId: string, userId: string) {
@@ -227,6 +256,23 @@ export class ApiClient {
                 "Cache-Control": "no-cache"
             }
         });
+    }
+
+    public async getCarryOvers(channelId: string, query?: CarryOverQuery): Promise<CarryOver[]> {
+        const queryString = [
+            query && query.messageid ? `discord_message_id=${query.messageid}` : "",
+            query && query.interactionMessageId ? `interaction_message_id=${query.interactionMessageId}` : ""
+        ]
+            .filter((q) => q !== "")
+            .join("&");
+
+        return (
+            await this.getList<CarryOverDto>(`/api/report_channels/${channelId}/carry_overs?${queryString}`, {
+                headers: {
+                    "Cache-Control": "no-cache"
+                }
+            })
+        ).map((dto) => CarryOver.fromDto(dto));
     }
 
     public async getDamageReports(channelId: string, query?: DamageReportQuery): Promise<DamageReport[]> {

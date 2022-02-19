@@ -1,35 +1,36 @@
 import { ButtonInteractionKey, button } from "./ButtonInteractionCommand";
-import {
-    ButtonInteraction,
-    MessageActionRow,
-    MessageButton,
-    MessageComponentInteraction,
-    InteractionReplyOptions
-} from "discord.js";
+import { ButtonInteraction, Message, MessageActionRow, MessageButton, MessageComponentInteraction } from "discord.js";
 import { PhraseRepository } from "../../support/PhraseRepository";
 import { PhraseKey } from "../../support/PhraseKey";
 import { ButtonInteractionCommand } from "./ButtonInteractionCommand";
 import { InvalidInteractionError } from "../../support/InvalidInteractionError";
 import { NumberChar } from "../../support/NumberString";
 import { ThreadSafeCache } from "../../support/ThreadSafeCache";
-import { NumberInput } from "../../support/NumberInput";
 import { HasReferenceMessageInteraction, hasReferenceInteraction } from "../../support/DiscordHelper";
 
+export interface NumberInput {
+    get hasInput(): boolean;
+
+    get content(): string;
+
+    addInput(input: NumberChar): void;
+
+    backward(): void;
+
+    apply(interaction: HasReferenceMessageInteraction, referenceMessage: Message): Promise<void>;
+}
+
 export interface NumberInputFormSet {
-    addNew(
-        trigger: MessageComponentInteraction,
-        numberInput: NumberInput,
-        reply: InteractionReplyOptions
-    ): Promise<void>;
+    addNew(trigger: MessageComponentInteraction, numberInput: NumberInput): Promise<void>;
 }
 
 export class NumberInputCommand extends ButtonInteractionCommand implements NumberInputFormSet {
-    constructor() {
+    constructor(private phraseRepository: PhraseRepository) {
         super();
         this.inputForms = new ThreadSafeCache();
     }
 
-    private inputForms: ThreadSafeCache<NumberInput>;
+    private readonly inputForms: ThreadSafeCache<NumberInput>;
     private static readonly targetKeys: readonly ButtonInteractionKey[] = [
         "numberInput0",
         "numberInput1",
@@ -46,23 +47,24 @@ export class NumberInputCommand extends ButtonInteractionCommand implements Numb
     ] as const;
     private static readonly LIMIT = 60 * 60 * 1000; //一時間
 
-    public async addNew(
-        trigger: MessageComponentInteraction,
-        numberInput: NumberInput,
-        reply: InteractionReplyOptions
-    ): Promise<void> {
-        this.inputForms.set(trigger.message.id, numberInput, NumberInputCommand.LIMIT);
-        if (trigger.replied) {
-            await trigger.reply(reply);
-        } else {
-            await trigger.editReply(reply);
-        }
+    public async addNew(trigger: MessageComponentInteraction, numberInput: NumberInput): Promise<void> {
+        await this.inputForms.set(trigger.message.id, numberInput, NumberInputCommand.LIMIT);
     }
 
     protected async executeInteraction(key: ButtonInteractionKey, interaction: ButtonInteraction): Promise<void> {
         if (!NumberInputCommand.targetKeys.includes(key)) return;
         if (!hasReferenceInteraction(interaction))
             throw new InvalidInteractionError("number input interaction should has reference", interaction);
+
+        console.log("number input form operated");
+
+        if (!await this.inputForms.exists(interaction.message.reference.messageId)) {
+            await interaction.update({
+                content: this.phraseRepository.get(PhraseKey.timeOutInputMessage()),
+                components: []
+            });
+            return;
+        }
 
         switch (key) {
             case "numberInput0":
@@ -128,10 +130,11 @@ export class NumberInputCommand extends ButtonInteractionCommand implements Numb
 
         await this.inputForms.get(interaction.message.reference.messageId, async (input) => {
             await input.apply(interaction, referenceMessage);
-            if (interaction.replied) {
-                await interaction.deferUpdate();
-            }
         });
+
+        if (!interaction.replied) {
+            await interaction.deferUpdate();
+        }
     }
 }
 

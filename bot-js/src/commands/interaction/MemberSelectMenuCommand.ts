@@ -17,7 +17,7 @@ import { notNull } from "../../support/ArrayHelper";
 import { pageingOption, isPagingOption, getPageNumber } from "../../support/SelectMenuHelper";
 import { startCarryOverButton, startChallengeButton } from "./StartChallengeCommand";
 
-export class ChallengerSelectMenuCommand extends SelectMenuInteractionCommand {
+export class MemberSelectMenuCommand extends SelectMenuInteractionCommand {
     constructor(private apiClient: ApiClient, private phraseRepository: PhraseRepository) {
         super();
     }
@@ -26,13 +26,15 @@ export class ChallengerSelectMenuCommand extends SelectMenuInteractionCommand {
         key: SelectMenuInteractionKey,
         interaction: SelectMenuInteraction
     ): Promise<void> {
-        if (key !== "challengerSelect") return;
+        if (key !== "memberSelect") return;
         await interaction.deferUpdate();
 
         const channelId = interaction.channel?.id;
         if (!channelId) return;
         const damageReportChannel = await this.apiClient.getDamageReportChannel(channelId);
         if (!damageReportChannel) return;
+
+        console.log("member was selected");
 
         const members = await this.apiClient.getMembers(damageReportChannel.clanId);
         const [selected] = interaction.values;
@@ -81,5 +83,5 @@ export function challengerSelectMenu(
         page < pageCount ? pageingOption(phraseRepository, page + 1) : null
     ].filter(notNull);
 
-    return selectMenu("challengerSelect", phraseRepository.get(PhraseKey.challengerSelectPlaceHolder()), ...options);
+    return selectMenu("memberSelect", phraseRepository.get(PhraseKey.challengerSelectPlaceHolder()), ...options);
 }

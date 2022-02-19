@@ -7,6 +7,8 @@ use App\Models\ReportMessage as ModelsReportMessage;
 use Illuminate\Database\Eloquent\Builder;
 use Sylph\Entities\ReportChannel;
 use Sylph\Repositories\ReportChannelRepository;
+use Sylph\VO\DiscordChannelId;
+use Sylph\VO\ClanBattleId;
 use Sylph\VO\DiscordMessageId;
 use Sylph\VO\ReportChannelId;
 
@@ -34,6 +36,16 @@ class RdbmsReportChannelRepository implements ReportChannelRepository
             ->whereHas("messages", function (Builder $query) use ($discordMessageId) {
                 $query->where("discord_message_id", $discordMessageId->__toString());
             })
+            ->first()
+            ?->toEntity();
+    }
+
+    /** {@inheritdoc} */
+    public function getByDiscordChannelid(DiscordChannelId $discordChannelId, ClanBattleId $clanBattleId): ?ReportChannel
+    {
+        return ModelsReportChannel::query()
+            ->where("discord_channel_id", $discordChannelId)
+            ->where("clan_battle_id", $clanBattleId)
             ->first()
             ?->toEntity();
     }

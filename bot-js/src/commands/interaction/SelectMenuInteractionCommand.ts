@@ -2,7 +2,7 @@ import { Interaction, SelectMenuInteraction, MessageSelectMenu, MessageSelectOpt
 import { ValidationError } from "../../support/ValidationError";
 import { InteractionCommand } from "./InteractionCommand";
 
-const selectMenuInteractionKeys = ["challengerSelect"] as const;
+const selectMenuInteractionKeys = ["memberSelect","challengedTypeSelect"] as const;
 export type SelectMenuInteractionKey = typeof selectMenuInteractionKeys[number];
 
 function isKeyOfSelectMenuInteraction(value: string): value is SelectMenuInteractionKey {
