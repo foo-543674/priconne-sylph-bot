@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Activity;
 use App\Models\Clan;
+use App\Models\Activity;
+use Illuminate\Http\Request;
+use Sylph\Entities\TaskKill;
+use Sylph\Entities\Challenge;
 use App\Models\ClanBattleDate;
+use Sylph\Entities\OldCarryOver;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\Request;
-use Sylph\Entities\CarryOver;
-use Sylph\Entities\Challenge;
-use Sylph\Entities\TaskKill;
 
 class GetActivityController extends Controller
 {
@@ -38,7 +38,7 @@ class GetActivityController extends Controller
         return response()->json([
             "date" => $date->date_value,
             Challenge::getTypeName() => $activities->where('type', Challenge::getTypeName())->count(),
-            CarryOver::getTypeName() => $activities->where('type', CarryOver::getTypeName())->count(),
+            OldCarryOver::getTypeName() => $activities->where('type', OldCarryOver::getTypeName())->count(),
             TaskKill::getTypeName() => $activities->where('type', TaskKill::getTypeName())->count(),
         ]);
     }
