@@ -6,7 +6,6 @@ import { PhraseConfig } from "./support/PhraseConfig";
 import { Client, Intents } from "discord.js";
 import { ApiClient } from "./backend/ApiClient";
 import * as batch from "./batch";
-import { DateFnsLocalDateProvider } from "./date-fns/DateFnsLocalDateProvider";
 import { MessageEventHandler } from "./MessageEventHandler";
 import { ReactionEventHandler } from "./ReactionEventHandler";
 import { InteractionEventHandler } from "./InteractionEventHandler";
@@ -68,7 +67,7 @@ if (!(process.env.API_URI && process.env.API_KEY && process.env.DISCORD_TOKEN)) 
 }
 
 const apiClient = new ApiClient(process.env.API_URI, process.env.API_KEY);
-const localDateTimeProvider = new DateFnsLocalDateProvider(process.env.TZ ?? "Asia/Tokyo");
+// const localDateTimeProvider = new DateFnsLocalDateProvider(process.env.TZ ?? "Asia/Tokyo");
 
 const bossQuestionnaireCache = new ThreadSafeCache<BossQuestionnaire>();
 
@@ -96,7 +95,7 @@ const messaegEventHandler = new MessageEventHandler(
 messaegEventHandler.listen(client);
 
 const reactionEventHandler = new ReactionEventHandler([
-    new ReportChallengeCommand(phraseRepository, apiClient, localDateTimeProvider),
+    new ReportChallengeCommand(phraseRepository, apiClient),
     new ReportTaskKillCommand(phraseRepository, apiClient),
     new QuestionaireReactionCommand(phraseRepository, client, bossQuestionnaireCache)
 ]);

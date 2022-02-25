@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -65,5 +66,10 @@ class ReportChannel extends Model
             new DiscordChannelId($this->discord_channel_id),
             ...collect($this->messages)->map(fn (ReportMessage $message) => $message->toEntity()),
         );
+    }
+
+    public static function queryOfClanAndClanBattle(string $clanId, string $clanBattleId): Builder
+    {
+        return self::query()->where("clan_id", $clanId)->where("clan_battle_id", $clanBattleId);
     }
 }

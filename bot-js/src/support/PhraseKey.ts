@@ -188,6 +188,14 @@ export class PhraseKey {
         return new PhraseKey("help_message_boss_subjugation");
     }
 
+    public static helpMessagePin() {
+        return new PhraseKey("help_message_pin");
+    }
+
+    public static helpMessageUnpin() {
+        return new PhraseKey("help_message_unpin");
+    }
+
     public static openDamageInputFormLabel() {
         return new PhraseKey("open_damage_input_form_label");
     }

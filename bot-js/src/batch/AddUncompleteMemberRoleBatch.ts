@@ -26,7 +26,7 @@ export class AddUncompleteMemberRoleBatch implements Batch {
 
             if (!members) continue;
             const discordMembers = await discordGuild.members.fetch({
-                user: members.map(member => member.discord_user_id),
+                user: members.map(member => member.discordUserId),
             });
 
             const role = await this.apiClient.getUncompleteMemberRole(clan.id);

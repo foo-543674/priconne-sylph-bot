@@ -10,12 +10,15 @@ import { HasReferenceMessageInteraction } from "../../support/DiscordHelper";
 import { InvalidInteractionError } from "../../support/InvalidInteractionError";
 import { ChallengedType, getBossNumberAndFormationType } from "../../entities/ChallengedType";
 import { EmptyString, isEmptyString } from "../../support/EmplyString";
-import { deleteCarryOverButton } from './DeleteCarryOverCommand';
+import { deleteCarryOverButton } from "./DeleteCarryOverCommand";
 import {
     ChallengedTypeSelectInputFormSet,
     ChallengedTypeSelectInput,
     challengedTypeSelectMenu
 } from "./ChallengedTypeSelectCommand";
+import { firstOrNull } from "../../support/ArrayHelper";
+import { GetClanParamter } from "../../backend/GetClanParameter";
+import { hasClanBattleStatus, isCompleted } from "../../entities/Member";
 
 export class OpenCreateCarryOverFormCommand extends ButtonInteractionCommand {
     constructor(
@@ -100,6 +103,8 @@ class CarryOverInput implements NumberInput, ChallengedTypeSelectInput {
         });
         const channel = interaction.channel;
         if (!channel) throw new InvalidInteractionError("interaction.channel should not be null", interaction);
+        const triggerMessage = interaction.message;
+        const targetUser = interaction.user;
 
         const message = await channel.send(this.phraseRepository.get(PhraseKey.nowloadingMessage()));
 
@@ -108,8 +113,8 @@ class CarryOverInput implements NumberInput, ChallengedTypeSelectInput {
         const carryOver = await this.apiClient.postCarryOver({
             channelId: channel.id,
             messageId: message.id,
-            interactionMessageId: interaction.message.reference.messageId,
-            discordUserId: interaction.user.id,
+            interactionMessageId: triggerMessage.reference.messageId,
+            discordUserId: targetUser.id,
             bossNumber: bossNumber,
             challengedType: formationType,
             second: this.second.toNumber()
@@ -117,10 +122,26 @@ class CarryOverInput implements NumberInput, ChallengedTypeSelectInput {
 
         await message.edit({
             content: carryOver.generateMessage(this.phraseRepository),
-            components: [
-                new MessageActionRow()
-                    .addComponents(deleteCarryOverButton(this.phraseRepository))
-            ]
-        })
+            components: [new MessageActionRow().addComponents(deleteCarryOverButton(this.phraseRepository))]
+        });
+
+        const clan = firstOrNull(
+            await this.apiClient.getClans(new GetClanParamter(undefined, undefined, triggerMessage.channelId))
+        );
+        if (!clan) return;
+
+        const member = await this.apiClient.getMember(clan.id, targetUser.id);
+        if (!member || !hasClanBattleStatus(member)) return;
+
+        if (isCompleted(member)) return;
+
+        const role = await this.apiClient.getUncompleteMemberRole(clan.id);
+        if (!role) return;
+        const discordRole = await triggerMessage.guild?.roles.fetch(role.role.discordRoleId);
+        if (!discordRole) return;
+        const discordMember = await triggerMessage.guild?.members.fetch(targetUser.id);
+        if (!discordMember) return;
+
+        await discordMember.roles.add(discordRole);
     }
 }

@@ -12,7 +12,7 @@ use Sylph\Application\Support\DateTimeProvider;
 class CarbonDateTimeProvider implements DateTimeProvider
 {
     /** {@inheritdoc} */
-    public function getCurrent(): DateTime
+    public function getNow(): DateTime
     {
         return (new Carbon())->toDateTime();
     }

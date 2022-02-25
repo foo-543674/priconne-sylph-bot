@@ -52,7 +52,7 @@ export class MemberSelectMenuCommand extends SelectMenuInteractionCommand {
                 ]
             });
         } else {
-            const member = members.find((m) => m.discord_user_id === selected);
+            const member = members.find((m) => m.discordUserId === selected);
             if (!member) return;
 
             const [bossNumber] = getGroupOf(
@@ -64,7 +64,7 @@ export class MemberSelectMenuCommand extends SelectMenuInteractionCommand {
             await interaction.editReply({
                 content: `${String.Format(this.phraseRepository.get(PhraseKey.startChallengePromptTemplate()), {
                     bossNumber
-                })} ${userMension(member.discord_user_id)}`
+                })} ${userMension(member.discordUserId)}`
             });
         }
     }
@@ -79,7 +79,7 @@ export function challengerSelectMenu(
     const pageCount = chunks.length;
     const options = [
         page > 1 ? pageingOption(phraseRepository, page - 1) : null,
-        ...chunks[page - 1].map((m) => ({ label: m.name, value: m.discord_user_id })),
+        ...chunks[page - 1].map((m) => ({ label: m.name, value: m.discordUserId })),
         page < pageCount ? pageingOption(phraseRepository, page + 1) : null
     ].filter(notNull);
 
