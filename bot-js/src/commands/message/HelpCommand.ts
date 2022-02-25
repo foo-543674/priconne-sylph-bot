@@ -26,6 +26,8 @@ export class HelpCommand implements MessageCommand {
         PhraseKey.helpMessageRegisterCoopreateChannel(),
         PhraseKey.helpMessageBossSubjugation(),
         PhraseKey.helpMessageRegisterUncompleteMemberRole(),
+        PhraseKey.helpMessagePin(),
+        PhraseKey.helpMessageUnpin(),
     ];
 
     async execute(message: Message): Promise<void> {
