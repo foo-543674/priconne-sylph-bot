@@ -3,11 +3,11 @@ phrases:
   help: 使い方教えて
   register_clan: (?<clanName>[\s\S]+)を登録して
   request_pin: ピン留めして
-  request_unpin: ピン留め解除して
+  request_unpin: ピン留め(解除|外)して
   register_members: (?<clanName>[\s\S]+)のメンバーを登録して
   create_challenge_report: (?<clanName>[\s\S]+)の凸報告場所を作って
   register_webhook: (?<clanName>[\s\S]+)の状況が変化したら \[(?<url>https?://[\w!\?/\+\-_~=;\.,\*&@#\$%\(\)'\[\]]+)\] に通知して
-  create_boss_questionnaire: ボスアンケートを?作って
+  create_boss_questionnaire: ボスアンケ(ート)?を?作って
   boss_notification: (?<bossNumber>[1-5])(ボス)?に?行きたい人に通知して
   get_boss_questionnaire_result: アンケ(ート)?結果見せて
   create_damage_report: ここを(?<clanName>[\s\S]+)のダメージ報告場所にするよ
@@ -64,7 +64,7 @@ phrases:
   help_message_register_coopreate_channel: |-
     コマンド : ここをクラン名の連携チャンネルにするよ
     概要 : コマンドを入力したチャンネルをクランの連携用チャンネルに設定します。連携用チャンネルで実行されたコマンドは指定したクランに対するアクションと認識されます。
-    使用例 : ここをテストクランの連携用チャンネルにするよ
+    使用例 : ここをテストクランの連携チャンネルにするよ
     ---------------------------------------------------------------------------
   help_message_boss_subjugation: |-
     コマンド : (1~5の番号)ボス討伐
@@ -96,7 +96,11 @@ phrases:
   create_damage_report_message: |
     このチャンネルをダメージ報告場所として設定するよ。
     凸をするボスのボタンを押すと、凸宣言の作成案内が開始されるよ。
+    ダメージを入力するときはダメージ入力を押してね。
+    救援が必要なときは救援要請を押してね。
+    タスキルして再凸するときは再凸ボタンを押してね。
     コメントを追記する場合は、作成された凸宣言に返信をしてね。
+    抜けたら削除を押してね。
   cannot_get_role_message: ロールが見つからないよ。対象のロールに対してメンションをしてね。
   cannot_use_command_in_dm_message: このコマンドはダイレクトメッセージでは使えないよ。サーバー内のテキストチャンネルで実行してね。
   first_challenge_stamp: 1️⃣

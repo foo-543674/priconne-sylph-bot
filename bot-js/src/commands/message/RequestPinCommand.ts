@@ -20,5 +20,6 @@ export class RequestPinCommand implements MessageCommand {
 
         const target = await message.fetchReference();
         await target.pin();
+        await message.react(this.phraseRepository.get(PhraseKey.succeedReaction()));
     }
 }
