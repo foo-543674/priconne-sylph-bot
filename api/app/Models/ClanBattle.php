@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use DateTime;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -54,5 +56,16 @@ class ClanBattle extends Model
             collect($this->clanBattleDates)->map(fn (ClanBattleDate $date) => $date->toEntity())->toArray(),
             $this->finish?->toEntity(),
         );
+    }
+
+    public function getToday(DateTime $now): ?ClanBattleDate
+    {
+        return $this->clanBattleDates->first(fn (ClanBattleDate $date) => $date->isToday($now));
+    }
+
+    public static function queryOfInSession(): Builder
+    {
+        return self::query()
+            ->doesntHave("finish");
     }
 }

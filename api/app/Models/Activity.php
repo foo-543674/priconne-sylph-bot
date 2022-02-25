@@ -79,4 +79,18 @@ class Activity extends Model
                 throw new InvalidDbStateException('Type "' . $this->type . '" is invalid.');
         }
     }
+
+    /**
+     * @param string $memberId MemberのID
+     * @param string $dateId ClabBattleDateのID
+     * @return Activity[]
+     */
+    public static function getChallengesOf(string $memberId, string $dateId)
+    {
+        return self::query()
+            ->where("acted_member_id", $memberId)
+            ->where("acted_date_id", $dateId)
+            ->where("type", CHallenge::getTypeName())
+            ->get();
+    }
 }

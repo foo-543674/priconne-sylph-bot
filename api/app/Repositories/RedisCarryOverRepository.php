@@ -73,7 +73,7 @@ class RedisCarryOverRepository implements CarryOverRepository
         $key = new CarryOverKey($value->getChannelId(), $value->getId());
         Redis::set($key->__toString(), json_encode($value, JSON_UNESCAPED_UNICODE));
 
-        $currentDateTime = new Carbon($this->dateTimeProvider->getCurrent());
+        $currentDateTime = new Carbon($this->dateTimeProvider->getNow());
         //NOTE: プリコネの日付リセットが5時なので、0時〜5時は前日の分としてカウントする必要がある
         $allClearingDateTime = (new Carbon($this->dateTimeProvider->getTimeOfToday(self::PRICONNE_RESET_DAY_TIME, 0, 0)))
             ->addDays((0 <= $currentDateTime->hour && $currentDateTime->hour < self::PRICONNE_RESET_DAY_TIME) ? 0 : 1);

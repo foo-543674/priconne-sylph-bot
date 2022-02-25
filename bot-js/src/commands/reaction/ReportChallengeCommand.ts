@@ -1,20 +1,16 @@
 import { MessageReaction, User } from "discord.js";
-import { pipe } from "fp-ts/lib/function";
 import { ApiClient } from "../../backend/ApiClient";
 import { GetClanParamter } from "../../backend/GetClanParameter";
 import { PhraseKey } from "../../support/PhraseKey";
 import { PhraseRepository } from "../../support/PhraseRepository";
 import { ReactionCommand } from "./ReactionCommand";
-import * as TaskOption from "fp-ts/lib/TaskOption";
-import { getRangeOfDate, isBetween } from "../../support/DateCalculate";
-import { parseISO } from "date-fns";
-import { LocalDateTimeProvider } from "../../support/LocalDateProvider";
+import { firstOrNull } from "../../support/ArrayHelper";
+import { hasClanBattleStatus, isCompleted } from "../../entities/Member";
 
 export class ReportChallengeCommand implements ReactionCommand {
     constructor(
         private phraseRepository: PhraseRepository,
-        private apiClient: ApiClient,
-        private dateTimeProvider: LocalDateTimeProvider
+        private apiClient: ApiClient
     ) {}
 
     async isTarget(reaction: MessageReaction): Promise<boolean> {
@@ -30,77 +26,51 @@ export class ReportChallengeCommand implements ReactionCommand {
         if (!(await this.isTarget(reaction))) return;
         console.log("report challenge");
 
+        const clan = firstOrNull(
+            await this.apiClient.getClans(new GetClanParamter(undefined, undefined, reaction.message.channelId))
+        );
+        if (!clan) return;
+
         await this.apiClient.reportChallenge(reaction.message.id, user.id);
 
-        const status = await this.apiClient.getActivityStatus(reaction.message.id, user.id);
+        const member = await this.apiClient.getMember(clan.id, user.id);
+        if (!member || !hasClanBattleStatus(member)) return;
 
-        if (!status) return;
+        if (!isCompleted(member)) return;
 
-        const { since, until } = getRangeOfDate(parseISO(status.date));
-        if (!isBetween(this.dateTimeProvider.getLocalDateTime(), since, until)) return;
+        const role = await this.apiClient.getUncompleteMemberRole(clan.id);
+        if (!role) return;
+        const discordRole = await reaction.message.guild?.roles.fetch(role.role.discordRoleId);
+        if (!discordRole) return;
+        const discordMember = await reaction.message.guild?.members.fetch(user.id);
+        if (!discordMember) return;
 
-        //NOTE: 3凸完了してない場合
-        if (status.Challenge < 3) return;
-
-        await pipe(
-            TaskOption.fromTask(
-                async () =>
-                    await this.apiClient.getClans(new GetClanParamter(undefined, undefined, reaction.message.channelId))
-            ),
-            TaskOption.chainNullableK((clans) => clans),
-            TaskOption.chainNullableK((clans) => (clans.length === 0 ? null : clans[0])),
-            TaskOption.chainTaskK((clan) => async () => await this.apiClient.getUncompleteMemberRole(clan.id)),
-            TaskOption.chainNullableK((role) => role),
-            TaskOption.chainTaskK(
-                (role) => async () => await reaction.message.guild?.roles.fetch(role.role.discordRoleId)
-            ),
-            TaskOption.chainNullableK((role) => role),
-            TaskOption.chain((role) =>
-                pipe(
-                    TaskOption.fromTask(async () => await reaction.message.guild?.members.fetch(user.id)),
-                    TaskOption.chainNullableK((member) => member),
-                    TaskOption.chainTaskK((member) => async () => await member.roles.remove(role))
-                )
-            )
-        )();
+        await discordMember.roles.remove(discordRole);
     }
 
     async executeForRemove(reaction: MessageReaction, user: User): Promise<void> {
         if (!(await this.isTarget(reaction))) return;
         console.log("cancel challenge");
 
+        const clan = firstOrNull(
+            await this.apiClient.getClans(new GetClanParamter(undefined, undefined, reaction.message.channelId))
+        );
+        if (!clan) return;
+
         await this.apiClient.cancelChallenge(reaction.message.id, user.id);
 
-        const status = await this.apiClient.getActivityStatus(reaction.message.id, user.id);
+        const member = await this.apiClient.getMember(clan.id, user.id);
+        if (!member || !hasClanBattleStatus(member)) return;
 
-        if (!status) return;
+        if (isCompleted(member)) return;
 
-        const { since, until } = getRangeOfDate(parseISO(status.date));
-        if (!isBetween(new Date(), since, until)) return;
+        const role = await this.apiClient.getUncompleteMemberRole(clan.id);
+        if (!role) return;
+        const discordRole = await reaction.message.guild?.roles.fetch(role.role.discordRoleId);
+        if (!discordRole) return;
+        const discordMember = await reaction.message.guild?.members.fetch(user.id);
+        if (!discordMember) return;
 
-        //NOTE: 3凸完了してる場合
-        if (status.Challenge === 3) return;
-
-        await pipe(
-            TaskOption.fromTask(
-                async () =>
-                    await this.apiClient.getClans(new GetClanParamter(undefined, undefined, reaction.message.channelId))
-            ),
-            TaskOption.chainNullableK((clans) => clans),
-            TaskOption.chainNullableK((clans) => (clans.length === 0 ? null : clans[0])),
-            TaskOption.chainTaskK((clan) => async () => await this.apiClient.getUncompleteMemberRole(clan.id)),
-            TaskOption.chainNullableK((role) => role),
-            TaskOption.chainTaskK(
-                (role) => async () => await reaction.message.guild?.roles.fetch(role.role.discordRoleId)
-            ),
-            TaskOption.chainNullableK((role) => role),
-            TaskOption.chain((role) =>
-                pipe(
-                    TaskOption.fromTask(async () => await reaction.message.guild?.members.fetch(user.id)),
-                    TaskOption.chainNullableK((member) => member),
-                    TaskOption.chainTaskK((member) => async () => await member.roles.add(role))
-                )
-            )
-        )();
+        await discordMember.roles.add(discordRole);
     }
 }

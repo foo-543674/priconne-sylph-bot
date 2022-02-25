@@ -11,6 +11,7 @@ use App\Http\Controllers\PostWebHookController;
 use App\Http\Controllers\GetCarryOverController;
 use App\Http\Controllers\PostTaskKillController;
 use App\Http\Controllers\GetClanBattleController;
+use App\Http\Controllers\GetMemberListController;
 use App\Http\Controllers\PostCarryOverController;
 use App\Http\Controllers\PostChallengeController;
 use App\Http\Controllers\DeleteTaskKillController;
@@ -50,7 +51,10 @@ Route::middleware("auth.apikey")->group(function () {
         Route::post("/", PostClanController::class)->name("post.clans");
         Route::get("/", GetClanController::class)->name("get.clans");
         Route::prefix("/{clanId}")->group(function () {
-            Route::get("/members", GetMemberController::class)->name("get.members");
+            Route::prefix("/members")->group(function () {
+                Route::get("/", GetMemberListController::class)->name("get.members");
+                Route::get("/{discordUserId}", GetMemberController::class)->name("get.member");
+            });
             Route::get("/uncomplete_member_role", GetUncompleteMemberRoleController::class)->name("get.uncomplete_member_roles");
         });
     });

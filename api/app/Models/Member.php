@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -56,5 +57,12 @@ class Member extends Model
             new DiscordUserId($this->discord_user_id),
             new ClanId(Ulid::fromString($this->clan_id))
         );
+    }
+
+    public static function queryOfFilterByClanAndDiscordUserId(string $clanId, string $discordUserId): Builder
+    {
+        return self::query()
+            ->where("clan_id", $clanId)
+            ->where("discord_user_id", $discordUserId);
     }
 }

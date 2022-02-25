@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use DateTime;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -62,5 +63,15 @@ class ClanBattleDate extends Model
             new ClanBattleDateId(Ulid::fromString($this->id)),
             new Date($this->date_value)
         );
+    }
+
+    const PRICONNE_RESET_TIME = 5;
+
+    public function isToday(DateTime $now): bool
+    {
+        $since = (new Carbon($this->date_value))->setTime(self::PRICONNE_RESET_TIME, 0);
+        $until = (new Carbon($this->date_value))->setTime(self::PRICONNE_RESET_TIME, 0)->addDay();
+
+        return ($since <= $now  && $now < $until);
     }
 }

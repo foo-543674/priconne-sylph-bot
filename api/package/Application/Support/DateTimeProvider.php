@@ -12,7 +12,7 @@ interface DateTimeProvider
     /**
      * 現在時刻を取得する
      */
-    public function getCurrent(): DateTime;
+    public function getNow(): DateTime;
 
     /**
      * 当日の指定した時間を取得する

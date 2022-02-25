@@ -5,6 +5,9 @@ import { PhraseRepository } from "../../support/PhraseRepository";
 import { PhraseKey } from "../../support/PhraseKey";
 import { isMentionedTo } from "../../support/DiscordHelper";
 import { InvalidInteractionError } from "../../support/InvalidInteractionError";
+import { firstOrNull } from "../../support/ArrayHelper";
+import { GetClanParamter } from "../../backend/GetClanParameter";
+import { hasClanBattleStatus, isCompleted } from "../../entities/Member";
 
 export class DeleteCarryOverCommand extends ButtonInteractionCommand {
     constructor(private apiClient: ApiClient, private phraseRepository: PhraseRepository) {
@@ -51,7 +54,28 @@ export class DeleteCarryOverCommand extends ButtonInteractionCommand {
 
     protected async deleteCarryOver(channel: TextBasedChannel, message: Message) {
         await message.delete();
+
+        const carryOver = firstOrNull(await this.apiClient.getCarryOvers(channel.id, { messageid: message.id }));
+        if (!carryOver) return;
+
         await this.apiClient.deleteCarryOver(channel.id, message.id);
+
+        const clan = firstOrNull(await this.apiClient.getClans(new GetClanParamter(undefined, undefined, channel.id)));
+        if (!clan) return;
+
+        const member = await this.apiClient.getMember(clan.id, carryOver.discordUserId);
+        if (!member || !hasClanBattleStatus(member)) return;
+
+        if (!isCompleted(member)) return;
+
+        const role = await this.apiClient.getUncompleteMemberRole(clan.id);
+        if (!role) return;
+        const discordRole = await message.guild?.roles.fetch(role.role.discordRoleId);
+        if (!discordRole) return;
+        const discordMember = await message.guild?.members.fetch(member.discordUserId);
+        if (!discordMember) return;
+
+        await discordMember.roles.remove(discordRole);
     }
 }
 
@@ -62,4 +86,3 @@ export function deleteCarryOverButton(phraseRepository: PhraseRepository) {
 export function confirmedDeleteCarryOverReportButton(phraseRepository: PhraseRepository) {
     return button("confirmedDeleteCarryOver", phraseRepository.get(PhraseKey.deleteLabel()), "DANGER");
 }
-

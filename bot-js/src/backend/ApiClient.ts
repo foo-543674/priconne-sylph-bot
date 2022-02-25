@@ -247,6 +247,14 @@ export class ApiClient {
         return await this.getList<Member>(`/api/clans/${clanId}/members`);
     }
 
+    public async getMember(clanId: string, userId: string): Promise<Member | null> {
+        return await this.getSingle<Member>(`/api/clans/${clanId}/members/${userId}`, {
+            headers: {
+                "Cache-Control": "no-cache"
+            }
+        });
+    }
+
     public async getUncompleteMemberRole(clanId: string): Promise<UncompleteMemberRole | null> {
         return await this.getSingle<UncompleteMemberRole>(`/api/clans/${clanId}/uncomplete_member_role`);
     }
