@@ -16,7 +16,7 @@ phrases:
   register_uncomplete_member_role: (?<clanName>[\s\S]+)の凸未完了者のロールを登録して
   challenge_report_guide: |-
     凸をしたら回数に応じてスタンプを押してね。
-    持ち越しを持ったら持ち越し作成ボタンを教えてね。持ち越しを消化したら削除を押してね。
+    持ち越しを持ったら持ち越し作成ボタンを押してね。持ち越しを消化したら削除を押してね。
     作成された持ち越しメッセージに対して返信をすると、補足情報を入力できるよ。
     タスキルを使ったら黄色い警告スタンプを押してね。
   no_member_for_register_message: 登録対象が見つからないよ。登録対象のメンバー(もしくはロール)のメンションをつけてコマンドを打ってね。
@@ -148,7 +148,7 @@ phrases:
   request_rescue_message: 救援求
   no_challenger_message: 希望者なし
   select_challenged_type_select_message: ボスと物理or魔法を選んでね
-  create_carry_over_ui_label: 持ち越し作成
+  create_carry_over_ui_label: 持ち越し登録
   1b_label: 1ボス-物理
   1m_label: 1ボス-魔法
   2b_label: 2ボス-物理
