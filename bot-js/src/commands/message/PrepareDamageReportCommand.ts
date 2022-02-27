@@ -5,6 +5,7 @@ import { ApiClient } from "../../backend/ApiClient";
 import { PhraseKey } from "../../support/PhraseKey";
 import { isMentionedToMe } from "../../support/DiscordHelper";
 import { challengingBossSelectButton } from "../interaction/BossSelectButtonCommand";
+import { parseForCommand } from "../../support/MessageParser";
 
 export class PrepareDamageReportCommand implements MessageCommand {
     constructor(
@@ -18,7 +19,8 @@ export class PrepareDamageReportCommand implements MessageCommand {
     private readonly commandPattern: RegExp;
 
     async execute(message: Message): Promise<void> {
-        const matches = this.commandPattern.exec(message.cleanContent);
+        const cleanContent = parseForCommand(message);
+        const matches = this.commandPattern.exec(cleanContent);
         if (!matches || !matches.groups || !isMentionedToMe(message, this.discordClient)) return;
         console.log("start prepare damage report command");
 

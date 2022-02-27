@@ -6,6 +6,8 @@ import { PhraseKey } from "../../support/PhraseKey";
 import { createBossQuestionnaireResult } from "../../support/createBossQuestionnaireResult";
 import { BossStamp } from "../../entities/BossStamp";
 import { fetchBossQuestionnaireMessage } from "../../support/fetchBossQuestionnaire";
+import { matchContent } from "../../support/RegexHelper";
+import { parseForCommand } from "../../support/MessageParser";
 
 export class GetBossQuestionnaireResultCommand implements MessageCommand {
     constructor(private phraseRepository: PhraseRepository, private discordClient: Client) {
@@ -23,7 +25,9 @@ export class GetBossQuestionnaireResultCommand implements MessageCommand {
     private readonly commandPattern: RegExp;
 
     async execute(message: Message): Promise<void> {
-        if (!this.commandPattern.test(message.cleanContent) || !isMentionedToMe(message, this.discordClient)) return;
+        const cleanContent = parseForCommand(message);
+        if (!matchContent(this.commandPattern, cleanContent) || !isMentionedToMe(message, this.discordClient))
+            return;
         console.log("start get boss questionnaire result");
 
         const channel = message.channel;

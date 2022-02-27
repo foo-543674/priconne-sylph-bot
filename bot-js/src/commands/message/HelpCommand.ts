@@ -3,6 +3,8 @@ import { MessageCommand } from './MessageCommand';
 import { PhraseRepository } from '../../support/PhraseRepository';
 import { PhraseKey } from '../../support/PhraseKey';
 import { isMentionedToMe } from '../../support/DiscordHelper';
+import { matchContent } from '../../support/RegexHelper';
+import { parseForCommand } from '../../support/MessageParser';
 
 export class HelpCommand implements MessageCommand {
     constructor(
@@ -31,10 +33,11 @@ export class HelpCommand implements MessageCommand {
     ];
 
     async execute(message: Message): Promise<void> {
-        if (!this.commandPattern.test(message.cleanContent) || !isMentionedToMe(message, this.discordClient)) return;
+        const cleanContent = parseForCommand(message);
+        if (!matchContent(this.commandPattern, cleanContent) || !isMentionedToMe(message, this.discordClient))
+            return;
         console.log("start help command");
 
-        console.log(message.cleanContent);
         for (const messageKey of this.messageKeys) {
             await message.channel.send(this.phraseRepository.get(messageKey));
         }

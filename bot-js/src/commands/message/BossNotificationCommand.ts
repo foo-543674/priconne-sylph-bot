@@ -8,6 +8,8 @@ import { collectMessagesUntil, isTextChannel, isMentionedToMe } from '../../supp
 import { PhraseKey } from "../../support/PhraseKey";
 import { toBossNumber } from "../../entities/BossNumber";
 import { userMension } from "../../support/DiscordHelper";
+import { matchContent } from "../../support/RegexHelper";
+import { parseForCommand } from '../../support/MessageParser';
 
 export class BossNotificationCommand implements MessageCommand {
     constructor(private phraseRepository: PhraseRepository, private discordClient: Client) {
@@ -18,7 +20,9 @@ export class BossNotificationCommand implements MessageCommand {
     private readonly fetchMessageLimit = 500;
 
     async execute(message: Message): Promise<void> {
-        if (!this.commandPattern.test(message.cleanContent) || !isMentionedToMe(message, this.discordClient)) return;
+        const cleanContent = parseForCommand(message);
+        if (!matchContent(this.commandPattern, cleanContent) || !isMentionedToMe(message, this.discordClient))
+            return;
 
         console.log("start boss notification command");
 
@@ -31,7 +35,7 @@ export class BossNotificationCommand implements MessageCommand {
             !!message.cleanContent.match(this.phraseRepository.get(PhraseKey.bossQuestionnaireMessage()));
 
         await pipe(
-            TaskOption.fromNullable(this.commandPattern.exec(message.cleanContent)),
+            TaskOption.fromNullable(this.commandPattern.exec(cleanContent)),
             TaskOption.chainNullableK((m) => m.groups),
             TaskOption.map((g) => g["bossNumber"]),
             TaskOption.chain((bossNumber) =>
