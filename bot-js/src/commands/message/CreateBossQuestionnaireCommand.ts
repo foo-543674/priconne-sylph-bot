@@ -10,6 +10,8 @@ import { roleMension } from "../../support/DiscordHelper";
 import { BossQuestionnaire } from "../../entities/BossQuestionnaire";
 import { ThreadSafeCache } from "../../support/ThreadSafeCache";
 import { fetchBossQuestionnaireMessage } from "../../support/fetchBossQuestionnaire";
+import { matchContent } from "../../support/RegexHelper";
+import { parseForCommand } from "../../support/MessageParser";
 
 export class CreateBossQuestionnaireCommand implements MessageCommand {
     constructor(
@@ -24,13 +26,16 @@ export class CreateBossQuestionnaireCommand implements MessageCommand {
     private readonly commandPattern: RegExp;
 
     async execute(message: Message): Promise<void> {
+        const cleanContent = parseForCommand(message);
+        if (!matchContent(this.commandPattern, cleanContent) || !isMentionedToMe(message, this.discordClient))
+            return;
+
         const channel = message.channel;
         if (!isTextChannel(channel)) return;
 
         const cooperateChannel = await this.apiClient.getCooperateChannel(channel.id);
 
         if (!cooperateChannel) return;
-        if (!this.commandPattern.test(message.cleanContent) || !isMentionedToMe(message, this.discordClient)) return;
 
         console.log("start create boss questionnaire command");
 

@@ -40,6 +40,17 @@ export function getMentionedRoleId(messageContent: string) {
     return getGroupOf(/<@&(?<roleId>[0-9]+)>/, messageContent, "roleId")[0];
 }
 
+export function removeMentionsFromContent(message: Message) {
+    const result = message.content
+        .replace(/<@!?\d+>/g, "")
+        .replace(/<@&\d+>/g, "")
+        .replace(/<#\d+>/g, "")
+        .replace(/@everyone/g, "")
+        .trim();
+
+    return result;
+}
+
 export function isTextChannel(channel: TextBasedChannel): channel is TextChannel {
     return channel.type === "GUILD_TEXT";
 }

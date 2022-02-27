@@ -4,6 +4,8 @@ import { PhraseRepository } from '../../support/PhraseRepository';
 import { ApiClient } from '../../backend/ApiClient';
 import { PhraseKey } from '../../support/PhraseKey';
 import { isMentionedToMe } from '../../support/DiscordHelper';
+import { matchContent } from '../../support/RegexHelper';
+import { parseForCommand } from '../../support/MessageParser';
 
 export class RegisterWebhookCommand implements MessageCommand {
     constructor(
@@ -17,9 +19,11 @@ export class RegisterWebhookCommand implements MessageCommand {
     private readonly commandPattern: RegExp;
 
     async execute(message: Message): Promise<void> {
-        if (!this.commandPattern.test(message.cleanContent) || !isMentionedToMe(message, this.discordClient)) return;
+        const cleanContent = parseForCommand(message);
+        if (!matchContent(this.commandPattern, cleanContent) || !isMentionedToMe(message, this.discordClient))
+            return;
         console.log("start register webhook command");
-        const matches = this.commandPattern.exec(message.cleanContent);
+        const matches = this.commandPattern.exec(cleanContent);
         if (matches && matches.groups) {
             const clanName = matches.groups["clanName"];
             const url = matches.groups["url"];

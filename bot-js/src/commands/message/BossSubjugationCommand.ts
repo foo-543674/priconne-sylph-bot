@@ -2,11 +2,12 @@ import { Client, Message, TextChannel } from "discord.js";
 import { MessageCommand } from "./MessageCommand";
 import { PhraseRepository } from "../../support/PhraseRepository";
 import { ApiClient } from "../../backend/ApiClient";
-import { getGroupOf } from "../../support/RegexHelper";
+import { getGroupOf, matchContent } from "../../support/RegexHelper";
 import { PhraseKey } from "../../support/PhraseKey";
 import { userMension } from "../../support/DiscordHelper";
 import { isMentionedToMe } from "../../support/DiscordHelper";
 import { toBossNumber } from "../../entities/BossNumber";
+import { parseForCommand } from '../../support/MessageParser';
 
 export class BossSubjugationCommand implements MessageCommand {
     constructor(
@@ -20,15 +21,16 @@ export class BossSubjugationCommand implements MessageCommand {
     private readonly commandPattern: RegExp;
 
     async execute(message: Message): Promise<void> {
+        const cleanContent = parseForCommand(message);
         const cooperateChannel = await this.apiClient.getCooperateChannel(message.channel.id);
         if (!cooperateChannel) return;
 
-        if (!this.commandPattern.test(message.cleanContent) || !isMentionedToMe(message, this.discordClient)) {
+        if (!matchContent(this.commandPattern, cleanContent) || !isMentionedToMe(message, this.discordClient))
             return;
-        }
+
         console.log("start boss subjugation command");
 
-        const [targetBossNumber] = getGroupOf(this.commandPattern, message.cleanContent, "bossNumber");
+        const [targetBossNumber] = getGroupOf(this.commandPattern, cleanContent, "bossNumber");
 
         if (!targetBossNumber) return;
 

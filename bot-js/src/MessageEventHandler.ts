@@ -22,7 +22,8 @@ export class MessageEventHandler {
 
     public listen(client: Client) {
         client.on("messageCreate", (m) => this.onMessageCreate(m, client));
-        client.on("messageUpdate", (_, updated) => this.onMessageUpdate(updated, client));
+        //NOTE: ピン留めとかでも反応しちゃうようになるから一旦除去
+        // client.on("messageUpdate", (_, updated) => this.onMessageUpdate(updated, client));
     }
 
     protected async onMessageCreate(message: Message, _: Client) {
