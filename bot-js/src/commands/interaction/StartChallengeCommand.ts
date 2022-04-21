@@ -54,25 +54,30 @@ export class StartChallengeCommand extends ButtonInteractionCommand {
 
         const reportMessage = await channel.send(this.phraseRepository.get(PhraseKey.nowloadingMessage()));
 
-        const damageReport = await this.apiClient.postDamageReport({
-            channelId: channel.id,
-            messageId: reportMessage.id,
-            interactionMessageId: reportMessage.id,
-            bossNumber: Number(bossNumber),
-            discordUserId: userId,
-            isCarryOver: isCarryOver
-        });
-
-        await reportMessage.edit({
-            content: damageReport.generateMessage(this.phraseRepository),
-            components: [
-                new MessageActionRow()
-                    .addComponents(openDamageInputFormButton(this.phraseRepository))
-                    .addComponents(requestRescueButton(this.phraseRepository))
-                    .addComponents(retryChallengeButton(this.phraseRepository))
-                    .addComponents(deleteDamageReportButton(this.phraseRepository))
-            ]
-        });
+        try {
+            const damageReport = await this.apiClient.postDamageReport({
+                channelId: channel.id,
+                messageId: reportMessage.id,
+                interactionMessageId: reportMessage.id,
+                bossNumber: Number(bossNumber),
+                discordUserId: userId,
+                isCarryOver: isCarryOver
+            });
+    
+            await reportMessage.edit({
+                content: damageReport.generateMessage(this.phraseRepository),
+                components: [
+                    new MessageActionRow()
+                        .addComponents(openDamageInputFormButton(this.phraseRepository))
+                        .addComponents(requestRescueButton(this.phraseRepository))
+                        .addComponents(retryChallengeButton(this.phraseRepository))
+                        .addComponents(deleteDamageReportButton(this.phraseRepository))
+                ]
+            });
+        } catch (error) {
+           await reportMessage.delete();
+           throw error; 
+        }
     }
 }
 
