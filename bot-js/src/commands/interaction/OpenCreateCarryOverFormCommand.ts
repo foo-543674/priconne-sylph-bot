@@ -108,22 +108,27 @@ class CarryOverInput implements NumberInput, ChallengedTypeSelectInput {
 
         const message = await channel.send(this.phraseRepository.get(PhraseKey.nowloadingMessage()));
 
-        const [bossNumber, formationType] = getBossNumberAndFormationType(this.challengedType);
+        try {
+            const [bossNumber, formationType] = getBossNumberAndFormationType(this.challengedType);
 
-        const carryOver = await this.apiClient.postCarryOver({
-            channelId: channel.id,
-            messageId: message.id,
-            interactionMessageId: triggerMessage.reference.messageId,
-            discordUserId: targetUser.id,
-            bossNumber: bossNumber,
-            challengedType: formationType,
-            second: this.second.toNumber()
-        });
-
-        await message.edit({
-            content: carryOver.generateMessage(this.phraseRepository),
-            components: [new MessageActionRow().addComponents(deleteCarryOverButton(this.phraseRepository))]
-        });
+            const carryOver = await this.apiClient.postCarryOver({
+                channelId: channel.id,
+                messageId: message.id,
+                interactionMessageId: triggerMessage.reference.messageId,
+                discordUserId: targetUser.id,
+                bossNumber: bossNumber,
+                challengedType: formationType,
+                second: this.second.toNumber()
+            });
+    
+            await message.edit({
+                content: carryOver.generateMessage(this.phraseRepository),
+                components: [new MessageActionRow().addComponents(deleteCarryOverButton(this.phraseRepository))]
+            }); 
+        } catch (error) {
+            await message.delete();
+            throw error;
+        }
 
         const clan = firstOrNull(
             await this.apiClient.getClans(new GetClanParamter(undefined, undefined, triggerMessage.channelId))
