@@ -23,6 +23,7 @@ use App\Http\Controllers\GetReportMessageController;
 use App\Http\Controllers\PostDamageReportController;
 use App\Http\Controllers\PostReportChannelController;
 use App\Http\Controllers\DeleteDamageReportController;
+use App\Http\Controllers\DeleteReservationController;
 use App\Http\Controllers\GetCooperateChannelController;
 use App\Http\Controllers\PostBossSubjugationController;
 use App\Http\Controllers\PostCooperateChannelController;
@@ -34,6 +35,8 @@ use App\Http\Controllers\PostFinishedDamageReportController;
 use App\Http\Controllers\PostUncompleteMemberRoleController;
 use App\Http\Controllers\PostInProcessDamageReportController;
 use App\Http\Controllers\GetDamageReportChannelListController;
+use App\Http\Controllers\GetReservationController;
+use App\Http\Controllers\PostReservationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,10 +56,17 @@ Route::middleware("auth.apikey")->group(function () {
         Route::prefix("/{clanId}")->group(function () {
             Route::prefix("/members")->group(function () {
                 Route::get("/", GetMemberListController::class)->name("get.members");
-                Route::get("/{discordUserId}", GetMemberController::class)->name("get.member");
+                Route::prefix("/{discordUserId}")->group(function () {
+                    Route::get("/", GetMemberController::class)->name("get.member");
+                    Route::delete("/{bossNumber}", DeleteReservationController::class)->where('bossNumber', '[1-5]')->name("delete.reservation");
+                });
             });
+            Route::get("/reservations", GetReservationController::class)->name("get.reservation");
             Route::get("/uncomplete_member_role", GetUncompleteMemberRoleController::class)->name("get.uncomplete_member_roles");
         });
+    });
+    Route::prefix("/reservations")->group(function () {
+        Route::post("/", PostReservationController::class)->name("post.reservation");
     });
     Route::prefix("/clan_battles")->group(function () {
         Route::get("/", GetClanBattleController::class)->name("get.clan_battles");

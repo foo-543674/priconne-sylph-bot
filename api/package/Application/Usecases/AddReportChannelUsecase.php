@@ -51,7 +51,7 @@ class AddReportChannelUsecase
 
         $clan = $this->clanRepository->getByName($clanName);
         if (is_null($clan)) {
-            $this->errorIgnition->throwValidationError(MessageKey::CLAN_IS_NOT_EXISTS, $clanName);
+            $this->errorIgnition->throwValidationError(MessageKey::UNLNOWN_CLAN_NAME, $clanName);
         }
 
         $newReportChannel = new ReportChannel(

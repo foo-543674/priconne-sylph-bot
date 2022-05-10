@@ -122,6 +122,7 @@ return [
     'uploaded' => 'The :attribute failed to upload.',
     'url' => 'The :attribute must be a valid URL.',
     'uuid' => 'The :attribute must be a valid UUID.',
+    'ulid' => 'The :attribute must be a valid ULID.',
 
     /*
     |--------------------------------------------------------------------------
