@@ -14,9 +14,11 @@ phrases:
   register_cooperate_channel: ここを(?<clanName>[\s\S]+)の連携チャンネルにするよ
   boss_subjugation: (?<bossNumber>[1-5])(ボス)?討伐
   register_uncomplete_member_role: (?<clanName>[\s\S]+)の凸未完了者のロールを登録して
+  add_reservation_command: (?<bossNumber>[1-6])(ボス)?行く
+  delete_reservation_command: (?<bossNumber>[1-5])(ボス)?終わり
   challenge_report_guide: |-
     凸をしたら回数に応じてスタンプを押してね。
-    持ち越しを持ったら持ち越し作成ボタンを押してね。持ち越しを消化したら削除を押してね。
+    持ち越しを持ったら持ち越し登録ボタンを押してね。持ち越しを消化したら削除を押してね。
     作成された持ち越しメッセージに対して返信をすると、補足情報を入力できるよ。
     タスキルを使ったら黄色い警告スタンプを押してね。
   no_member_for_register_message: 登録対象が見つからないよ。登録対象のメンバー(もしくはロール)のメンションをつけてコマンドを打ってね。

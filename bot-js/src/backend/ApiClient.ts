@@ -14,6 +14,7 @@ import { setup } from "axios-cache-adapter";
 import { FormationType } from "../entities/FormationType";
 import { CarryOver, CarryOverDto } from "../entities/CarryOver";
 import { BossNumber } from "../entities/BossNumber";
+import { Reservation, ReservationDto } from "../entities/Reservation";
 
 function isAxiosError(error: any): error is AxiosError {
     return !!error.isAxiosError;
@@ -53,6 +54,12 @@ type CarryOverRequestBody = {
     challengedType: FormationType;
     second: number;
     comment?: string;
+};
+
+type ReservationRequestBody = {
+    clanId: string;
+    discordUserId: string;
+    bossNumber: BossNumber;
 };
 
 export class ApiClient {
@@ -306,6 +313,24 @@ export class ApiClient {
             bossNumber,
             discordChannelId: channelId
         });
+    }
+
+    public async getReservations(clanId: string): Promise<Reservation[]> {
+        return (
+            await this.getList<ReservationDto>(`/api/clans/${clanId}/reservations`, {
+                headers: {
+                    "Cache-Control": "no-cache"
+                }
+            })
+        ).map((dto) => Reservation.fromDto(dto));
+    }
+
+    public async postReservation(value: ReservationRequestBody) {
+        return Reservation.fromDto(await this.post(`/api/reservations`, value));
+    }
+
+    public async deleteReservation(clanId: string, discordUserId: string, bossNumber: BossNumber) {
+        return await this.delete(`/api/clans/${clanId}/members/${discordUserId}/${bossNumber}`);
     }
 
     protected async exists(path: string, config?: AxiosRequestConfig, retriedCount: number = 0): Promise<boolean> {

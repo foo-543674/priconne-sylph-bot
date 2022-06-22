@@ -47,6 +47,6 @@ class DeleteReservationUsecase
             return;
         }
 
-        $this->carryOverRepository->delete($target);
+        $this->reservationRepository->delete($target);
     }
 }

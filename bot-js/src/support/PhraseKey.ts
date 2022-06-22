@@ -332,6 +332,14 @@ export class PhraseKey {
         return new PhraseKey("request_unpin");
     }
 
+    public static addReservationCommand(): PhraseKey {
+        return new PhraseKey("add_reservation_command");
+    }
+
+    public static deleteReservationCommand(): PhraseKey {
+        return new PhraseKey("delete_reservation_command");
+    }
+
     public toString(): string {
         return this.value;
     }

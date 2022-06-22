@@ -41,6 +41,8 @@ import { AddCommentToCarryOverCommand } from "./commands/message/AddCommentToCar
 import { RetryChallengeCommand } from "./commands/interaction/RetryChallengeCommand";
 import { RequestPinCommand } from "./commands/message/RequestPinCommand";
 import { RequestUnpinCommand } from "./commands/message/RequestUnpinCommand";
+import { AddReservationCommand } from "./commands/message/AddReservationCommand";
+import { DeleteReservationCommand } from "./commands/message/DeleteReservationCommand";
 
 const phraseConfig = yaml.load(fs.readFileSync("src/resources/config.yaml", "utf8"));
 const phraseRepository = new YamlPhraseRepository(phraseConfig as PhraseConfig);
@@ -88,7 +90,9 @@ const messaegEventHandler = new MessageEventHandler(
         new BossSubjugationCommand(phraseRepository, client, apiClient),
         new AddCommentToCarryOverCommand(apiClient, phraseRepository, client),
         new RequestPinCommand(phraseRepository, client),
-        new RequestUnpinCommand(phraseRepository, client)
+        new RequestUnpinCommand(phraseRepository, client),
+        new AddReservationCommand(apiClient, phraseRepository, client),
+        new DeleteReservationCommand(apiClient, phraseRepository, client)
     ],
     phraseRepository
 );

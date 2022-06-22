@@ -14,3 +14,13 @@ export function toBossNumber(value: string): BossNumber {
         throw new Error(`${parsedValue} is not boss number`);
     }
 }
+
+export function extractBossNumber(source: string, pattern: RegExp, groupName: string): BossNumber | null {
+    const matched = pattern.exec(source);
+
+    const bossNumber = matched?.groups?.[groupName];
+
+    if (!bossNumber) return null;
+
+    return toBossNumber(bossNumber);
+}
