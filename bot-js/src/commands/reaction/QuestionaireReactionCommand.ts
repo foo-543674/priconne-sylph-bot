@@ -75,9 +75,9 @@ export class QuestionaireReactionCommand implements ReactionCommand {
 
         console.log("questionaire reaction");
 
+        const member = await channel.guild.members.fetch({ user: user.id });
         if (await this.cache.exists(reaction.message.id)) {
             await this.cache.get(reaction.message.id, async (result) => {
-                const member = await channel.guild.members.fetch({ user: user.id });
                 result.add(stamp, member);
             });
         }
@@ -97,9 +97,9 @@ export class QuestionaireReactionCommand implements ReactionCommand {
 
         console.log("questionaire reaction");
 
+        const member = await channel.guild.members.fetch({ user: user.id });
         if (await this.cache.exists(reaction.message.id)) {
             await this.cache.get(reaction.message.id, async (result) => {
-                const member = await channel.guild.members.fetch({ user: user.id });
                 result.remove(stamp, member);
             });
         }
