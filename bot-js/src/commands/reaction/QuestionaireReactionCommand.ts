@@ -38,12 +38,12 @@ export class QuestionaireReactionCommand implements ReactionCommand {
 
     protected async updateEmbed(message: Message, channel: TextChannel) {
         if (await this.cache.exists(message.id)) {
-            await this.cache.get(message.id, async (result) => {
-                const embed = new MessageEmbed().addFields(...result.generateEmbed());
-                await message.edit({
-                    content: message.content,
-                    embeds: [embed]
-                });
+            const embed = await this.cache.convert(message.id, (result) => {
+                return Promise.resolve(new MessageEmbed().addFields(...result.generateEmbed()));
+            });
+            await message.edit({
+                content: message.content,
+                embeds: [embed]
             });
         } else {
             const result = await createBossQuestionnaireResult(
@@ -76,11 +76,9 @@ export class QuestionaireReactionCommand implements ReactionCommand {
         console.log("questionaire reaction");
 
         const member = await channel.guild.members.fetch({ user: user.id });
-        if (await this.cache.exists(reaction.message.id)) {
-            await this.cache.get(reaction.message.id, async (result) => {
-                result.add(stamp, member);
-            });
-        }
+        await this.cache.get(reaction.message.id, (result) => {
+            return Promise.resolve(result.add(stamp, member));
+        });
 
         await this.updateEmbed(message, channel);
     }
@@ -98,11 +96,9 @@ export class QuestionaireReactionCommand implements ReactionCommand {
         console.log("questionaire reaction");
 
         const member = await channel.guild.members.fetch({ user: user.id });
-        if (await this.cache.exists(reaction.message.id)) {
-            await this.cache.get(reaction.message.id, async (result) => {
-                result.remove(stamp, member);
-            });
-        }
+        await this.cache.get(reaction.message.id, (result) => {
+            return Promise.resolve(result.remove(stamp, member));
+        });
 
         await this.updateEmbed(message, channel);
     }
