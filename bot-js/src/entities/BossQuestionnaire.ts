@@ -17,9 +17,9 @@ export class BossQuestionnaire {
 
     public add(bossNumber: BossResolver, member: GuildMember) {
         if (bossNumber instanceof BossStamp) {
-            this.result[bossNumber.number].push(member);
+            this.result[bossNumber.number] = this.result[bossNumber.number].concat(member);
         } else {
-            this.result[bossNumber].push(member);
+            this.result[bossNumber] = this.result[bossNumber].concat(member);
         }
     }
 
