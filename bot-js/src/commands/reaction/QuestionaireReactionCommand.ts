@@ -5,15 +5,9 @@ import { ReactionCommand } from "./ReactionCommand";
 import { isTextChannel } from "../../support/DiscordHelper";
 import { createBossQuestionnaireResult } from "../../support/createBossQuestionnaireResult";
 import { BossStamp } from "../../entities/BossStamp";
-import { ThreadSafeCache } from "../../support/ThreadSafeCache";
-import { BossQuestionnaire } from "../../entities/BossQuestionnaire";
 
 export class QuestionaireReactionCommand implements ReactionCommand {
-    constructor(
-        private phraseRepository: PhraseRepository,
-        private discordClient: Client,
-        private cache: ThreadSafeCache<BossQuestionnaire>
-    ) {
+    constructor(private phraseRepository: PhraseRepository, private discordClient: Client) {
         this.targetStamps = [
             new BossStamp(1, phraseRepository),
             new BossStamp(2, phraseRepository),
@@ -37,32 +31,22 @@ export class QuestionaireReactionCommand implements ReactionCommand {
     }
 
     protected async updateEmbed(message: Message, channel: TextChannel) {
-        if (await this.cache.exists(message.id)) {
-            const embed = await this.cache.convert(message.id, (result) => {
-                return Promise.resolve(new MessageEmbed().addFields(...result.generateEmbed()));
-            });
-            await message.edit({
-                content: message.content,
-                embeds: [embed]
-            });
-        } else {
-            const result = await createBossQuestionnaireResult(
-                this.targetStamps,
-                message,
-                [this.discordClient.user?.id ?? ""],
-                channel,
-                this.phraseRepository
-            );
+        const result = await createBossQuestionnaireResult(
+            this.targetStamps,
+            message,
+            [this.discordClient.user?.id ?? ""],
+            channel,
+            this.phraseRepository
+        );
 
-            const embed = new MessageEmbed().addFields(...result.generateEmbed());
-            await message.edit({
-                content: message.content,
-                embeds: [embed]
-            });
-        }
+        const embed = new MessageEmbed().addFields(...result.generateEmbed());
+        await message.edit({
+            content: message.content,
+            embeds: [embed]
+        });
     }
 
-    async executeForAdd(reaction: MessageReaction, user: User): Promise<void> {
+    protected async execute(reaction: MessageReaction, user: User): Promise<void> {
         //HACK: 対象リアクションの選出等もう少しモジュール化してシンプルにしたい
         if (!this.isTarget(reaction, user)) return;
 
@@ -75,31 +59,14 @@ export class QuestionaireReactionCommand implements ReactionCommand {
 
         console.log("questionaire reaction");
 
-        const member = await channel.guild.members.fetch({ user: user.id });
-        await this.cache.get(reaction.message.id, (result) => {
-            return Promise.resolve(result.add(stamp, member));
-        });
-
         await this.updateEmbed(message, channel);
     }
 
+    async executeForAdd(reaction: MessageReaction, user: User): Promise<void> {
+        await this.execute(reaction, user);
+    }
+
     async executeForRemove(reaction: MessageReaction, user: User): Promise<void> {
-        if (!this.isTarget(reaction, user)) return;
-
-        const message = reaction.message as Message;
-        const channel = message.channel;
-        if (!isTextChannel(channel)) return;
-
-        const stamp = this.targetStamps.find((stamp) => stamp.value === reaction.emoji.toString());
-        if (!stamp) return;
-
-        console.log("questionaire reaction");
-
-        const member = await channel.guild.members.fetch({ user: user.id });
-        await this.cache.get(reaction.message.id, (result) => {
-            return Promise.resolve(result.remove(stamp, member));
-        });
-
-        await this.updateEmbed(message, channel);
+        await this.execute(reaction, user);
     }
 }
