@@ -4,6 +4,7 @@ import { convertFullWidth } from "./MessageParser";
 
 export type DiceCommand = string;
 export type DiceSystemName = "DiceBot";
+export const FailedResult = "none";
 
 export interface Dice {
     loadSystem(systemName: DiceSystemName): Promise<void>;
@@ -27,7 +28,7 @@ export class BCDice implements Dice {
 
     public roll(command: string): string {
         if (!this.gameSystem) throw new DiceNotSetupError();
-        return this.gameSystem.eval(command)?.text ?? "none";
+        return this.gameSystem.eval(command)?.text ?? FailedResult;
     }
 
     public isEnableCommand(text: string): text is DiceCommand {

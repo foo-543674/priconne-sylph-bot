@@ -1,7 +1,7 @@
 import { Client, Message } from "discord.js";
 import { MessageCommand } from "./MessageCommand";
 import { parseForCommand } from "../../support/MessageParser";
-import { Dice } from "../../support/Dice";
+import { Dice, FailedResult } from "../../support/Dice";
 
 export class DiceCommand implements MessageCommand {
     constructor(private discordClient: Client, private dice: Dice) {}
@@ -16,6 +16,7 @@ export class DiceCommand implements MessageCommand {
         console.log("start dice command");
 
         const result = this.dice.roll(cleanContent);
+        if(result === FailedResult) return;
         await message.reply({
             embeds: [
                 {
