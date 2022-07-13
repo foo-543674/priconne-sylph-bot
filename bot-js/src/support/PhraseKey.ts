@@ -332,6 +332,10 @@ export class PhraseKey {
         return new PhraseKey("request_unpin");
     }
 
+    public static calculateCarryOverTl(): PhraseKey {
+        return new PhraseKey("calculate_carry_over_tl");
+    }
+
     public toString(): string {
         return this.value;
     }

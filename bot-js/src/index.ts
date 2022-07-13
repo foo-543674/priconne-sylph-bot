@@ -43,6 +43,7 @@ import { RequestPinCommand } from "./commands/message/RequestPinCommand";
 import { RequestUnpinCommand } from "./commands/message/RequestUnpinCommand";
 import { DiceCommand } from "./commands/message/DiceCommand";
 import { BCDice } from "./support/Dice";
+import { CalculateCarryOverTlCommand } from "./commands/message/CalculateCarryOverTlCommand";
 
 const phraseConfig = yaml.load(fs.readFileSync("src/resources/config.yaml", "utf8"));
 const phraseRepository = new YamlPhraseRepository(phraseConfig as PhraseConfig);
@@ -91,7 +92,8 @@ const messaegEventHandler = new MessageEventHandler(
         new AddCommentToCarryOverCommand(apiClient, phraseRepository, client),
         new RequestPinCommand(phraseRepository, client),
         new RequestUnpinCommand(phraseRepository, client),
-        new DiceCommand(client, new BCDice())
+        new DiceCommand(client, new BCDice()),
+        new CalculateCarryOverTlCommand(phraseRepository, client)
     ],
     phraseRepository
 );
