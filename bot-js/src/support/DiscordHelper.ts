@@ -13,6 +13,13 @@ import {
 } from "discord.js";
 import { getGroupOf } from "./RegexHelper";
 import { MessageComponentInteraction } from "discord.js";
+import { InvalidArgumentError } from "./InvalidArgumentError";
+
+export class DiscordHelperError extends Error {
+    constructor(message: string) {
+        super(`${message}`);
+    }
+}
 
 export type DiscordReaction = PartialMessageReaction | MessageReaction;
 export type DiscordUser = PartialUser | User;
@@ -102,4 +109,24 @@ export function hasReferenceInteraction(
     interaction: MessageComponentInteraction
 ): interaction is HasReferenceMessageInteraction {
     return interaction.message instanceof Message && hasReference(interaction.message);
+}
+
+const messageLinkPattern = /https:\/\/discord\.com\/channels\/[^/]+\/(?<channelId>[^/]+)\/(?<messageId>[^/]+)/;
+
+export function isMessageLink(url: string): boolean {
+    return messageLinkPattern.test(url);
+}
+
+export async function getMessageFromLink(client: Client, url: string): Promise<Message> {
+    const [channelId, messageId] = getGroupOf(messageLinkPattern, url, "channelId", "messageId");
+    if (!channelId || !messageId) {
+        throw new InvalidArgumentError(`Invalid discord message link.(${url})`);
+    }
+
+    const channel = await client.channels.fetch(channelId);
+    if (!channel || (!channel.isText() && !channel.isThread())) {
+        throw new DiscordHelperError("channel not found");
+    }
+
+    return channel.messages.fetch(messageId);
 }

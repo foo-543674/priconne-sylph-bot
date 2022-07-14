@@ -14,7 +14,7 @@ phrases:
   register_cooperate_channel: ここを(?<clanName>[\s\S]+)の連携チャンネルにするよ
   boss_subjugation: (?<bossNumber>[1-5])(ボス)?討伐
   register_uncomplete_member_role: (?<clanName>[\s\S]+)の凸未完了者のロールを登録して
-  calculate_carry_over_tl: (?<seconds>\d?\d:\d\d|\d+)(s|秒)?の持ち越し (?<timeline>[\s\S]+)
+  calculate_carry_over_tl: (?<seconds>\d?\d:\d\d|\d+)(s|秒)?の持ち越し( |\n|　)(?<timeline>[\s\S]+)
   challenge_report_guide: |-
     凸をしたら回数に応じてスタンプを押してね。
     持ち越しを持ったら持ち越し作成ボタンを押してね。持ち越しを消化したら削除を押してね。
@@ -165,3 +165,6 @@ phrases:
   time_out_input_message: 入力に時間がかかり過ぎたから、この命令は無効になったよ。このメッセージを削除して、やり直してね。
   confirm_delete_carry_over_message: 自分のではない持ち越しを消そうとしてるよ。間違えた場合は下にある"これらのメッセージを削除する"を押してね。持ち越しを削除しても問題ない場合は削除ボタンを押してね。
   retry_challenge_label: 再凸
+  carry_over_time_is_invalid_message: 持ち越し秒数が正しくないよ。
+  timeup_line: '**========== !!!!!Time up!!!!! ==========**'
+  carry_over_timeline_result_title: "{carryOverTime}秒の持ち越し"

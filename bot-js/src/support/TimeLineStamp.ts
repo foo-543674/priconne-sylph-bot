@@ -41,6 +41,6 @@ export class TimeLineStamp {
         const minute = Math.floor(absTotalSecond / SECONDS_IN_MINUTE);
         const second = absTotalSecond % SECONDS_IN_MINUTE;
 
-        return `${sign}${String(minute).padStart(2)}:${String(second).padStart(2)}`;
+        return `${sign}${String(minute).padStart(2, "0")}:${String(second).padStart(2, "0")}`;
     }
 }

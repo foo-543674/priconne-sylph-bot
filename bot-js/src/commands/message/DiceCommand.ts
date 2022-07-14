@@ -13,10 +13,11 @@ export class DiceCommand implements MessageCommand {
 
         if (!this.dice.isEnableCommand(cleanContent)) return;
 
-        console.log("start dice command");
-
         const result = this.dice.roll(cleanContent);
         if(result === FailedResult) return;
+
+        console.log("start dice command");
+
         await message.reply({
             embeds: [
                 {
