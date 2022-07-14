@@ -332,6 +332,22 @@ export class PhraseKey {
         return new PhraseKey("request_unpin");
     }
 
+    public static calculateCarryOverTl(): PhraseKey {
+        return new PhraseKey("calculate_carry_over_tl");
+    }
+
+    public static carryOverTimeIsInvalidMessage(): PhraseKey {
+        return new PhraseKey("carry_over_time_is_invalid_message");
+    }
+
+    public static timeupLine(): PhraseKey {
+        return new PhraseKey("timeup_line");
+    }
+
+    public static carryOverTimelineResultTitle(): PhraseKey {
+        return new PhraseKey("carry_over_timeline_result_title");
+    }
+
     public toString(): string {
         return this.value;
     }
