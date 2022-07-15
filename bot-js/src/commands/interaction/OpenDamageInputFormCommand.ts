@@ -24,13 +24,15 @@ export class OpenDamageInputFormCommand extends ButtonInteractionCommand {
         console.log("open input damage button clicked");
 
         const input = new DamageInput(this.phraseRepository, this.apiClient);
-        this.numberInputFormSet.addNew(interaction, input);
 
         await interaction.reply({
             content: input.content,
             components: numberInputForm(this.phraseRepository),
             ephemeral: true
         });
+
+        const replyMessage = (await interaction.fetchReply()) as Message;
+        this.numberInputFormSet.addNew(replyMessage, input);
     }
 }
 

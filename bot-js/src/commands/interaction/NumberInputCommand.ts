@@ -1,5 +1,5 @@
 import { ButtonInteractionKey, button } from "./ButtonInteractionCommand";
-import { ButtonInteraction, Message, MessageActionRow, MessageButton, MessageComponentInteraction } from "discord.js";
+import { ButtonInteraction, Message, MessageActionRow, MessageButton } from "discord.js";
 import { PhraseRepository } from "../../support/PhraseRepository";
 import { PhraseKey } from "../../support/PhraseKey";
 import { ButtonInteractionCommand } from "./ButtonInteractionCommand";
@@ -21,7 +21,7 @@ export interface NumberInput {
 }
 
 export interface NumberInputFormSet {
-    addNew(trigger: MessageComponentInteraction, numberInput: NumberInput): Promise<void>;
+    addNew(replyMessage: Message, numberInput: NumberInput): Promise<void>;
 }
 
 export class NumberInputCommand extends ButtonInteractionCommand implements NumberInputFormSet {
@@ -47,8 +47,8 @@ export class NumberInputCommand extends ButtonInteractionCommand implements Numb
     ] as const;
     private static readonly LIMIT = 60 * 60 * 1000; //一時間
 
-    public async addNew(trigger: MessageComponentInteraction, numberInput: NumberInput): Promise<void> {
-        await this.inputForms.set(trigger.message.id, numberInput, NumberInputCommand.LIMIT);
+    public async addNew(replyMessage: Message, numberInput: NumberInput): Promise<void> {
+        await this.inputForms.set(replyMessage.id, numberInput, NumberInputCommand.LIMIT);
     }
 
     protected async executeInteraction(key: ButtonInteractionKey, interaction: ButtonInteraction): Promise<void> {
@@ -58,7 +58,7 @@ export class NumberInputCommand extends ButtonInteractionCommand implements Numb
 
         console.log("number input form operated");
 
-        if (!await this.inputForms.exists(interaction.message.reference.messageId)) {
+        if (!await this.inputForms.exists(interaction.message.id)) {
             await interaction.update({
                 content: this.phraseRepository.get(PhraseKey.timeOutInputMessage()),
                 components: []
@@ -112,14 +112,14 @@ export class NumberInputCommand extends ButtonInteractionCommand implements Numb
     }
 
     protected async input(inputNumber: NumberChar, interaction: HasReferenceMessageInteraction) {
-        await this.inputForms.get(interaction.message.reference.messageId, async (input) => {
+        await this.inputForms.get(interaction.message.id, async (input) => {
             input.addInput(inputNumber);
             await interaction.update({ content: input.content });
         });
     }
 
     protected async backward(interaction: HasReferenceMessageInteraction) {
-        await this.inputForms.get(interaction.message.reference.messageId, async (input) => {
+        await this.inputForms.get(interaction.message.id, async (input) => {
             input.backward();
             await interaction.update({ content: input.content });
         });
@@ -128,7 +128,7 @@ export class NumberInputCommand extends ButtonInteractionCommand implements Numb
     protected async apply(interaction: HasReferenceMessageInteraction) {
         const referenceMessage = await interaction.message.fetchReference();
 
-        await this.inputForms.get(interaction.message.reference.messageId, async (input) => {
+        await this.inputForms.get(interaction.message.id, async (input) => {
             await input.apply(interaction, referenceMessage);
         });
 
