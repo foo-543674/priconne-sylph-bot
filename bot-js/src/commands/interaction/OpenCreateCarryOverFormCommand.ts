@@ -1,5 +1,5 @@
 import { ButtonInteractionKey, button } from "./ButtonInteractionCommand";
-import { ButtonInteraction, MessageActionRow } from "discord.js";
+import { ButtonInteraction, MessageActionRow, Message } from "discord.js";
 import { PhraseRepository } from "../../support/PhraseRepository";
 import { PhraseKey } from "../../support/PhraseKey";
 import { ApiClient } from "../../backend/ApiClient";
@@ -36,14 +36,15 @@ export class OpenCreateCarryOverFormCommand extends ButtonInteractionCommand {
         console.log("open create carry over button clicked");
 
         const input = new CarryOverInput(this.apiClient, this.phraseRepository);
-        this.numberInputFormSet.addNew(interaction, input);
-        this.challengedTypeSelectInputFormSet.addNew(interaction, input);
-
         await interaction.reply({
             content: input.content,
             components: [new MessageActionRow().addComponents(challengedTypeSelectMenu(this.phraseRepository))],
             ephemeral: true
         });
+        const replyMessage = (await interaction.fetchReply()) as Message;
+
+        this.numberInputFormSet.addNew(replyMessage, input);
+        this.challengedTypeSelectInputFormSet.addNew(replyMessage, input);
     }
 }
 
@@ -120,11 +121,11 @@ class CarryOverInput implements NumberInput, ChallengedTypeSelectInput {
                 challengedType: formationType,
                 second: this.second.toNumber()
             });
-    
+
             await message.edit({
                 content: carryOver.generateMessage(this.phraseRepository),
                 components: [new MessageActionRow().addComponents(deleteCarryOverButton(this.phraseRepository))]
-            }); 
+            });
         } catch (error) {
             await message.delete();
             throw error;

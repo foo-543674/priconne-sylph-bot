@@ -1,10 +1,4 @@
-import {
-    CacheType,
-    Message,
-    MessageComponentInteraction,
-    MessageSelectOptionData,
-    SelectMenuInteraction
-} from "discord.js";
+import { Message, MessageSelectOptionData, SelectMenuInteraction } from "discord.js";
 import { PhraseRepository } from "../../support/PhraseRepository";
 import { PhraseKey } from "../../support/PhraseKey";
 import { InvalidInteractionError } from "../../support/InvalidInteractionError";
@@ -22,7 +16,7 @@ export interface ChallengedTypeSelectInput {
 }
 
 export interface ChallengedTypeSelectInputFormSet {
-    addNew(trigger: MessageComponentInteraction, input: ChallengedTypeSelectInput): Promise<void>;
+    addNew(replyMessage: Message, input: ChallengedTypeSelectInput): Promise<void>;
 }
 
 export class ChallengedTypeSelectCommand
@@ -37,11 +31,8 @@ export class ChallengedTypeSelectCommand
     private static readonly LIMIT = 60 * 60 * 1000; //一時間
     private readonly inputForms: ThreadSafeCache<ChallengedTypeSelectInput>;
 
-    public async addNew(
-        trigger: MessageComponentInteraction<CacheType>,
-        input: ChallengedTypeSelectInput
-    ): Promise<void> {
-        await this.inputForms.set(trigger.message.id, input, ChallengedTypeSelectCommand.LIMIT);
+    public async addNew(replyMessage: Message, input: ChallengedTypeSelectInput): Promise<void> {
+        await this.inputForms.set(replyMessage.id, input, ChallengedTypeSelectCommand.LIMIT);
     }
 
     protected async executeInteraction(
@@ -60,7 +51,7 @@ export class ChallengedTypeSelectCommand
 
         console.log("challenged type selected");
 
-        if (!await this.inputForms.exists(interaction.message.reference.messageId)) {
+        if (!(await this.inputForms.exists(interaction.message.id))) {
             await interaction.update({
                 content: this.phraseRepository.get(PhraseKey.timeOutInputMessage()),
                 components: []
@@ -70,7 +61,7 @@ export class ChallengedTypeSelectCommand
 
         const referenceMessage = await interaction.message.fetchReference();
 
-        await this.inputForms.get(interaction.message.reference.messageId, async (input) => {
+        await this.inputForms.get(interaction.message.id, async (input) => {
             await input.selected(selected, interaction, referenceMessage);
         });
 
