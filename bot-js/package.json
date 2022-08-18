@@ -22,6 +22,7 @@
     "date-fns-tz": "^1.1.6",
     "discord.js": "^13.5.0",
     "fp-ts": "^2.11.1",
+    "group-items": "^2.1.0",
     "js-yaml": "^4.1.0",
     "node-cron": "^3.0.0",
     "typed-signals": "^2.3.0",
