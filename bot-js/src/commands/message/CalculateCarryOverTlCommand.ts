@@ -52,7 +52,7 @@ export class CalculateCarryOverTlCommand implements MessageCommand {
             if (timePattern.test(timelinePart)) {
                 const stamp = new TimeLineStamp(timelinePart);
                 const calculatedStamp = stamp.addSecond(subtrahend);
-                if (calculatedStamp.totalSecond < 0 && !isFinishedLineInserted) {
+                if (calculatedStamp.totalSecond <= 0 && !isFinishedLineInserted) {
                     result += `${this.phraseRepository.get(PhraseKey.timeupLine())}\n`;
                     isFinishedLineInserted = true;
                 }
@@ -68,7 +68,7 @@ export class CalculateCarryOverTlCommand implements MessageCommand {
                     title: String.Format(this.phraseRepository.get(PhraseKey.carryOverTimelineResultTitle()), {
                         carryOverTime: battleSecond
                     }),
-                    description: result
+                    description: `\`\`\`${result}\`\`\``
                 }
             ]
         });
@@ -77,9 +77,10 @@ export class CalculateCarryOverTlCommand implements MessageCommand {
 
 async function parseTimeLine(client: Client, timelineOrUrl: string): Promise<string> {
     if (isMessageLink(timelineOrUrl)) {
-        return (await getMessageFromLink(client, timelineOrUrl)).cleanContent;
+        const timeline = (await getMessageFromLink(client, timelineOrUrl)).cleanContent;
+        return timeline.replace(/^```/, "").replace(/```$/, "");
     } else {
-        return timelineOrUrl;
+        return timelineOrUrl.replace(/^```/, "").replace(/```$/, "");
     }
 }
 
