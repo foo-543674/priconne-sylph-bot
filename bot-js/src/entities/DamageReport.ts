@@ -1,7 +1,8 @@
 import { String } from "typescript-string-operations";
-import { userMension } from "../support/DiscordHelper";
 import { PhraseKey } from "../support/PhraseKey";
 import { PhraseRepository } from "../support/PhraseRepository";
+import { BossNumber, isBossNumber } from './BossNumber';
+import { DiscordUserId } from "../discord/DiscordUserId";
 
 export type DamageReportDto = {
     id: string;
@@ -23,14 +24,14 @@ export class DamageReport {
         public readonly messageId: string,
         public readonly channelId: string,
         public readonly interactionMessageId: string,
-        public readonly discordUserId: string,
-        public readonly bossNumber: number,
+        public readonly discordUserId: DiscordUserId,
+        public readonly bossNumber: BossNumber,
         public readonly memberId: string,
         public readonly isInProcess: boolean,
         public readonly damage: number | null,
         public readonly isCarryOver: boolean,
         public readonly comment: string
-    ) {}
+    ) { }
 
     public static fromDto(dto: DamageReportDto): DamageReport {
         return new DamageReport(
@@ -38,8 +39,8 @@ export class DamageReport {
             dto.messageId,
             dto.channelId,
             dto.interactionMessageId,
-            dto.discordUserId,
-            dto.bossNumber,
+            new DiscordUserId(dto.discordUserId),
+            dto.bossNumber as BossNumber,
             dto.memberId,
             dto.isInProcess,
             dto.damage,
@@ -103,8 +104,7 @@ export class DamageReport {
             ),
             this
         );
-        return `${userMension(this.discordUserId)} ${base} ${
-            this.isCarryOver ? phraseRepository.get(PhraseKey.carryOver()) : ""
-        } ${this.comment}`;
+        return `${this.discordUserId.toMention()} ${base} ${this.isCarryOver ? phraseRepository.get(PhraseKey.carryOver()) : ""
+            } ${this.comment}`;
     }
 }

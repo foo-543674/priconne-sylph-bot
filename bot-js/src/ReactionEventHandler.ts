@@ -1,6 +1,6 @@
 import { Client, PartialMessageReaction, MessageReaction, PartialUser, User } from "discord.js";
 import { ReactionCommand } from "./commands/reaction/ReactionCommand";
-import { DiscordReaction, DiscordUser } from "./support/DiscordHelper";
+import { DiscordReaction, DiscordUser } from "./discordjs/DiscordHelper";
 
 function isPartialReaction(reaction: PartialMessageReaction | MessageReaction): reaction is PartialMessageReaction {
     return reaction.partial;

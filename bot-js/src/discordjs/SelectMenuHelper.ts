@@ -1,8 +1,8 @@
-import { PhraseKey } from "./PhraseKey";
-import { PhraseRepository } from "./PhraseRepository";
+import { PhraseKey } from "../support/PhraseKey";
+import { PhraseRepository } from "../support/PhraseRepository";
 import { MessageSelectOptionData } from "discord.js";
 import { String } from "typescript-string-operations";
-import { getGroupOf } from "./RegexHelper";
+import { getGroupOf } from "../support/RegexHelper";
 
 export const pagingOptionValuePrefix = "pagingOption";
 const pagingOptionValuePattern = new RegExp(`${pagingOptionValuePrefix}_(?<page>[0-9]+)`);

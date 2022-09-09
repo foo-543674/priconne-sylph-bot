@@ -3,7 +3,7 @@ import { ButtonInteractionCommand, ButtonInteractionKey, button } from "./Button
 import { ApiClient } from "../../backend/ApiClient";
 import { PhraseRepository } from "../../support/PhraseRepository";
 import { PhraseKey } from "../../support/PhraseKey";
-import { InvalidInteractionError } from "../../support/InvalidInteractionError";
+import { InvalidInteractionError } from "../../discordjs/InvalidInteractionError";
 
 export class RequestRescueCommand extends ButtonInteractionCommand {
     constructor(private apiClient: ApiClient, private phraseRepository: PhraseRepository) {

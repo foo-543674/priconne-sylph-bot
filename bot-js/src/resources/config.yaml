@@ -15,6 +15,7 @@ phrases:
   boss_subjugation: (?<bossNumber>[1-5])(ボス)?討伐
   register_uncomplete_member_role: (?<clanName>[\s\S]+)の凸未完了者のロールを登録して
   calculate_carry_over_tl: (?<seconds>\d?\d:\d\d|\d+)(s|秒)?の持ち越し( |\n|　)(?<timeline>[\s\S]+)
+  carry_over_tl_extract: ^.+?( |\n|　)(?<timeline>[\s\S]+)$
   challenge_report_guide: |-
     凸をしたら回数に応じてスタンプを押してね。
     持ち越しを持ったら持ち越し作成ボタンを押してね。持ち越しを消化したら削除を押してね。
@@ -87,13 +88,13 @@ phrases:
     ---------------------------------------------------------------------------
   days_unit: '{day}日目'
   boss_questionnaire_message: 行きたいボスのスタンプ押してね
-  boss_notify_message: ボスの凸を開始するよ
+  boss_notify_message: "{bossNumber}ボスの凸を開始するよ"
   cannot_find_boss_questionnaire_message: ボスアンケートのメッセージが見つからないよ。500個以上前のメッセージは見れないから、新しくアンケートを作ってね。
   cannot_find_boss_number_message: 通知したいボスの番号が見つからないよ。
   no_in_session_clan_battle_message: 開催中のクランバトルがないよ。
   no_damage_report_channels_message: ダメージ報告チャンネルがないよ。
   specific_boss_word: (?<bossNumber>[1-5])ボス
-  boss_knockout_message: ボスが倒れたよ。
+  boss_knockout_message: "{bossNumber}ボスが倒れたよ。"
   create_damage_report_message: |
     このチャンネルをダメージ報告場所として設定するよ。
     凸をするボスのボタンを押すと、凸宣言の作成案内が開始されるよ。
@@ -166,5 +167,7 @@ phrases:
   confirm_delete_carry_over_message: 自分のではない持ち越しを消そうとしてるよ。間違えた場合は下にある"これらのメッセージを削除する"を押してね。持ち越しを削除しても問題ない場合は削除ボタンを押してね。
   retry_challenge_label: 再凸
   carry_over_time_is_invalid_message: 持ち越し秒数が正しくないよ。
+  cannot_parse_timeline_message: TLの取得に失敗しました。
   timeup_line: '========== !!!!!Time up!!!!! =========='
   carry_over_timeline_result_title: "{carryOverTime}秒の持ち越し"
+  alternative_error_message_from_server: "サーバー側でエラーが発生しました"

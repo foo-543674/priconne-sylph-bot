@@ -1,8 +1,9 @@
+
 export class GetClanParamter {
     constructor(
         private name?: string,
         private discordUserId?: string,
-        private reportChannelId?: string,
+        private reportChannelId?: string
     ) { }
 
     public generateQueryParameterText() {

@@ -1,4 +1,4 @@
-import { MessageActionRow, ButtonInteraction } from "discord.js";
+import { ActionRowBuilder, ButtonInteraction } from "discord.js";
 import { ApiClient } from "../../backend/ApiClient";
 import { PhraseRepository } from "../../support/PhraseRepository";
 import { PhraseKey } from "../../support/PhraseKey";
@@ -6,7 +6,7 @@ import { String } from "typescript-string-operations";
 import { challengerSelectMenu } from "./MemberSelectMenuCommand";
 import { startChallengeButton, startCarryOverButton } from "./StartChallengeCommand";
 import { ButtonInteractionCommand, ButtonInteractionKey, button } from "./ButtonInteractionCommand";
-import { InvalidInteractionError } from "../../support/InvalidInteractionError";
+import { InvalidInteractionError } from "../../discordjs/InvalidInteractionError";
 import { BossNumber } from "../../entities/BossNumber";
 
 export class BossSelectButtonCommand extends ButtonInteractionCommand {
@@ -58,8 +58,8 @@ export class BossSelectButtonCommand extends ButtonInteractionCommand {
                 bossNumber
             })}`,
             components: [
-                new MessageActionRow().addComponents(challengerSelectMenu(this.phraseRepository, 1, ...members)),
-                new MessageActionRow()
+                new ActionRowBuilder().addComponents(challengerSelectMenu(this.phraseRepository, 1, ...members)),
+                new ActionRowBuilder()
                     .addComponents(startChallengeButton(this.phraseRepository))
                     .addComponents(startCarryOverButton(this.phraseRepository))
             ]

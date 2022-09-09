@@ -3,10 +3,10 @@ import { ButtonInteraction, Message, MessageActionRow, MessageButton } from "dis
 import { PhraseRepository } from "../../support/PhraseRepository";
 import { PhraseKey } from "../../support/PhraseKey";
 import { ButtonInteractionCommand } from "./ButtonInteractionCommand";
-import { InvalidInteractionError } from "../../support/InvalidInteractionError";
+import { InvalidInteractionError } from "../../discordjs/InvalidInteractionError";
 import { NumberChar } from "../../support/NumberString";
 import { ThreadSafeCache } from "../../support/ThreadSafeCache";
-import { HasReferenceMessageInteraction, hasReferenceInteraction } from "../../support/DiscordHelper";
+import { HasReferenceMessageInteraction, hasReferenceInteraction } from "../../discordjs/DiscordHelper";
 
 export interface NumberInput {
     get hasInput(): boolean;

@@ -1,6 +1,6 @@
 import { DynamicLoader } from "bcdice";
 import GameSystemClass from "bcdice/lib/game_system";
-import { convertFullWidth } from "./MessageParser";
+import { convertFullWidth } from "../discordjs/MessageParser";
 
 export type DiceCommand = string;
 export type DiceSystemName = "DiceBot";

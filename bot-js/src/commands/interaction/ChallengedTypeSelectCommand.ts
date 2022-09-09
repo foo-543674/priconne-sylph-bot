@@ -1,10 +1,10 @@
 import { Message, MessageSelectOptionData, SelectMenuInteraction } from "discord.js";
 import { PhraseRepository } from "../../support/PhraseRepository";
 import { PhraseKey } from "../../support/PhraseKey";
-import { InvalidInteractionError } from "../../support/InvalidInteractionError";
+import { InvalidInteractionError } from "../../discordjs/InvalidInteractionError";
 import { selectMenu, SelectMenuInteractionCommand, SelectMenuInteractionKey } from "./SelectMenuInteractionCommand";
 import { ChallengedType, isChallengedType } from "../../entities/ChallengedType";
-import { hasReferenceInteraction, HasReferenceMessageInteraction } from "../../support/DiscordHelper";
+import { hasReferenceInteraction, HasReferenceMessageInteraction } from "../../discordjs/DiscordHelper";
 import { ThreadSafeCache } from "../../support/ThreadSafeCache";
 
 export interface ChallengedTypeSelectInput {

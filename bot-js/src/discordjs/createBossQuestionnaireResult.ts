@@ -3,7 +3,7 @@ import * as TaskOption from "fp-ts/lib/TaskOption";
 import { Message, TextChannel } from "discord.js";
 import { GuildMemberResolver } from "./GuildMemberResolver";
 import { BossQuestionnaire } from "../entities/BossQuestionnaire";
-import { PhraseRepository } from "./PhraseRepository";
+import { PhraseRepository } from "../support/PhraseRepository";
 import { BossStamp } from "../entities/BossStamp";
 
 export async function createBossQuestionnaireResult(

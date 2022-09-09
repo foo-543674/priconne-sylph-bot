@@ -2,7 +2,7 @@ import { BossNumber } from "../entities/BossNumber";
 import { ChallengedType } from "../entities/ChallengedType";
 
 export class PhraseKey {
-    private constructor(private value: string) {}
+    private constructor(private value: string) { }
 
     public static botName() {
         return new PhraseKey("bot_name");
@@ -336,6 +336,10 @@ export class PhraseKey {
         return new PhraseKey("calculate_carry_over_tl");
     }
 
+    public static carryOverTlExtract(): PhraseKey {
+        return new PhraseKey("carry_over_tl_extract");
+    }
+
     public static carryOverTimeIsInvalidMessage(): PhraseKey {
         return new PhraseKey("carry_over_time_is_invalid_message");
     }
@@ -348,7 +352,17 @@ export class PhraseKey {
         return new PhraseKey("carry_over_timeline_result_title");
     }
 
+    public static AlternativeErrorMessageFromServer(): PhraseKey {
+        return new PhraseKey("alternative_error_message_from_server");
+    }
+
+    public static cannotParseTimelineMessage(): PhraseKey {
+        return new PhraseKey("cannot_parse_timeline_message");
+    }
+
     public toString(): string {
         return this.value;
     }
 }
+
+export type PhraseKeys = keyof typeof PhraseKey;

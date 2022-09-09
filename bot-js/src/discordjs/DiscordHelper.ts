@@ -11,9 +11,9 @@ import {
     TextChannel,
     User
 } from "discord.js";
-import { getGroupOf } from "./RegexHelper";
+import { getGroupOf } from "../support/RegexHelper";
 import { MessageComponentInteraction } from "discord.js";
-import { InvalidArgumentError } from "./InvalidArgumentError";
+import { InvalidArgumentError } from "../support/InvalidArgumentError";
 
 export class DiscordHelperError extends Error {
     constructor(message: string) {
@@ -36,38 +36,8 @@ export type HasReferenceMessageInteraction = MessageComponentInteraction & {
     message: HasReferenceMessage;
 };
 
-export const userMension = (id: string) => `<@${id}>`;
-export const roleMension = (id: string) => `<@&${id}>`;
-
-export function getMentionedUserId(messageContent: string) {
-    return getGroupOf(/<@(?<challengerId>[0-9]+)>/, messageContent, "challengerId")[0];
-}
-
-export function getMentionedRoleId(messageContent: string) {
-    return getGroupOf(/<@&(?<roleId>[0-9]+)>/, messageContent, "roleId")[0];
-}
-
-export function removeMentionsFromContent(message: Message) {
-    const result = message.content
-        .replace(/<@!?\d+>/g, "")
-        .replace(/<@&\d+>/g, "")
-        .replace(/<#\d+>/g, "")
-        .replace(/@everyone/g, "")
-        .trim();
-
-    return result;
-}
-
 export function isTextChannel(channel: TextBasedChannel): channel is TextChannel {
     return channel.type === "GUILD_TEXT";
-}
-
-export function isMentionedTo(message: Message, user: User): boolean {
-    return message.mentions.has(user);
-}
-
-export function isMentionedToMe(message: Message, client: Client): boolean {
-    return client.user ? isMentionedTo(message, client.user) : false;
 }
 
 export async function collectMessagesUntil(

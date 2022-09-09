@@ -1,95 +1,107 @@
-import { Client, Message } from "discord.js";
 import { PhraseKey } from "../../support/PhraseKey";
 import { PhraseRepository } from "../../support/PhraseRepository";
 import { MessageCommand } from "./MessageCommand";
-import { parseForCommand } from "../../support/MessageParser";
-import { matchContent, getGroupOf } from "../../support/RegexHelper";
-import { getMessageFromLink, isMentionedToMe, isMessageLink } from "../../support/DiscordHelper";
 import { TimeLineStamp } from "../../support/TimeLineStamp";
-import { String } from "typescript-string-operations";
 import { NumericString } from "../../support/NumberString";
+import { DiscordMessage } from "../../discord/DiscordMessage";
+import { CommandTask } from "../CommandTask";
+import { MatchPattern, noFullWidthTrimmedMatchPattern, standardMatchPattern } from "../../support/MatchPattern";
+import { DiscordBotClient } from "../../discord/DiscordBotClient";
+import { TaskEitherHelper } from "../../support/TaskEitherHelper";
+import { pipe } from "fp-ts/lib/function";
+import * as Option from "fp-ts/lib/Option";
+import * as TaskEither from "fp-ts/lib/TaskEither";
+import { DiscordHelper } from "../../discord/DicordHelper";
+import { DiscordGuild } from "../../discord/DiscordGuild";
 
 const MAX_BATTLE_TIME = 90;
 const MIN_BATTLE_TIME = 20;
 const timePattern = /^(\d?\d:\d\d)$/;
 
 export class CalculateCarryOverTlCommand implements MessageCommand {
-    constructor(private phraseRepository: PhraseRepository, private discordClient: Client) {
-        this.commandPattern = new RegExp(this.phraseRepository.get(PhraseKey.calculateCarryOverTl()));
+    constructor(private readonly phraseRepository: PhraseRepository, private readonly discordBotClient: DiscordBotClient) {
+        this.commandPattern = noFullWidthTrimmedMatchPattern(this.phraseRepository.getAsRegexp(PhraseKey.calculateCarryOverTl()));
+        this.commandPatternForExtract = standardMatchPattern(this.phraseRepository.getAsRegexp(PhraseKey.carryOverTlExtract()));
     }
 
-    private readonly commandPattern: RegExp;
+    private readonly commandPattern: MatchPattern;
+    private readonly commandPatternForExtract: MatchPattern;
+    private readonly timeStampPattern = /(\d?\d:\d\d)/gmu
 
-    public async execute(message: Message<boolean>): Promise<void> {
-        const rawContent = message.cleanContent;
-        const cleanContent = parseForCommand(message);
+    createTask(message: DiscordMessage): CommandTask {
+        return pipe(
+            TaskEitherHelper.interruptWhen(!message.isMatchedAndMentionedToMe(this.commandPattern, this.discordBotClient)),
+            TaskEither.bind("battleSecond", () => this.parseBattleSecond(message.messageWithoutMention)),
+            TaskEither.bindW("timeline", () => this.extractTimeline(message.messageWithoutMention, message.guild)),
+            TaskEither.chainW(({ battleSecond, timeline }) => pipe(
+                this.convertTimeLine(battleSecond, timeline),
+                TaskEither.chainW(timeline => message.reply(builder =>
+                    builder.addEmbed(
+                        embedBuilder => embedBuilder
+                            .title(this.phraseRepository.getAndFormat(PhraseKey.carryOverTimelineResultTitle(), { carryOverTime: battleSecond }))
+                            .description(`\`\`\`${timeline}\`\`\``)
+                    )
+                ))
+            )),
+        )
+    }
 
-        if (!matchContent(this.commandPattern, cleanContent) || !isMentionedToMe(message, this.discordClient)) return;
+    protected readonly parseBattleSecond = (input: string) => pipe(
+        TaskEitherHelper.fromOptionOrInterrupt(this.commandPattern.extract(input).getFromGroup("seconds").seconds),
+        TaskEither.map(secondText => parseInputSecond(secondText)),
+        TaskEitherHelper.mapOrInterruptKW(a => a),
+        TaskEitherHelper.mapOrInterruptWhen(second => second < MIN_BATTLE_TIME || second > MAX_BATTLE_TIME, this.phraseRepository.get(PhraseKey.carryOverTimeIsInvalidMessage())),
+    )
 
-        console.log("start calculate carry over tl command");
+    protected readonly extractTimeline = (input: string, guild: DiscordGuild) => pipe(
+        TaskEitherHelper.fromOptionOrInterrupt(this.commandPatternForExtract.extract(input).getFromGroup("timeline").timeline),
+        TaskEither.chainW(timelineOrUrl => parseTimeLine(guild, timelineOrUrl, this.phraseRepository.get(PhraseKey.cannotParseTimelineMessage()))),
+    )
 
-        const [inputSecond] = getGroupOf(this.commandPattern, cleanContent, "seconds");
-        if (!inputSecond) return;
-        const battleSecond = parseInputSecond(inputSecond);
-        if (Number.isNaN(battleSecond) || battleSecond < MIN_BATTLE_TIME || battleSecond > MAX_BATTLE_TIME) {
-            await message.reply(this.phraseRepository.get(PhraseKey.carryOverTimeIsInvalidMessage()));
-            return;
-        }
-
-        const [timelineOrUrl] = getGroupOf(this.commandPattern, rawContent, "timeline");
-        if (!timelineOrUrl) {
-            await message.reply({ embeds: [] });
-            return;
-        }
-        const timeline = await parseTimeLine(this.discordClient, timelineOrUrl);
-
-        const subtrahend = battleSecond - MAX_BATTLE_TIME;
-        const splitedTimeLines = timeline.split(/(\d?\d:\d\d)/gmu);
-
-        let result = "";
-        let isFinishedLineInserted = false;
-        for (const timelinePart of splitedTimeLines) {
+    protected readonly convertTimeLine = (battleSecond: number, timeline: string) => pipe(
+        TaskEither.Do,
+        TaskEitherHelper.bindOf("subtrahend", battleSecond - MAX_BATTLE_TIME),
+        TaskEitherHelper.bindOf("splitedTimeLines", timeline.split(this.timeStampPattern)),
+        TaskEither.map(({ subtrahend, splitedTimeLines }) => splitedTimeLines.map(timelinePart => {
             if (timePattern.test(timelinePart)) {
                 const stamp = new TimeLineStamp(timelinePart);
-                const calculatedStamp = stamp.addSecond(subtrahend);
-                if (calculatedStamp.totalSecond <= 0 && !isFinishedLineInserted) {
-                    result += `${this.phraseRepository.get(PhraseKey.timeupLine())}\n`;
-                    isFinishedLineInserted = true;
-                }
-                result += calculatedStamp.toString();
+                return stamp.addSecond(subtrahend);
             } else {
-                result += timelinePart;
+                return timelinePart
             }
-        }
-
-        await message.reply({
-            embeds: [
-                {
-                    title: String.Format(this.phraseRepository.get(PhraseKey.carryOverTimelineResultTitle()), {
-                        carryOverTime: battleSecond
-                    }),
-                    description: `\`\`\`${result}\`\`\``
-                }
+        })),
+        TaskEither.map(timelineParts => {
+            const index = timelineParts.findIndex(part => (part instanceof TimeLineStamp && part.totalSecond <= 0))
+            return [
+                ...timelineParts.slice(0, index),
+                `${this.phraseRepository.get(PhraseKey.timeupLine())}\n`,
+                ...timelineParts.slice(index)
             ]
-        });
-    }
+        }),
+        TaskEither.map(timelineParts => timelineParts.map(part => part.toString())),
+        TaskEither.map(timelineParts => timelineParts.join()),
+    )
 }
 
-async function parseTimeLine(client: Client, timelineOrUrl: string): Promise<string> {
-    if (isMessageLink(timelineOrUrl)) {
-        const timeline = (await getMessageFromLink(client, timelineOrUrl)).cleanContent;
-        return timeline.replace(/^```/, "").replace(/```$/, "");
+function parseTimeLine(guild: DiscordGuild, timelineOrUrl: string, message: string) {
+    const codeBlockBracketPattern = /(^```|```$)/
+
+    if (DiscordHelper.isMessageLink(timelineOrUrl)) {
+        return pipe(
+            DiscordHelper.getMessageFromLink(guild, timelineOrUrl, message),
+            TaskEither.map(message => message.messageWithoutMention.replace(codeBlockBracketPattern, ""))
+        )
     } else {
-        return timelineOrUrl.replace(/^```/, "").replace(/```$/, "");
+        return TaskEither.of(timelineOrUrl.replace(codeBlockBracketPattern, ""))
     }
 }
 
-function parseInputSecond(text: string): number {
+function parseInputSecond(text: string): Option.Option<number> {
     if (NumericString.canApply(text)) {
-        return new NumericString(text).toNumber();
+        return Option.some(new NumericString(text).toNumber());
     } else if (timePattern.test(text)) {
-        return new TimeLineStamp(text).totalSecond;
+        return Option.some(new TimeLineStamp(text).totalSecond);
     } else {
-        return NaN;
+        return Option.none;
     }
 }

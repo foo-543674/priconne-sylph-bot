@@ -15,7 +15,7 @@ import { ReportChallengeCommand } from "./commands/reaction/ReportChallengeComma
 import { BossSubjugationCommand } from "./commands/message/BossSubjugationCommand";
 import { RegisterUncompleteMemberRoleCommand } from "./commands/message/RegisterUncompleteMemberRoleCommand";
 import { RegisterCooperateChannelCommand } from "./commands/message/RegisterCooperateChannelCommand";
-import { AddCommentToDamageReportCommand } from "./commands/message/AddCommentToDamageReportCommand";
+import { AddCommentToDamageReportCommand } from "./commands/interaction/AddCommentToDamageReportCommand";
 import { PrepareDamageReportCommand } from "./commands/message/PrepareDamageReportCommand";
 import { GetBossQuestionnaireResultCommand } from "./commands/message/GetBossQuestionnaireResultCommand";
 import { BossNotificationCommand } from "./commands/message/BossNotificationCommand";
@@ -37,12 +37,12 @@ import { OpenDamageInputFormCommand } from "./commands/interaction/OpenDamageInp
 import { ChallengedTypeSelectCommand } from "./commands/interaction/ChallengedTypeSelectCommand";
 import { OpenCreateCarryOverFormCommand } from "./commands/interaction/OpenCreateCarryOverFormCommand";
 import { DeleteCarryOverCommand } from "./commands/interaction/DeleteCarryOverCommand";
-import { AddCommentToCarryOverCommand } from "./commands/message/AddCommentToCarryOverCommand";
+import { AddCommentToCarryOverCommand } from "./commands/interaction/AddCommentToCarryOverCommand";
 import { RetryChallengeCommand } from "./commands/interaction/RetryChallengeCommand";
 import { RequestPinCommand } from "./commands/message/RequestPinCommand";
 import { RequestUnpinCommand } from "./commands/message/RequestUnpinCommand";
 import { DiceCommand } from "./commands/message/DiceCommand";
-import { BCDice } from "./support/Dice";
+import { BCDice } from "./bcdice/Dice";
 import { CalculateCarryOverTlCommand } from "./commands/message/CalculateCarryOverTlCommand";
 
 const phraseConfig = yaml.load(fs.readFileSync("src/resources/config.yaml", "utf8"));

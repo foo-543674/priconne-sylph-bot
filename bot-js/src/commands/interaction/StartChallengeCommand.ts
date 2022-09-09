@@ -1,12 +1,12 @@
-import { ButtonInteraction, MessageActionRow } from "discord.js";
+import { ButtonInteraction, ButtonStyle, ActionRowBuilder } from "discord.js";
 import { ButtonInteractionCommand, ButtonInteractionKey, button } from "./ButtonInteractionCommand";
 import { ApiClient } from "../../backend/ApiClient";
 import { PhraseRepository } from "../../support/PhraseRepository";
 import { PhraseKey } from "../../support/PhraseKey";
 import { getGroupOf } from "../../support/RegexHelper";
 import { deleteDamageReportButton } from "./DeleteDamageReportCommand";
-import { getMentionedUserId } from "../../support/DiscordHelper";
-import { InvalidInteractionError } from "../../support/InvalidInteractionError";
+import { getMentionedUserId } from "../../discordjs/DiscordHelper";
+import { InvalidInteractionError } from "../../discordjs/InvalidInteractionError";
 import { requestRescueButton } from "./RequestRescueCommand";
 import { openDamageInputFormButton } from "./OpenDamageInputFormCommand";
 import { retryChallengeButton } from './RetryChallengeCommand';
@@ -67,7 +67,7 @@ export class StartChallengeCommand extends ButtonInteractionCommand {
             await reportMessage.edit({
                 content: damageReport.generateMessage(this.phraseRepository),
                 components: [
-                    new MessageActionRow()
+                    new ActionRowBuilder()
                         .addComponents(openDamageInputFormButton(this.phraseRepository))
                         .addComponents(requestRescueButton(this.phraseRepository))
                         .addComponents(retryChallengeButton(this.phraseRepository))
@@ -82,9 +82,9 @@ export class StartChallengeCommand extends ButtonInteractionCommand {
 }
 
 export function startChallengeButton(phraseRepository: PhraseRepository) {
-    return button("startChallenge", phraseRepository.get(PhraseKey.regularChallenge()), "PRIMARY");
+    return button("startChallenge", phraseRepository.get(PhraseKey.regularChallenge()), ButtonStyle.Primary);
 }
 
 export function startCarryOverButton(phraseRepository: PhraseRepository) {
-    return button("startCarryOver", phraseRepository.get(PhraseKey.carryOver()), "SECONDARY");
+    return button("startCarryOver", phraseRepository.get(PhraseKey.carryOver()), ButtonStyle.Secondary);
 }

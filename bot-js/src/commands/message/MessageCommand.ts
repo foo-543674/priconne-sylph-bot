@@ -1,5 +1,6 @@
-import { Message } from "discord.js";
+import { DiscordMessage } from "../../discord/DiscordMessage";
+import { CommandTask } from "../CommandTask";
 
 export interface MessageCommand {
-    execute(message: Message): Promise<void>;
+    createTask(message: DiscordMessage): CommandTask;
 }

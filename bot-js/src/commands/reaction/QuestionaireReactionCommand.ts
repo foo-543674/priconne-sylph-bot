@@ -2,8 +2,8 @@ import { MessageReaction, User, Client, MessageEmbed, Message, TextChannel } fro
 import { PhraseKey } from "../../support/PhraseKey";
 import { PhraseRepository } from "../../support/PhraseRepository";
 import { ReactionCommand } from "./ReactionCommand";
-import { isTextChannel } from "../../support/DiscordHelper";
-import { createBossQuestionnaireResult } from "../../support/createBossQuestionnaireResult";
+import { isTextChannel } from "../../discordjs/DiscordHelper";
+import { createBossQuestionnaireResult } from "../../discordjs/createBossQuestionnaireResult";
 import { BossStamp } from "../../entities/BossStamp";
 import { ThreadSafeCache } from "../../support/ThreadSafeCache";
 import { BossQuestionnaire } from "../../entities/BossQuestionnaire";

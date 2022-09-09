@@ -1,5 +1,5 @@
 import { Guild, GuildMember } from "discord.js";
-import { notNullOrUndefined } from "./ArrayHelper";
+import { notNullOrUndefined } from "../support/ArrayHelper";
 
 export class GuildMemberResolver {
     public constructor(private guild: Guild) {}

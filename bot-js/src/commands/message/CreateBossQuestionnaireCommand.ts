@@ -1,84 +1,97 @@
-import { Client, Message, TextChannel } from "discord.js";
 import { MessageCommand } from "./MessageCommand";
 import { PhraseRepository } from "../../support/PhraseRepository";
-import { isMentionedToMe, isTextChannel } from "../../support/DiscordHelper";
 import { PhraseKey } from "../../support/PhraseKey";
-import { ApiClient } from "../../backend/ApiClient";
 import { pipe } from "fp-ts/lib/function";
-import * as TaskOption from "fp-ts/lib/TaskOption";
-import { roleMension } from "../../support/DiscordHelper";
 import { BossQuestionnaire } from "../../entities/BossQuestionnaire";
 import { ThreadSafeCache } from "../../support/ThreadSafeCache";
-import { fetchBossQuestionnaireMessage } from "../../support/fetchBossQuestionnaire";
-import { matchContent } from "../../support/RegexHelper";
-import { parseForCommand } from "../../support/MessageParser";
+import { DiscordBotClient } from "../../discord/DiscordBotClient";
+import { ApiClient } from "../../api/ApiClient";
+import { DiscordMessage } from "../../discord/DiscordMessage";
+import { CommandTask } from "../CommandTask";
+import { MatchPattern, noFullWidthTrimmedMatchPattern } from "../../support/MatchPattern";
+import { TaskEitherHelper } from '../../support/TaskEitherHelper';
+import * as TaskEither from 'fp-ts/lib/TaskEither';
+import * as Option from 'fp-ts/lib/Option';
+import { sequenceT } from "fp-ts/lib/Apply";
+import { DiscordChannel } from "../../discord/DiscordChannel";
+import { CooperateChannel } from "../../entities/CooperateChannel";
 
 export class CreateBossQuestionnaireCommand implements MessageCommand {
     constructor(
         private phraseRepository: PhraseRepository,
-        private discordClient: Client,
+        private discordBotClient: DiscordBotClient,
         private apiClient: ApiClient,
         private cache: ThreadSafeCache<BossQuestionnaire>
     ) {
-        this.commandPattern = new RegExp(this.phraseRepository.get(PhraseKey.createBossQuestionnaire()));
+        this.commandPattern = noFullWidthTrimmedMatchPattern(this.phraseRepository.getAsRegexp(PhraseKey.createBossQuestionnaire()));
+        this.sendingMessage = this.phraseRepository.get(PhraseKey.bossQuestionnaireMessage());
     }
 
-    private readonly commandPattern: RegExp;
+    private readonly commandPattern: MatchPattern;
+    private readonly sendingMessage: string;
 
-    async execute(message: Message): Promise<void> {
-        const cleanContent = parseForCommand(message);
-        if (!matchContent(this.commandPattern, cleanContent) || !isMentionedToMe(message, this.discordClient))
-            return;
-
-        const channel = message.channel;
-        if (!isTextChannel(channel)) return;
-
-        const cooperateChannel = await this.apiClient.getCooperateChannel(channel.id);
-
-        if (!cooperateChannel) return;
-
-        console.log("start create boss questionnaire command");
-
-        await this.unpinPreviousPin(channel);
-
-        await pipe(
-            TaskOption.fromTask(() => this.apiClient.getCooperateChannel(message.channelId)),
-            TaskOption.chainNullableK((cooperateChannel) => cooperateChannel),
-            TaskOption.chainTaskK(
-                (cooperateChannel) => () => this.apiClient.getUncompleteMemberRole(cooperateChannel.clanId)
+    protected sendMessage<E>(channel: DiscordChannel) {
+        return (ma: TaskEither.TaskEither<E, Option.Option<CooperateChannel>>) => pipe(
+            ma,
+            TaskEitherHelper.chainOrInterruptKW(cooperateChannel => this.apiClient.getUncompleteMemberRole(cooperateChannel.clanId)),
+            TaskEitherHelper.mapFoldOption(
+                () => this.sendingMessage,
+                (role) => `${role.role.discordRoleId.toMention} ${this.sendingMessage}`
             ),
-            TaskOption.chainNullableK((role) => role),
-            TaskOption.fold(
-                () => TaskOption.some(this.phraseRepository.get(PhraseKey.bossQuestionnaireMessage())),
-                (role) =>
-                    TaskOption.some(
-                        `${roleMension(role.role.discordRoleId)} ${this.phraseRepository.get(
-                            PhraseKey.bossQuestionnaireMessage()
-                        )}`
-                    )
-            ),
-            TaskOption.chainTaskK((messageText) => () => channel.send(messageText)),
-            TaskOption.chainTaskK((sentMessage) => async () => {
-                await sentMessage.react(this.phraseRepository.get(PhraseKey.bossStamp(1)));
-                await sentMessage.react(this.phraseRepository.get(PhraseKey.bossStamp(2)));
-                await sentMessage.react(this.phraseRepository.get(PhraseKey.bossStamp(3)));
-                await sentMessage.react(this.phraseRepository.get(PhraseKey.bossStamp(4)));
-                await sentMessage.react(this.phraseRepository.get(PhraseKey.bossStamp(5)));
-                this.cache.set(
-                    sentMessage.id,
-                    new BossQuestionnaire(sentMessage.id, this.phraseRepository),
-                    30 * 60 * 1000 // 30分
-                );
-                await sentMessage.pin();
-            })
-        )();
+            TaskEither.chainW(sendingMessage => channel.sendMessage(sendingMessage)),
+        )
     }
 
-    protected async unpinPreviousPin(channel: TextChannel) {
-        await Promise.all(
-            (
-                await fetchBossQuestionnaireMessage(channel, this.phraseRepository, this.discordClient.user)
-            ).map(async (message) => await message.unpin())
-        );
+    createTask(message: DiscordMessage): CommandTask {
+        return pipe(
+            TaskEitherHelper.interruptWhen(!message.isMatchedAndMentionedToMe(this.commandPattern, this.discordBotClient)),
+            TaskEither.map(() => message.channel),
+            TaskEitherHelper.mapOrInterruptWhen(channel => !channel.isTextChannel),
+            TaskEither.chainW(channel => pipe(
+                this.apiClient.getCooperateChannel(channel.id),
+                this.sendMessage,
+                TaskEither.chainW(sendingMessage => channel.sendMessage(sendingMessage)),
+                TaskEither.chainW(sentMessage => pipe(
+                    sequenceT(TaskEither.ApplySeq)(
+                        sentMessage.reaction(this.phraseRepository.get(PhraseKey.bossStamp(1))),
+                        sentMessage.reaction(this.phraseRepository.get(PhraseKey.bossStamp(2))),
+                        sentMessage.reaction(this.phraseRepository.get(PhraseKey.bossStamp(3))),
+                        sentMessage.reaction(this.phraseRepository.get(PhraseKey.bossStamp(4))),
+                        sentMessage.reaction(this.phraseRepository.get(PhraseKey.bossStamp(5))),
+                    ),
+                    TaskEither.chainTaskK(() => this.cache.set(
+                        sentMessage.id,
+                        new BossQuestionnaire(sentMessage.id, this.phraseRepository),
+                        30 * 60 * 1000 // 30分
+                    )),
+                    TaskEither.chainW(() => channel.fetchPinnedMessage()),
+                    TaskEither.map(pinnedMessageList =>
+                        pinnedMessageList.find(message =>
+                            this.discordBotClient.isMyMessage(message) && message.messageWithoutMention === this.sendingMessage
+                        )
+                    ),
+                    TaskEitherHelper.chainFoldOption(
+                        () => TaskEitherHelper.void,
+                        (message) => message.unpin(),
+                    ),
+                    TaskEither.chainW(() => sentMessage.pin()),
+                )),
+            )),
+            TaskEitherHelper.toVoid
+        )
     }
+
+    protected readonly unpinPrevious = (targetChannel: DiscordChannel) => pipe(
+        TaskEither.of(targetChannel),
+        TaskEither.chainW(channel => channel.fetchPinnedMessage()),
+        TaskEither.map(pinnedMessageList =>
+            pinnedMessageList.find(message =>
+                this.discordBotClient.isMyMessage(message) && message.messageWithoutMention === this.sendingMessage
+            )
+        ),
+        TaskEitherHelper.chainFoldOption(
+            () => TaskEitherHelper.void,
+            (message) => message.unpin(),
+        ),
+    )
 }

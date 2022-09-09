@@ -4,10 +4,10 @@ import { PhraseRepository } from "../../support/PhraseRepository";
 import { ApiClient } from "../../backend/ApiClient";
 import { ValidationError } from "../../support/ValidationError";
 import { PhraseKey } from "../../support/PhraseKey";
-import { isMentionedToMe } from "../../support/DiscordHelper";
+import { isMentionedToMe } from "../../discordjs/DiscordHelper";
 import { openCreateCarryOverFormButton } from "../interaction/OpenCreateCarryOverFormCommand";
 import { matchContent } from "../../support/RegexHelper";
-import { parseForCommand } from "../../support/MessageParser";
+import { parseForCommand } from "../../discordjs/MessageParser";
 
 export class CreateChallengeReportCommand implements MessageCommand {
     constructor(

@@ -1,33 +1,26 @@
-import { Client, Message } from "discord.js";
 import { MessageCommand } from "./MessageCommand";
-import { parseForCommand } from "../../support/MessageParser";
-import { Dice, FailedResult } from "../../support/Dice";
+import { Dice, FailedResult } from "../../bcdice/Dice";
+import { MessageRequest } from "../Request";
+import { MessageActor } from "../Actor";
 
 export class DiceCommand implements MessageCommand {
-    constructor(private discordClient: Client, private dice: Dice) {}
+    constructor(private dice: Dice) {}
 
-    async execute(message: Message): Promise<void> {
-        if (this.discordClient.user?.id === message.author.id) return;
-        const cleanContent = parseForCommand(message);
+    async execute(request: MessageRequest, actor: MessageActor): Promise<void> {
+        if (request.isSelfMessage()) return;
         await this.dice.loadSystem("DiceBot");
 
-        if (!this.dice.isEnableCommand(cleanContent)) return;
+        if (!this.dice.isEnableCommand(request.messageWithoutMention)) return;
 
-        const result = this.dice.roll(cleanContent);
-        if(result === FailedResult) return;
+        const result = this.dice.roll(request.messageWithoutMention);
+        if (result === FailedResult) return;
 
         console.log("start dice command");
 
-        await message.reply({
-            embeds: [
-                {
-                    author: {
-                        name: message.member?.nickname ?? message.author.username,
-                        icon_url: message.author.avatarURL() ?? undefined
-                    },
-                    description: result
-                }
-            ]
-        });
+        await actor.reply((builder) =>
+            builder.addEmbed((embedContentBuilder) =>
+                embedContentBuilder.description(result).author(request.author.displayName, request.author.avatorURL)
+            )
+        );
     }
 }

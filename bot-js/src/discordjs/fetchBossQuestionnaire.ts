@@ -1,6 +1,6 @@
 import { TextChannel, User } from "discord.js";
-import { PhraseKey } from "./PhraseKey";
-import { PhraseRepository } from "./PhraseRepository";
+import { PhraseKey } from "../support/PhraseKey";
+import { PhraseRepository } from "../support/PhraseRepository";
 
 export async function fetchBossQuestionnaireMessage(
     channel: TextChannel,

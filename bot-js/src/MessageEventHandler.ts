@@ -3,7 +3,7 @@ import { MessageCommand } from "./commands/message/MessageCommand";
 import { ValidationError } from "./support/ValidationError";
 import { PhraseRepository } from "./support/PhraseRepository";
 import { PhraseKey } from "./support/PhraseKey";
-import { DiscordMessage } from "./support/DiscordHelper";
+import { DiscordMessage } from "./discordjs/DiscordHelper";
 
 function isPartialMessage(message: PartialMessage | Message): message is PartialMessage {
     return message.partial;

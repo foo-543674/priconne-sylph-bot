@@ -1,20 +1,16 @@
-import { Client, Message } from 'discord.js';
-import { MessageCommand } from './MessageCommand';
-import { PhraseRepository } from '../../support/PhraseRepository';
-import { PhraseKey } from '../../support/PhraseKey';
-import { isMentionedToMe } from '../../support/DiscordHelper';
-import { matchContent } from '../../support/RegexHelper';
-import { parseForCommand } from '../../support/MessageParser';
+import { MessageCommand } from "./MessageCommand";
+import { PhraseRepository } from "../../support/PhraseRepository";
+import { PhraseKey } from "../../support/PhraseKey";
+import { MessageRequest } from "../Request";
+import { noFullWidthTrimmedMatchPattern, MatchPattern } from "../../support/MatchPattern";
+import { MessageActor } from "../Actor";
 
 export class HelpCommand implements MessageCommand {
-    constructor(
-        private phraseRepository: PhraseRepository,
-        private discordClient: Client,
-    ) {
-        this.commandPattern = new RegExp(this.phraseRepository.get(PhraseKey.help()));
+    constructor(private phraseRepository: PhraseRepository) {
+        this.commandPattern = noFullWidthTrimmedMatchPattern(new RegExp(this.phraseRepository.get(PhraseKey.help())));
     }
 
-    private readonly commandPattern: RegExp;
+    private readonly commandPattern: MatchPattern;
     private readonly messageKeys = [
         PhraseKey.helpMessageBasic(),
         PhraseKey.helpMessageRegisterClan(),
@@ -29,17 +25,17 @@ export class HelpCommand implements MessageCommand {
         PhraseKey.helpMessageBossSubjugation(),
         PhraseKey.helpMessageRegisterUncompleteMemberRole(),
         PhraseKey.helpMessagePin(),
-        PhraseKey.helpMessageUnpin(),
+        PhraseKey.helpMessageUnpin()
     ];
 
-    async execute(message: Message): Promise<void> {
-        const cleanContent = parseForCommand(message);
-        if (!matchContent(this.commandPattern, cleanContent) || !isMentionedToMe(message, this.discordClient))
+    async execute(request: MessageRequest, actor: MessageActor): Promise<void> {
+        if (!(request.isMatchedTo(this.commandPattern) && request.isMentionedToMe())) {
             return;
+        }
         console.log("start help command");
 
         for (const messageKey of this.messageKeys) {
-            await message.channel.send(this.phraseRepository.get(messageKey));
+            await actor.messageToSameChannel(this.phraseRepository.get(messageKey));
         }
     }
 }

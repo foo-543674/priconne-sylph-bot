@@ -10,11 +10,11 @@ import {
 } from "./SelectMenuInteractionCommand";
 import { Member } from "../../entities/Member";
 import { getGroupOf } from "../../support/RegexHelper";
-import { userMension } from "../../support/DiscordHelper";
+import { userMension } from "../../discordjs/DiscordHelper";
 import { String } from "typescript-string-operations";
 import { array } from "fp-ts";
 import { notNull } from "../../support/ArrayHelper";
-import { pageingOption, isPagingOption, getPageNumber } from "../../support/SelectMenuHelper";
+import { pageingOption, isPagingOption, getPageNumber } from "../../discordjs/SelectMenuHelper";
 import { startCarryOverButton, startChallengeButton } from "./StartChallengeCommand";
 
 export class MemberSelectMenuCommand extends SelectMenuInteractionCommand {

@@ -1,4 +1,4 @@
-import { Interaction, MessageButton, MessageButtonStyleResolvable, ButtonInteraction } from "discord.js";
+import { Interaction, ButtonBuilder, ButtonStyle, ButtonInteraction } from "discord.js";
 import { InteractionCommand } from "./InteractionCommand";
 import { ValidationError } from "../../support/ValidationError";
 
@@ -30,6 +30,7 @@ const buttonInteractionKeys = [
     "deleteCarryOver",
     "confirmedDeleteCarryOver",
     "retryChallenge",
+    "addComment",
 ] as const;
 export type ButtonInteractionKey = typeof buttonInteractionKeys[number];
 
@@ -37,8 +38,8 @@ function isKeyOfButtonInteraction(value: string): value is ButtonInteractionKey 
     return buttonInteractionKeys.findIndex((k) => k === value) >= 0;
 }
 
-export function button(key: ButtonInteractionKey, label: string, style: MessageButtonStyleResolvable): MessageButton {
-    return new MessageButton().setCustomId(key).setLabel(label).setStyle(style);
+export function button(key: ButtonInteractionKey, label: string, style: ButtonStyle): ButtonBuilder {
+    return new ButtonBuilder().setCustomId(key).setLabel(label).setStyle(style);
 }
 
 export abstract class ButtonInteractionCommand implements InteractionCommand {

@@ -2,7 +2,7 @@ import { PhraseKey } from "../support/PhraseKey";
 import { PhraseRepository } from "../support/PhraseRepository";
 import { FormationType } from "./FormationType";
 import { BossNumber } from "./BossNumber";
-import { userMension } from "../support/DiscordHelper";
+import { userMension } from "../discordjs/DiscordHelper";
 
 export type CarryOverDto = {
     id: string;

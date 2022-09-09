@@ -1,13 +1,13 @@
 import { ButtonInteractionKey, button } from "./ButtonInteractionCommand";
-import { ButtonInteraction, Message } from "discord.js";
+import { ButtonInteraction, ButtonStyle, Message } from "discord.js";
 import { PhraseRepository } from "../../support/PhraseRepository";
 import { PhraseKey } from "../../support/PhraseKey";
 import { ApiClient } from "../../backend/ApiClient";
 import { ButtonInteractionCommand } from "./ButtonInteractionCommand";
 import { NumberInput, numberInputForm, NumberInputFormSet } from "./NumberInputCommand";
 import { NumberChar, NumericString } from "../../support/NumberString";
-import { HasReferenceMessageInteraction } from "../../support/DiscordHelper";
-import { InvalidInteractionError } from "../../support/InvalidInteractionError";
+import { HasReferenceMessageInteraction } from "../../discordjs/DiscordHelper";
+import { InvalidInteractionError } from "../../discordjs/InvalidInteractionError";
 
 export class OpenDamageInputFormCommand extends ButtonInteractionCommand {
     constructor(
@@ -37,7 +37,7 @@ export class OpenDamageInputFormCommand extends ButtonInteractionCommand {
 }
 
 export function openDamageInputFormButton(phraseRepository: PhraseRepository) {
-    return button("openInputDamageForm", phraseRepository.get(PhraseKey.openDamageInputFormLabel()), "SUCCESS");
+    return button("openInputDamageForm", phraseRepository.get(PhraseKey.openDamageInputFormLabel()), ButtonStyle.Success);
 }
 
 export class DamageInput implements NumberInput {

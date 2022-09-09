@@ -1,4 +1,4 @@
-import { Interaction, SelectMenuInteraction, MessageSelectMenu, MessageSelectOptionData } from "discord.js";
+import { Interaction, SelectMenuInteraction, SelectMenuBuilder, SelectMenuComponentOptionData } from "discord.js";
 import { ValidationError } from "../../support/ValidationError";
 import { InteractionCommand } from "./InteractionCommand";
 
@@ -14,9 +14,9 @@ export const SELECT_MENU_OPTIONS_LIMIT = 25;
 export function selectMenu(
     key: SelectMenuInteractionKey,
     plaseHolder: string,
-    ...options: MessageSelectOptionData[]
-): MessageSelectMenu {
-    return new MessageSelectMenu().setCustomId(key).setPlaceholder(plaseHolder).setOptions(options);
+    ...options: SelectMenuComponentOptionData[]
+): SelectMenuBuilder {
+    return new SelectMenuBuilder().setCustomId(key).setPlaceholder(plaseHolder).setOptions(options);
 }
 
 export abstract class SelectMenuInteractionCommand implements InteractionCommand {

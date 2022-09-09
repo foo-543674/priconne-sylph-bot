@@ -3,8 +3,8 @@ import { ButtonInteractionCommand, ButtonInteractionKey, button } from "./Button
 import { ApiClient } from "../../backend/ApiClient";
 import { PhraseRepository } from "../../support/PhraseRepository";
 import { PhraseKey } from "../../support/PhraseKey";
-import { isMentionedTo } from "../../support/DiscordHelper";
-import { InvalidInteractionError } from "../../support/InvalidInteractionError";
+import { isMentionedTo } from "../../discordjs/DiscordHelper";
+import { InvalidInteractionError } from "../../discordjs/InvalidInteractionError";
 
 export class DeleteDamageReportCommand extends ButtonInteractionCommand {
     constructor(private apiClient: ApiClient, private phraseRepository: PhraseRepository) {

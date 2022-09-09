@@ -1,5 +1,7 @@
+import { DiscordChannelId } from "../discord/DiscordChannelId";
+
 export type CooperateChannel = {
     id: string,
-    discordChannelId: string,
+    discordChannelId: DiscordChannelId,
     clanId: string,
 }

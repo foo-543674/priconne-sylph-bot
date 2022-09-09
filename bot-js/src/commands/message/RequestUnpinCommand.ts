@@ -1,28 +1,25 @@
-import { Client, Message } from "discord.js";
 import { MessageCommand } from "./MessageCommand";
 import { PhraseRepository } from "../../support/PhraseRepository";
 import { PhraseKey } from "../../support/PhraseKey";
-import { isMentionedToMe } from "../../support/DiscordHelper";
-import { matchContent } from "../../support/RegexHelper";
-import { parseForCommand } from "../../support/MessageParser";
+import { MessageRequest } from "../Request";
+import { MessageActor } from "../Actor";
+import { trimmedMatchPattern } from "../../support/MatchPattern";
 
 export class RequestUnpinCommand implements MessageCommand {
-    constructor(private phraseRepository: PhraseRepository, private discordClient: Client) {
+    constructor(private phraseRepository: PhraseRepository) {
         this.commandPattern = new RegExp(this.phraseRepository.get(PhraseKey.requestUnpin()));
     }
 
     private readonly commandPattern: RegExp;
 
-    async execute(message: Message): Promise<void> {
-        const cleanContent = parseForCommand(message);
-        if (!matchContent(this.commandPattern, cleanContent) || !isMentionedToMe(message, this.discordClient)) return;
+    async execute(request: MessageRequest, actor: MessageActor): Promise<void> {
+        if (!(request.isMatchedTo(trimmedMatchPattern(this.commandPattern)) && request.isMentionedToMe())) return;
 
-        if (!message.reference) return;
-
+        const reference = await request.getReference();
+        if (!reference) return;
         console.log("start unpin command");
 
-        const target = await message.fetchReference();
-        await target.unpin();
-        await message.react(this.phraseRepository.get(PhraseKey.succeedReaction()));
+        await reference.unpin();
+        await actor.reaction(this.phraseRepository.get(PhraseKey.succeedReaction()));
     }
 }

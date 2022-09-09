@@ -1,5 +1,7 @@
+import { DiscordRoleId } from "../discord/DiscordRoleId"
+
 type Role = {
-    discordRoleId: string,
+    discordRoleId: DiscordRoleId,
     name: string
 }
 

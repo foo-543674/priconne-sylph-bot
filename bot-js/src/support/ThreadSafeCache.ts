@@ -1,5 +1,8 @@
 import AsyncLock from "async-lock";
 import crypto from "crypto";
+import * as Task from 'fp-ts/lib/Task';
+import * as TaskOption from 'fp-ts/lib/TaskOption';
+import * as Option from 'fp-ts/lib/Option';
 
 export class ThreadSafeCache<T> {
     public constructor() {
@@ -14,41 +17,41 @@ export class ThreadSafeCache<T> {
     /**
      * @param ttl milliseocnds to save this data
      */
-    public async set(key: string, data: T, ttl?: number) {
-        await this.lock.acquire(this.lockKey, () => {
-            this.data[key] = data;
-        });
+    public set(key: string, data: T, ttl?: number): Task.Task<void> {
+        return async () => {
+            await this.lock.acquire(this.lockKey, () => {
+                this.data[key] = data;
+            });
 
-        if (ttl) {
-            setTimeout(() => {
-                this.remove(key);
-            }, ttl);
+            if (ttl) {
+                setTimeout(() => {
+                    this.remove(key)();
+                }, ttl);
+            }
         }
     }
 
-    public async remove(key: string) {
-        await this.lock.acquire(this.lockKey, () => {
-            delete this.data[key];
-        });
+    public remove(key: string): Task.Task<void> {
+        return async () => {
+            await this.lock.acquire(this.lockKey, () => {
+                delete this.data[key];
+            });
+        }
     }
 
-    public async exists(key: string) {
-        return await this.lock.acquire(this.lockKey, () => {
-            return key in this.data;
-        });
+    public exists(key: string): Task.Task<boolean> {
+        return async () => {
+            return await this.lock.acquire(this.lockKey, () => {
+                return key in this.data;
+            });
+        }
     }
 
-    public async get(key: string, fn: (data: T) => Promise<void>) {
-        return await this.lock.acquire(this.lockKey, async () => {
-            if (!(key in this.data)) return;
+    public get(key: string): TaskOption.TaskOption<T> {
+        return async () => await this.lock.acquire(this.lockKey, async () => {
+            if (!(key in this.data)) return Option.none;
 
-            await fn(this.data[key]);
-        });
-    }
-
-    public async convert<R>(key: string, fn: (data: T) => Promise<R>): Promise<R> {
-        return await this.lock.acquire(this.lockKey, async () => {
-            return await fn(this.data[key]);
+            return Option.some(this.data[key]);
         });
     }
 }
