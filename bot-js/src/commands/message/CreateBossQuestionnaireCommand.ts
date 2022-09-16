@@ -59,16 +59,16 @@ export class CreateBossQuestionnaireCommand implements MessageCommand {
             ),
             TaskOption.chainTaskK((messageText) => () => channel.send(messageText)),
             TaskOption.chainTaskK((sentMessage) => async () => {
-                await sentMessage.react(this.phraseRepository.get(PhraseKey.bossStamp(1)));
-                await sentMessage.react(this.phraseRepository.get(PhraseKey.bossStamp(2)));
-                await sentMessage.react(this.phraseRepository.get(PhraseKey.bossStamp(3)));
-                await sentMessage.react(this.phraseRepository.get(PhraseKey.bossStamp(4)));
-                await sentMessage.react(this.phraseRepository.get(PhraseKey.bossStamp(5)));
                 this.cache.set(
                     sentMessage.id,
                     new BossQuestionnaire(sentMessage.id, this.phraseRepository),
                     30 * 60 * 1000 // 30分
                 );
+                await sentMessage.react(this.phraseRepository.get(PhraseKey.bossStamp(1)));
+                await sentMessage.react(this.phraseRepository.get(PhraseKey.bossStamp(2)));
+                await sentMessage.react(this.phraseRepository.get(PhraseKey.bossStamp(3)));
+                await sentMessage.react(this.phraseRepository.get(PhraseKey.bossStamp(4)));
+                await sentMessage.react(this.phraseRepository.get(PhraseKey.bossStamp(5)));
                 await sentMessage.pin();
             })
         )();
