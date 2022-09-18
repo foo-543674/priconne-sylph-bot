@@ -14,7 +14,7 @@ phrases:
   register_cooperate_channel: ここを(?<clanName>[\s\S]+)の連携チャンネルにするよ
   boss_subjugation: (?<bossNumber>[1-5])(ボス)?討伐
   register_uncomplete_member_role: (?<clanName>[\s\S]+)の凸未完了者のロールを登録して
-  calculate_carry_over_tl: (?<seconds>\d?\d:\d\d|\d+)(s|秒)?の持ち越し( |\n|　)(?<timeline>[\s\S]+)
+  calculate_carry_over_tl: (?<seconds>\d?\d:\d\d|\d+)(s|秒)?の?持ち?越し( |\n|　)(?<timeline>[\s\S]+)
   challenge_report_guide: |-
     凸をしたら回数に応じてスタンプを押してね。
     持ち越しを持ったら持ち越し作成ボタンを押してね。持ち越しを消化したら削除を押してね。
