@@ -26,7 +26,7 @@ jobs:
         api-key: API_HEROKU_KEY
     - run: echo $HEROKU_APP_NAME
     #- run: heroku ps:scale bot=0 --app ${HEROKU_APP_NAME}
-    - run: git push https://heroku:${HEROKU_API_KEY}@git.heroku.com/${HEROKU_APP_NAME}.git main -f
+    - run: git push https://heroku:${HEROKU_API_KEY}@git.heroku.com/${HEROKU_APP_NAME}.git main
     #- run: heroku run php artisan migrate --force --app ${HEROKU_APP_NAME}
     #- run: heroku ps:scale bot=1 --app ${HEROKU_APP_NAME}
 
