@@ -69,6 +69,7 @@ export class CreateBossQuestionnaireCommand implements MessageCommand {
                 await sentMessage.react(this.phraseRepository.get(PhraseKey.bossStamp(3)));
                 await sentMessage.react(this.phraseRepository.get(PhraseKey.bossStamp(4)));
                 await sentMessage.react(this.phraseRepository.get(PhraseKey.bossStamp(5)));
+                await sentMessage.react(this.phraseRepository.get(PhraseKey.carryOverStamp()));
                 await sentMessage.pin();
             })
         )();

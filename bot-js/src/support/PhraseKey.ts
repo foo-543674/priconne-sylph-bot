@@ -160,6 +160,10 @@ export class PhraseKey {
         return new PhraseKey(`${number}_boss_stamp`);
     }
 
+    public static carryOverStamp() {
+        return new PhraseKey("carry_over_stamp");
+    }
+
     public static bossKnockoutMessage() {
         return new PhraseKey("boss_knockout_message");
     }

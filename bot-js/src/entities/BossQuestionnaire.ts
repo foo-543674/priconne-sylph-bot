@@ -3,63 +3,73 @@ import { BossNumber, bossNumbers } from "./BossNumber";
 import { PhraseKey } from "../support/PhraseKey";
 import { PhraseRepository } from "../support/PhraseRepository";
 import { BossStamp } from "./BossStamp";
+import { CarryOverStamp } from "./CarryOverStamp";
 
-type BossResolver = BossNumber | BossStamp;
+export type QuestionnairAnswer = BossNumber | "*";
+export type QuestionnairStamp = BossStamp | CarryOverStamp;
+type AnswerResolver = QuestionnairAnswer | QuestionnairStamp;
 
 export class BossQuestionnaire {
     public constructor(public readonly messageId: string, private readonly phraseRepository: PhraseRepository) {}
 
-    private answers: { [key in BossNumber]: GuildMember[] } = {
+    private answers: { [key in QuestionnairAnswer]: GuildMember[] } = {
         1: [],
         2: [],
         3: [],
         4: [],
-        5: []
+        5: [],
+        "*": []
     };
-    private index: { [key: string]: BossNumber[] } = {};
+    private index: { [key: string]: QuestionnairAnswer[] } = {};
 
-    public add(bossNumber: BossNumber, member: GuildMember): void;
-    public add(bossNumber: BossStamp, member: GuildMember): void;
-    public add(bossNumber: BossResolver, member: GuildMember): void {
-        if (bossNumber instanceof BossStamp) {
-            this.add(bossNumber.number, member);
+    public add(answer: QuestionnairAnswer, member: GuildMember): void;
+    public add(answer: QuestionnairStamp, member: GuildMember): void;
+    public add(answer: AnswerResolver, member: GuildMember): void {
+        if (answer instanceof BossStamp) {
+            this.add(answer.number, member);
+        } else if (answer instanceof CarryOverStamp) {
+            this.add(CarryOverStamp.symbol, member);
         } else {
-            this.answers[bossNumber] = this.answers[bossNumber].concat(member);
+            this.answers[answer] = this.answers[answer].concat(member);
             if (member.id in this.index) {
-                this.index[member.id] = this.index[member.id].concat(bossNumber).sort();
+                this.index[member.id] = this.index[member.id].concat(answer).sort();
             } else {
-                this.index[member.id] = [bossNumber];
+                this.index[member.id] = [answer];
             }
         }
     }
 
-    public remove(bossNumber: BossNumber, member: GuildMember): void;
-    public remove(bossNumber: BossStamp, member: GuildMember): void;
-    public remove(bossNumber: BossResolver, member: GuildMember): void {
-        if (bossNumber instanceof BossStamp) {
-            this.remove(bossNumber.number, member);
+    public remove(answer: QuestionnairAnswer, member: GuildMember): void;
+    public remove(answer: QuestionnairStamp, member: GuildMember): void;
+    public remove(answer: AnswerResolver, member: GuildMember): void {
+        if (answer instanceof BossStamp) {
+            this.remove(answer.number, member);
+        } else if (answer instanceof CarryOverStamp) {
+            this.remove(CarryOverStamp.symbol, member);
         } else {
-            this.answers[bossNumber] = this.answers[bossNumber].filter((m) => m.id !== member.id);
-            this.index[member.id] = this.index[member.id].filter((b) => b !== bossNumber);
+            this.answers[answer] = this.answers[answer].filter((m) => m.id !== member.id);
+            this.index[member.id] = this.index[member.id].filter((b) => b !== answer);
             if (this.index[member.id].length <= 0) {
                 delete this.index[member.id];
             }
         }
     }
 
-    public get(bossNumber: BossNumber): GuildMember[];
-    public get(bossNumber: BossStamp): GuildMember[];
-    public get(bossNumber: BossResolver): GuildMember[] {
-        if (bossNumber instanceof BossStamp) {
-            return this.get(bossNumber.number);
+    public get(answer: QuestionnairAnswer): GuildMember[];
+    public get(answer: QuestionnairStamp): GuildMember[];
+    public get(answer: AnswerResolver): GuildMember[] {
+        if (answer instanceof BossStamp) {
+            return this.get(answer.number);
+        } else if (answer instanceof CarryOverStamp) {
+            return this.get(CarryOverStamp.symbol);
         } else {
-            return this.answers[bossNumber];
+            return this.answers[answer];
         }
     }
 
     public generateEmbed(): EmbedFieldData[] {
-        const createDisplayRow = (member: GuildMember, bossNumber: BossNumber) => {
-            const otherBossNumbers = this.index[member.id].filter((b) => b !== bossNumber);
+        const createDisplayRow = (member: GuildMember, answer: QuestionnairAnswer) => {
+            const otherBossNumbers = this.index[member.id].filter((b) => b !== answer);
             const otherBossNumbersDisplay = otherBossNumbers.length > 0 ? `**(${otherBossNumbers.join()})**` : "";
             return `${otherBossNumbersDisplay} ${member.displayName}`;
         };
@@ -71,6 +81,13 @@ export class BossQuestionnaire {
                     ? this.answers[b].map((m) => createDisplayRow(m, b)).join("\n")
                     : this.phraseRepository.get(PhraseKey.noChallengerMessage()),
             inline: true
-        }));
+        })).concat({
+            name: `${this.phraseRepository.get(PhraseKey.carryOverStamp())}${this.phraseRepository.get(PhraseKey.carryOver())}`,
+            value:
+                this.answers[CarryOverStamp.symbol].length > 0
+                    ? this.answers[CarryOverStamp.symbol].map((m) => createDisplayRow(m, CarryOverStamp.symbol)).join("\n")
+                    : this.phraseRepository.get(PhraseKey.noChallengerMessage()),
+            inline: true
+        });
     }
 }

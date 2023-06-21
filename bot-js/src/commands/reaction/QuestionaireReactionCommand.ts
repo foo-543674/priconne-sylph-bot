@@ -6,7 +6,8 @@ import { isTextChannel } from "../../support/DiscordHelper";
 import { createBossQuestionnaireResult } from "../../support/createBossQuestionnaireResult";
 import { BossStamp } from "../../entities/BossStamp";
 import { ThreadSafeCache } from "../../support/ThreadSafeCache";
-import { BossQuestionnaire } from "../../entities/BossQuestionnaire";
+import { BossQuestionnaire, QuestionnairStamp } from "../../entities/BossQuestionnaire";
+import { CarryOverStamp } from "../../entities/CarryOverStamp";
 
 export class QuestionaireReactionCommand implements ReactionCommand {
     constructor(
@@ -19,18 +20,19 @@ export class QuestionaireReactionCommand implements ReactionCommand {
             new BossStamp(2, phraseRepository),
             new BossStamp(3, phraseRepository),
             new BossStamp(4, phraseRepository),
-            new BossStamp(5, phraseRepository)
+            new BossStamp(5, phraseRepository),
+            new CarryOverStamp(phraseRepository),
         ] as const;
 
         this.targetMessagePattern = new RegExp(this.phraseRepository.get(PhraseKey.bossQuestionnaireMessage()));
     }
 
-    private readonly targetStamps: readonly BossStamp[];
+    private readonly targetStamps: readonly QuestionnairStamp[];
     private readonly targetMessagePattern: RegExp;
 
     protected isTarget(reaction: MessageReaction, user: User) {
         return (
-            this.targetStamps.some((stamp) => stamp.value === reaction.emoji.toString()) &&
+            this.targetStamps.some((stamp) => stamp.value === reaction.emoji.name) &&
             this.targetMessagePattern.test(reaction.message.cleanContent ?? "") &&
             user.id !== this.discordClient.user?.id
         );
