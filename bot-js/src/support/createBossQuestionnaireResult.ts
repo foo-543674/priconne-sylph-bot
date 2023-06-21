@@ -2,12 +2,11 @@ import { pipe } from "fp-ts/lib/function";
 import * as TaskOption from "fp-ts/lib/TaskOption";
 import { Message, TextChannel } from "discord.js";
 import { GuildMemberResolver } from "./GuildMemberResolver";
-import { BossQuestionnaire } from "../entities/BossQuestionnaire";
+import { BossQuestionnaire, QuestionnairStamp } from "../entities/BossQuestionnaire";
 import { PhraseRepository } from "./PhraseRepository";
-import { BossStamp } from "../entities/BossStamp";
 
 export async function createBossQuestionnaireResult(
-    targetEmojis: readonly BossStamp[],
+    targetEmojis: readonly QuestionnairStamp[],
     message: Message,
     excludeUserIds: readonly string[],
     channel: TextChannel,

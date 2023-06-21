@@ -86,7 +86,7 @@ phrases:
     概要：メッセージに対して返信することで、返信元のメッセージのピン留めを解除します。
     ---------------------------------------------------------------------------
   days_unit: '{day}日目'
-  boss_questionnaire_message: 行きたいボスのスタンプ押してね
+  boss_questionnaire_message: "行きたいボスのスタンプ押してね。持ち越しだけ残ってる人は:asterisk:を押してね。"
   boss_notify_message: ボスの凸を開始するよ
   cannot_find_boss_questionnaire_message: ボスアンケートのメッセージが見つからないよ。500個以上前のメッセージは見れないから、新しくアンケートを作ってね。
   cannot_find_boss_number_message: 通知したいボスの番号が見つからないよ。
@@ -115,6 +115,7 @@ phrases:
   3_boss_stamp: 3️⃣
   4_boss_stamp: 4️⃣
   5_boss_stamp: 5️⃣
+  carry_over_stamp: "*️⃣"
   interaction_delete_prompt: 削除してね。
   open_damage_input_form_label: ダメージ入力
   damage_input_form_message: ダメージを万単位(下4桁省略)で入力してね。
