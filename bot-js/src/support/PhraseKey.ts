@@ -232,6 +232,10 @@ export class PhraseKey {
         return new PhraseKey("confirm_delete_damage_report_message");
     }
 
+    public static confirmEditDamageReportMessage() {
+        return new PhraseKey("confirm_edit_damage_report_message");
+    }
+
     public static inProcessDamageReportTemplate() {
         return new PhraseKey("in_process_damage_report_template");
     }
@@ -296,8 +300,8 @@ export class PhraseKey {
         return new PhraseKey("not_clan_member_message");
     }
 
-    public static createCarryOverUiLabel(): PhraseKey {
-        return new PhraseKey("create_carry_over_ui_label");
+    public static inputCarryOverUiLabel(): PhraseKey {
+        return new PhraseKey("input_carry_over_ui_label");
     }
 
     public static challengedTypeLabel(type: ChallengedType): PhraseKey {
@@ -322,6 +326,10 @@ export class PhraseKey {
 
     public static confirmDeleteCarryOverMessage(): PhraseKey {
         return new PhraseKey("confirm_delete_carry_over_message");
+    }
+
+    public static confirmEditCarryOverButtonMessage(): PhraseKey {
+        return new PhraseKey("confirm_edit_carry_over_button_message");
     }
 
     public static retryChallengeLabel(): PhraseKey {
@@ -350,6 +358,50 @@ export class PhraseKey {
 
     public static carryOverTimelineResultTitle(): PhraseKey {
         return new PhraseKey("carry_over_timeline_result_title");
+    }
+
+    public static carryOverSecondsInputLabel(): PhraseKey {
+        return new PhraseKey("carry_over_seconds_input_label");
+    }
+
+    public static carryOverSecondsInputPlaceholder(): PhraseKey {
+        return new PhraseKey("carry_over_seconds_input_placeholder");
+    }
+
+    public static noteInputLabel(): PhraseKey {
+        return new PhraseKey("note_input_label");
+    }
+
+    public static carryOverNoteInputPlaceholder(): PhraseKey {
+        return new PhraseKey("carry_over_note_input_placeholder");
+    }
+
+    public static updateNoteLabel(): PhraseKey {
+        return new PhraseKey("update_note_label");
+    }
+
+    public static reportDamageInputLabel(): PhraseKey {
+        return new PhraseKey("report_damage_input_label");
+    }
+
+    public static reportDamageInputPlaceholder(): PhraseKey {
+        return new PhraseKey("report_damage_input_placeholder");
+    }
+
+    public static damageReportNoteInputPlaceholder(): PhraseKey {
+        return new PhraseKey("damage_report_note_input_placeholder");
+    }
+
+    public static reportDamageFormLabel(): PhraseKey {
+        return new PhraseKey("report_damage_form_label");
+    }
+
+    public static confirmButtonLabel(): PhraseKey {
+        return new PhraseKey("confirm_button_label");
+    }
+
+    public static damageIsInvalidMessage(): PhraseKey {
+        return new PhraseKey("damage_is_invalid_message");
     }
 
     public toString(): string {
