@@ -26,6 +26,7 @@ export class DeleteCarryOverCommand extends ButtonInteractionCommand {
 
         console.log("carry over delete button clicked");
 
+        await interaction.deferUpdate()
         switch (customId) {
             case deleteButtonIdentifer:
                 if (isMentionedTo(interaction.message, interaction.user)) {
