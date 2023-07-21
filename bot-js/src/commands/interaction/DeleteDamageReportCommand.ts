@@ -24,7 +24,6 @@ export class DeleteDamageReportCommand extends ButtonInteractionCommand {
 
         console.log("damage report delete button clicked");
 
-        await interaction.deferUpdate()
         switch (customId) {
             case deleteDamageReportButtonIdentifer:
                 if (isMentionedTo(interaction.message, interaction.user)) {
@@ -35,6 +34,7 @@ export class DeleteDamageReportCommand extends ButtonInteractionCommand {
                 break;
 
             case toConfirmButton(deleteDamageReportButtonIdentifer):
+                await interaction.deferUpdate()
                 const reference = await interaction.message.fetchReference();
                 await fixToPromptDelete(interaction, this.phraseRepository)
                 await this.deleteReport(interaction.channel, reference);

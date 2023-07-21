@@ -29,6 +29,7 @@ export class RequestRescueCommand extends ButtonInteractionCommand {
                 break;
 
             case toConfirmButton(requestRescueButtonIdentifer):
+                await interaction.deferUpdate()
                 await fixToPromptDelete(interaction, this.phraseRepository)
                 await this.updateToRequestRescue(interaction, await interaction.message.fetchReference())
                 break;
@@ -39,7 +40,6 @@ export class RequestRescueCommand extends ButtonInteractionCommand {
         const channel = interaction.channel;
         if (!channel) throw new InvalidInteractionError("interaction.channel should not be null", interaction);
 
-        await interaction.deferUpdate()
         const report = (
             await this.apiClient.getDamageReports(channel.id, {
                 messageid: message.id
