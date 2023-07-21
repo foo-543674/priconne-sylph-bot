@@ -17,8 +17,8 @@ phrases:
   calculate_carry_over_tl: (?<seconds>\d?\d:\d\d|\d+)(s|秒)?の?持ち?越し( |\n|　)(?<timeline>[\s\S]+)
   challenge_report_guide: |-
     凸をしたら回数に応じてスタンプを押してね。
-    持ち越しを持ったら持ち越し作成ボタンを押してね。持ち越しを消化したら削除を押してね。
-    作成された持ち越しメッセージに対して返信をすると、補足情報を入力できるよ。
+    持ち越しを持ったら持ち越し入力ボタンを押してね。持ち越しを消化したら削除を押してね。
+    入力した持ち越しを編集したい場合は編集ボタンを押してね。
     タスキルを使ったら黄色い警告スタンプを押してね。
   no_member_for_register_message: 登録対象が見つからないよ。登録対象のメンバー(もしくはロール)のメンションをつけてコマンドを打ってね。
   help_message_basic: |-
@@ -100,7 +100,6 @@ phrases:
     ダメージを入力するときはダメージ入力を押してね。
     救援が必要なときは救援要請を押してね。
     タスキルして再凸するときは再凸ボタンを押してね。
-    コメントを追記する場合は、作成された凸宣言に返信をしてね。
     抜けたら削除を押してね。
   cannot_get_role_message: ロールが見つからないよ。対象のロールに対してメンションをしてね。
   cannot_use_command_in_dm_message: このコマンドはダイレクトメッセージでは使えないよ。サーバー内のテキストチャンネルで実行してね。
@@ -175,7 +174,7 @@ phrases:
   carry_over_seconds_input_placeholder: 数字だけ入れてね。
   note_input_label: メモ
   carry_over_note_input_placeholder: 進行へのへの伝達事項や、どのボスにどれくらい出るとかのメモを入力してね。
-  update_note_label: メモ更新
+  edit_caryy_over_label: 編集
   report_damage_form_label: ダメージ報告
   report_damage_input_label: ダメージ(万未満省略で数値のみ)
   report_damage_input_placeholder: 現時点で出ているダメージを入力してくね。1万未満は省略して、数字のみ入力してね。
