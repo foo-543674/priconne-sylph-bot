@@ -1,4 +1,4 @@
-import { MessageReaction, User, Client, MessageEmbed, Message, TextChannel } from "discord.js";
+import { MessageReaction, User, Client, Message, TextChannel } from "discord.js";
 import { PhraseKey } from "../../support/PhraseKey";
 import { PhraseRepository } from "../../support/PhraseRepository";
 import { ReactionCommand } from "./ReactionCommand";
@@ -41,7 +41,7 @@ export class QuestionaireReactionCommand implements ReactionCommand {
     protected async updateEmbed(message: Message, channel: TextChannel) {
         if (await this.cache.exists(message.id)) {
             const embed = await this.cache.convert(message.id, (result) => {
-                return Promise.resolve(new MessageEmbed().addFields(...result.generateEmbed()));
+                return Promise.resolve(result.generateEmbed());
             });
             await message.edit({
                 content: message.content,
@@ -56,7 +56,7 @@ export class QuestionaireReactionCommand implements ReactionCommand {
                 this.phraseRepository
             );
 
-            const embed = new MessageEmbed().addFields(...result.generateEmbed());
+            const embed = result.generateEmbed();
             await message.edit({
                 content: message.content,
                 embeds: [embed]
