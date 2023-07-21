@@ -20,8 +20,8 @@ export class ThreadSafeCache<T> {
         });
 
         if (ttl) {
-            setTimeout(() => {
-                this.remove(key);
+            setTimeout(async () => {
+                await this.remove(key);
             }, ttl);
         }
     }
