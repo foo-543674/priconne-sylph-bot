@@ -308,7 +308,7 @@ export class ApiClient {
         });
     }
 
-    protected async exists(path: string, config?: AxiosRequestConfig, retriedCount: number = 0): Promise<boolean> {
+    protected async exists(path: string, config?: AxiosRequestConfig, retriedCount = 0): Promise<boolean> {
         try {
             const response = await this.httpClient.get(path, {
                 ...config,
@@ -323,7 +323,7 @@ export class ApiClient {
         }
     }
 
-    protected async getList<T>(path: string, config?: AxiosRequestConfig, retriedCount: number = 0): Promise<T[]> {
+    protected async getList<T>(path: string, config?: AxiosRequestConfig, retriedCount = 0): Promise<T[]> {
         try {
             const response = await this.httpClient.get<T[]>(path, {
                 ...config,
@@ -341,7 +341,7 @@ export class ApiClient {
     protected async getSingle<T>(
         path: string,
         config?: AxiosRequestConfig,
-        retriedCount: number = 0
+        retriedCount = 0
     ): Promise<T | null> {
         try {
             const response = await this.httpClient.get<T>(path, {
@@ -366,7 +366,7 @@ export class ApiClient {
         path: string,
         data: any,
         config?: AxiosRequestConfig,
-        retriedCount: number = 0
+        retriedCount = 0
     ): Promise<T> {
         try {
             const response = await this.httpClient.post<T>(path, data, {
@@ -391,7 +391,7 @@ export class ApiClient {
         }
     }
 
-    protected async delete<T>(path: string, config?: AxiosRequestConfig, retriedCount: number = 0): Promise<T> {
+    protected async delete<T>(path: string, config?: AxiosRequestConfig, retriedCount = 0): Promise<T> {
         try {
             const response = await this.httpClient.delete<T>(path, {
                 ...config,
