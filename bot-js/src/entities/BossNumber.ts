@@ -1,16 +1,24 @@
 export type BossNumber = 1 | 2 | 3 | 4 | 5;
 export const bossNumbers: BossNumber[] = [1, 2, 3, 4, 5];
+export type BossNumberString = "1" | "2" | "3" | "4" | "5";
+export const bossNumberStrings: BossNumberString[] = ["1", "2", "3", "4", "5"];
 
 export function isBossNumber(value: number): value is BossNumber {
     return bossNumbers.findIndex((num) => num === value) >= 0;
 }
 
-export function toBossNumber(value: string): BossNumber {
-    const parsedValue = parseInt(value);
+export function isBossNumberString(value: string): value is BossNumberString {
+    return bossNumberStrings.findIndex((num) => num === value) >= 0;
+}
 
-    if (isBossNumber(parsedValue)) {
-        return parsedValue;
+export function toBossNumber(value: number | BossNumberString): BossNumber {
+    const valueNumber = (typeof (value) === "string")
+        ? parseInt(value)
+        : value
+
+    if (isBossNumber(valueNumber)) {
+        return valueNumber;
     } else {
-        throw new Error(`${parsedValue} is not boss number`);
+        throw new Error(`${valueNumber} is not boss number`);
     }
 }

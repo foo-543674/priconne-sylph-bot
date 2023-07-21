@@ -17,6 +17,8 @@ export type CarryOverDto = {
     comment: string;
 };
 
+const minimumSecond = 20
+const maximumSecond = 90
 export class CarryOver {
     constructor(
         public readonly id: string,
@@ -29,7 +31,11 @@ export class CarryOver {
         public readonly challengedType: FormationType,
         public readonly second: number,
         public readonly comment: string
-    ) {}
+    ) {
+        if (!CarryOver.isValidSecond(second)) {
+            throw new Error("second should between 20 to 90")
+        }
+    }
 
     public static fromDto(dto: CarryOverDto): CarryOver {
         return new CarryOver(
@@ -43,6 +49,28 @@ export class CarryOver {
             dto.challengedType,
             dto.second,
             dto.comment
+        );
+    }
+
+    public static isValidSecond(second: number): boolean {
+        return (minimumSecond <= second && second <= maximumSecond)
+    }
+
+    public setSecond(second: number): CarryOver {
+        if (!CarryOver.isValidSecond(second)) {
+            throw new Error("second should between 20 to 90")
+        }
+        return new CarryOver(
+            this.id,
+            this.messageId,
+            this.channelId,
+            this.interactionMessageId,
+            this.discordUserId,
+            this.comment,
+            this.bossNumber,
+            this.challengedType,
+            second,
+            this.comment
         );
     }
 

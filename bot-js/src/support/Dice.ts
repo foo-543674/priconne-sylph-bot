@@ -13,7 +13,7 @@ export interface Dice {
 }
 
 export class DiceNotSetupError extends Error {
-    constructor(message: string = "Dice is not setup.") {
+    constructor(message = "Dice is not setup.") {
         super(`${message}`);
     }
 }

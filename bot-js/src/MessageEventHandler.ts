@@ -1,4 +1,4 @@
-import { Client, Message, PartialMessage } from "discord.js";
+import { Client, Events, Message, PartialMessage } from "discord.js";
 import { MessageCommand } from "./commands/message/MessageCommand";
 import { ValidationError } from "./support/ValidationError";
 import { PhraseRepository } from "./support/PhraseRepository";
@@ -21,7 +21,7 @@ export class MessageEventHandler {
     constructor(private readonly commands: MessageCommand[], private readonly phraseRepository: PhraseRepository) {}
 
     public listen(client: Client) {
-        client.on("messageCreate", (m) => this.onMessageCreate(m, client));
+        client.on(Events.MessageCreate, (m) => this.onMessageCreate(m, client));
         //NOTE: ピン留めとかでも反応しちゃうようになるから一旦除去
         // client.on("messageUpdate", (_, updated) => this.onMessageUpdate(updated, client));
     }

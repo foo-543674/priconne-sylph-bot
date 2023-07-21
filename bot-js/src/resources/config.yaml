@@ -132,7 +132,8 @@ phrases:
   damage_input_back_label: "←"
   damage_input_apply_label: "決定"
   delete_label: "削除"
-  confirm_delete_damage_report_message: 自分のではないダメージ報告を消そうとしてるよ。間違えた場合は下にある"これらのメッセージを削除する"を押してね。ダメージ報告を削除しても問題ない場合は削除ボタンを押してね。
+  confirm_delete_damage_report_message: 自分のではないダメージ報告を消そうとしてるよ。間違えた場合は下にある"これらのメッセージを削除する"を押してね。ダメージ報告を削除しても問題ない場合は実行ボタンを押してね。
+  confirm_edit_damage_report_message: 自分のではないダメージ報告を編集しようとしてるよ。間違えた場合は下にある"これらのメッセージを削除する"を押してね。問題ない場合は実行ボタンを押してね。
   no_clan_members_message: クランメンバーが一人も登録されてないよ。メンバー登録コマンドで登録してね。
   not_clan_member_message: クランメンバーとして登録されてないよ。メンバー登録コマンドで登録してもらってね。
   in_process_damage_report_template: "{bossNumber}ボス 進行中"
@@ -150,7 +151,7 @@ phrases:
   request_rescue_message: 救援求
   no_challenger_message: 希望者なし
   select_challenged_type_select_message: ボスと物理or魔法を選んでね
-  create_carry_over_ui_label: 持ち越し登録
+  input_carry_over_ui_label: 持ち越し入力
   1b_label: 1ボス-物理
   1m_label: 1ボス-魔法
   2b_label: 2ボス-物理
@@ -164,8 +165,20 @@ phrases:
   input_carry_over_challenged_type_prompt: 凸したボスと、物理 or 魔法を選択してください。
   input_carry_over_seconds_prompt: 持ち越し秒数を入れてね。1分は60秒にして。(例:1分10秒→70)
   time_out_input_message: 入力に時間がかかり過ぎたから、この命令は無効になったよ。このメッセージを削除して、やり直してね。
-  confirm_delete_carry_over_message: 自分のではない持ち越しを消そうとしてるよ。間違えた場合は下にある"これらのメッセージを削除する"を押してね。持ち越しを削除しても問題ない場合は削除ボタンを押してね。
+  confirm_delete_carry_over_message: 自分のではない持ち越しを消そうとしてるよ。間違えた場合は下にある"これらのメッセージを削除する"を押してね。持ち越しを削除しても問題ない場合は実行ボタンを押してね。
+  confirm_edit_carry_over_button_message: 自分のではない持ち越しを編集しようとしてるよ。間違えた場合は下にある"これらのメッセージを削除する"を押してね。問題ない場合は実行ボタンを押してね。
   retry_challenge_label: 再凸
   carry_over_time_is_invalid_message: 持ち越し秒数が正しくないよ。
   timeup_line: '========== !!!!!Time up!!!!! =========='
   carry_over_timeline_result_title: "{carryOverTime}秒の持ち越し"
+  carry_over_seconds_input_label: 持ち越し秒数(1分は60秒に(例:1分10秒→70))
+  carry_over_seconds_input_placeholder: 数字だけ入れてね。
+  note_input_label: メモ
+  carry_over_note_input_placeholder: 進行へのへの伝達事項や、どのボスにどれくらい出るとかのメモを入力してね。
+  update_note_label: メモ更新
+  report_damage_form_label: ダメージ報告
+  report_damage_input_label: ダメージ(万未満省略で数値のみ)
+  report_damage_input_placeholder: 現時点で出ているダメージを入力してくね。1万未満は省略して、数字のみ入力してね。
+  damage_report_note_input_placeholder: どれくらい伸びるか、上振れ下振れや活限などを入力してね。
+  confirm_button_label: 実行
+  damage_is_invalid_message: ダメージが読み取れないよ。数字で入力してね。

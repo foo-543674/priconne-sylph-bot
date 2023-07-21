@@ -3,19 +3,17 @@ import fs from "fs";
 import cron from "node-cron";
 import { YamlPhraseRepository } from "./yaml/YamlPhraseRepository";
 import { PhraseConfig } from "./support/PhraseConfig";
-import { Client, Intents } from "discord.js";
+import { Client, GatewayIntentBits, Partials } from 'discord.js';
 import { ApiClient } from "./backend/ApiClient";
 import * as batch from "./batch";
 import { MessageEventHandler } from "./MessageEventHandler";
 import { ReactionEventHandler } from "./ReactionEventHandler";
 import { InteractionEventHandler } from "./InteractionEventHandler";
-import { NumberInputCommand } from "./commands/interaction/NumberInputCommand";
 import { ReportTaskKillCommand } from "./commands/reaction/ReportTaskKillCommand";
 import { ReportChallengeCommand } from "./commands/reaction/ReportChallengeCommand";
 import { BossSubjugationCommand } from "./commands/message/BossSubjugationCommand";
 import { RegisterUncompleteMemberRoleCommand } from "./commands/message/RegisterUncompleteMemberRoleCommand";
 import { RegisterCooperateChannelCommand } from "./commands/message/RegisterCooperateChannelCommand";
-import { AddCommentToDamageReportCommand } from "./commands/message/AddCommentToDamageReportCommand";
 import { PrepareDamageReportCommand } from "./commands/message/PrepareDamageReportCommand";
 import { GetBossQuestionnaireResultCommand } from "./commands/message/GetBossQuestionnaireResultCommand";
 import { BossNotificationCommand } from "./commands/message/BossNotificationCommand";
@@ -26,7 +24,6 @@ import { RegisterMembersCommand } from "./commands/message/RegisterMembersComman
 import { RegisterClanCommand } from "./commands/message/RegisterClanCommand";
 import { HelpCommand } from "./commands/message/HelpCommand";
 import { BossSelectButtonCommand } from "./commands/interaction/BossSelectButtonCommand";
-import { MemberSelectMenuCommand } from "./commands/interaction/MemberSelectMenuCommand";
 import { StartChallengeCommand } from "./commands/interaction/StartChallengeCommand";
 import { DeleteDamageReportCommand } from "./commands/interaction/DeleteDamageReportCommand";
 import { RequestRescueCommand } from "./commands/interaction/RequestRescueCommand";
@@ -37,32 +34,38 @@ import { OpenDamageInputFormCommand } from "./commands/interaction/OpenDamageInp
 import { ChallengedTypeSelectCommand } from "./commands/interaction/ChallengedTypeSelectCommand";
 import { OpenCreateCarryOverFormCommand } from "./commands/interaction/OpenCreateCarryOverFormCommand";
 import { DeleteCarryOverCommand } from "./commands/interaction/DeleteCarryOverCommand";
-import { AddCommentToCarryOverCommand } from "./commands/message/AddCommentToCarryOverCommand";
 import { RetryChallengeCommand } from "./commands/interaction/RetryChallengeCommand";
 import { RequestPinCommand } from "./commands/message/RequestPinCommand";
 import { RequestUnpinCommand } from "./commands/message/RequestUnpinCommand";
 import { DiceCommand } from "./commands/message/DiceCommand";
 import { BCDice } from "./support/Dice";
 import { CalculateCarryOverTlCommand } from "./commands/message/CalculateCarryOverTlCommand";
+import { OpenEditCarryOverCommand } from "./commands/interaction/OpenEditCarryOverCommand";
+import { SubmitReportDamageCommand } from "./commands/interaction/SubmitReportDamageCommand";
+import { SubmitRegisterCarryOverCommand } from "./commands/interaction/SubmitRegisterCarryOverCommand";
+import { SubmitEditCarryOverCommand } from "./commands/interaction/SubmitEditCarryOverCommand";
 
 const phraseConfig = yaml.load(fs.readFileSync("src/resources/config.yaml", "utf8"));
 const phraseRepository = new YamlPhraseRepository(phraseConfig as PhraseConfig);
 
 const client = new Client({
     intents: [
-        Intents.FLAGS.GUILDS,
-        Intents.FLAGS.GUILD_MEMBERS,
-        Intents.FLAGS.GUILD_MESSAGES,
-        Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-        Intents.FLAGS.GUILD_MESSAGE_TYPING,
-        Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
-        Intents.FLAGS.GUILD_INTEGRATIONS,
-        Intents.FLAGS.GUILD_PRESENCES
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.GuildMessageReactions,
+        GatewayIntentBits.GuildMessageTyping,
+        GatewayIntentBits.GuildEmojisAndStickers,
+        GatewayIntentBits.GuildIntegrations,
+        GatewayIntentBits.GuildPresences,
     ],
-    partials: ["REACTION", "CHANNEL", "GUILD_MEMBER", "MESSAGE", "USER"],
-    restTimeOffset: 300,
-    retryLimit: 3,
-    restGlobalRateLimit: 3
+    partials: [
+        Partials.Reaction,
+        Partials.Channel,
+        Partials.GuildMember,
+        Partials.Message,
+        Partials.User,
+    ],
 });
 
 if (!(process.env.API_URI && process.env.API_KEY && process.env.DISCORD_TOKEN)) {
@@ -85,11 +88,9 @@ const messaegEventHandler = new MessageEventHandler(
         new BossNotificationCommand(phraseRepository, client),
         new GetBossQuestionnaireResultCommand(phraseRepository, client),
         new PrepareDamageReportCommand(phraseRepository, client, apiClient),
-        new AddCommentToDamageReportCommand(apiClient, phraseRepository, client),
         new RegisterCooperateChannelCommand(phraseRepository, client, apiClient),
         new RegisterUncompleteMemberRoleCommand(phraseRepository, client, apiClient),
         new BossSubjugationCommand(phraseRepository, client, apiClient),
-        new AddCommentToCarryOverCommand(apiClient, phraseRepository, client),
         new RequestPinCommand(phraseRepository, client),
         new RequestUnpinCommand(phraseRepository, client),
         new DiceCommand(client, new BCDice()),
@@ -106,20 +107,20 @@ const reactionEventHandler = new ReactionEventHandler([
 ]);
 reactionEventHandler.listen(client);
 
-const numberInputCommand = new NumberInputCommand(phraseRepository);
-const challengedTypeSelectCommand = new ChallengedTypeSelectCommand(phraseRepository);
 const interactionEventHandler = new InteractionEventHandler([
-    new BossSelectButtonCommand(apiClient, phraseRepository),
-    new MemberSelectMenuCommand(apiClient, phraseRepository),
+    new BossSelectButtonCommand(phraseRepository),
     new StartChallengeCommand(apiClient, phraseRepository),
-    numberInputCommand,
-    challengedTypeSelectCommand,
-    new OpenDamageInputFormCommand(phraseRepository, apiClient, numberInputCommand),
-    new OpenCreateCarryOverFormCommand(phraseRepository, apiClient, numberInputCommand, challengedTypeSelectCommand),
+    new ChallengedTypeSelectCommand(phraseRepository),
+    new OpenDamageInputFormCommand(phraseRepository, apiClient),
+    new OpenCreateCarryOverFormCommand(phraseRepository),
+    new OpenEditCarryOverCommand(apiClient, phraseRepository),
     new DeleteDamageReportCommand(apiClient, phraseRepository),
     new RequestRescueCommand(apiClient, phraseRepository),
     new DeleteCarryOverCommand(apiClient, phraseRepository),
-    new RetryChallengeCommand(apiClient, phraseRepository)
+    new RetryChallengeCommand(apiClient, phraseRepository),
+    new SubmitReportDamageCommand(phraseRepository, apiClient),
+    new SubmitRegisterCarryOverCommand(phraseRepository, apiClient),
+    new SubmitEditCarryOverCommand(phraseRepository, apiClient),
 ]);
 interactionEventHandler.listen(client);
 

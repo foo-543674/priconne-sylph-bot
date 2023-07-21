@@ -1,18 +1,21 @@
-import { ButtonInteraction, Message, MessageActionRow, TextBasedChannel } from "discord.js";
-import { ButtonInteractionCommand, ButtonInteractionKey, button } from "./ButtonInteractionCommand";
+import { ButtonInteraction, Message, TextBasedChannel } from "discord.js";
+import { ButtonInteractionCommand } from "./ButtonInteractionCommand";
 import { ApiClient } from "../../backend/ApiClient";
 import { PhraseRepository } from "../../support/PhraseRepository";
 import { PhraseKey } from "../../support/PhraseKey";
 import { isMentionedTo } from "../../support/DiscordHelper";
 import { InvalidInteractionError } from "../../support/InvalidInteractionError";
+import { deleteDamageReportButtonIdentifer } from "../../input-ui/DamageReportUI";
+import { fixToPromptDelete, isConfirmButton, sendConfirmMessage, toConfirmButton } from "./Confirmation";
 
 export class DeleteDamageReportCommand extends ButtonInteractionCommand {
     constructor(private apiClient: ApiClient, private phraseRepository: PhraseRepository) {
         super();
     }
 
-    protected async executeInteraction(key: ButtonInteractionKey, interaction: ButtonInteraction): Promise<void> {
-        if (key !== "deleteDamageReport" && key !== "confirmedDeleteDamageReport") return;
+    protected async executeInteraction(interaction: ButtonInteraction): Promise<void> {
+        const customId = interaction.customId
+        if (customId !== deleteDamageReportButtonIdentifer && !isConfirmButton(customId, deleteDamageReportButtonIdentifer)) return;
 
         if (!(interaction.message instanceof Message))
             throw new InvalidInteractionError("interaction.message should be Message", interaction);
@@ -21,29 +24,18 @@ export class DeleteDamageReportCommand extends ButtonInteractionCommand {
 
         console.log("damage report delete button clicked");
 
-        switch (key) {
-            case "deleteDamageReport":
+        switch (customId) {
+            case deleteDamageReportButtonIdentifer:
                 if (isMentionedTo(interaction.message, interaction.user)) {
                     await this.deleteReport(interaction.channel, interaction.message);
                 } else {
-                    await interaction.reply({
-                        content: this.phraseRepository.get(PhraseKey.confirmDeleteDamageReportMessage()),
-                        components: [
-                            new MessageActionRow().addComponents(
-                                confirmedDeleteDamageReportButton(this.phraseRepository)
-                            )
-                        ],
-                        ephemeral: true
-                    });
+                    await sendConfirmMessage(interaction,this.phraseRepository.get(PhraseKey.confirmDeleteDamageReportMessage()),this.phraseRepository)
                 }
                 break;
 
-            case "confirmedDeleteDamageReport":
+            case toConfirmButton(deleteDamageReportButtonIdentifer):
                 const reference = await interaction.message.fetchReference();
-                await interaction.update({
-                    content: this.phraseRepository.get(PhraseKey.interactionDeletePrompt()),
-                    components: []
-                });
+                await fixToPromptDelete(interaction, this.phraseRepository)
                 await this.deleteReport(interaction.channel, reference);
                 break;
         }
@@ -53,12 +45,4 @@ export class DeleteDamageReportCommand extends ButtonInteractionCommand {
         await message.delete();
         await this.apiClient.deleteDamageReport(channel.id, message.id);
     }
-}
-
-export function deleteDamageReportButton(phraseRepository: PhraseRepository) {
-    return button("deleteDamageReport", phraseRepository.get(PhraseKey.deleteLabel()), "DANGER");
-}
-
-export function confirmedDeleteDamageReportButton(phraseRepository: PhraseRepository) {
-    return button("confirmedDeleteDamageReport", phraseRepository.get(PhraseKey.deleteLabel()), "DANGER");
 }

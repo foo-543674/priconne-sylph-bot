@@ -6,7 +6,7 @@ import { getGroupOf, matchContent } from "../../support/RegexHelper";
 import { PhraseKey } from "../../support/PhraseKey";
 import { userMension } from "../../support/DiscordHelper";
 import { isMentionedToMe } from "../../support/DiscordHelper";
-import { toBossNumber } from "../../entities/BossNumber";
+import { isBossNumberString, toBossNumber } from "../../entities/BossNumber";
 import { parseForCommand } from '../../support/MessageParser';
 
 export class BossSubjugationCommand implements MessageCommand {
@@ -32,7 +32,7 @@ export class BossSubjugationCommand implements MessageCommand {
 
         const [targetBossNumber] = getGroupOf(this.commandPattern, cleanContent, "bossNumber");
 
-        if (!targetBossNumber) return;
+        if (!targetBossNumber || !isBossNumberString(targetBossNumber)) return;
 
         const damageReportChannels = await this.apiClient.getDamageReportChannels(cooperateChannel.clanId);
 

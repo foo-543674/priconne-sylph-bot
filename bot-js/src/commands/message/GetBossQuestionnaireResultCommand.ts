@@ -1,4 +1,4 @@
-import { Client, Message, MessageEmbed } from "discord.js";
+import { Client, Message } from "discord.js";
 import { MessageCommand } from "./MessageCommand";
 import { PhraseRepository } from "../../support/PhraseRepository";
 import { isMentionedToMe, isTextChannel } from "../../support/DiscordHelper";
@@ -51,7 +51,7 @@ export class GetBossQuestionnaireResultCommand implements MessageCommand {
             this.phraseRepository
         );
 
-        const embed = new MessageEmbed().addFields(...result.generateEmbed());
+        const embed = result.generateEmbed();
         await channel.send({
             embeds: [embed]
         });

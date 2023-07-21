@@ -1,4 +1,4 @@
-import { EmbedFieldData, GuildMember } from "discord.js";
+import { EmbedBuilder, GuildMember } from "discord.js";
 import { BossNumber, bossNumbers } from "./BossNumber";
 import { PhraseKey } from "../support/PhraseKey";
 import { PhraseRepository } from "../support/PhraseRepository";
@@ -10,7 +10,7 @@ export type QuestionnairStamp = BossStamp | CarryOverStamp;
 type AnswerResolver = QuestionnairAnswer | QuestionnairStamp;
 
 export class BossQuestionnaire {
-    public constructor(public readonly messageId: string, private readonly phraseRepository: PhraseRepository) {}
+    public constructor(public readonly messageId: string, private readonly phraseRepository: PhraseRepository) { }
 
     private answers: { [key in QuestionnairAnswer]: GuildMember[] } = {
         1: [],
@@ -67,7 +67,7 @@ export class BossQuestionnaire {
         }
     }
 
-    public generateEmbed(): EmbedFieldData[] {
+    public generateEmbed(): EmbedBuilder {
         const createDisplayRow = (member: GuildMember, answer: QuestionnairAnswer) => {
             const otherBossNumbers = this.index[member.id].filter((b) => b !== answer);
             const otherBossNumbersDisplay = otherBossNumbers.length > 0 ? `**(${otherBossNumbers.join()})**` : "";
@@ -88,6 +88,10 @@ export class BossQuestionnaire {
                     ? this.answers[CarryOverStamp.symbol].map((m) => createDisplayRow(m, CarryOverStamp.symbol)).join("\n")
                     : this.phraseRepository.get(PhraseKey.noChallengerMessage()),
             inline: true
-        });
+        }).reduce((builder, field) => builder.addFields({
+            name: field.name,
+            value: field.value,
+            inline: field.inline
+        }), new EmbedBuilder());
     }
 }

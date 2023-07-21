@@ -1,21 +1,23 @@
-import { ButtonInteraction, Message, MessageActionRow, TextBasedChannel } from "discord.js";
-import { ButtonInteractionCommand, ButtonInteractionKey, button } from "./ButtonInteractionCommand";
+import { ButtonInteraction, Message, TextBasedChannel } from "discord.js";
+import { ButtonInteractionCommand } from "./ButtonInteractionCommand";
 import { ApiClient } from "../../backend/ApiClient";
 import { PhraseRepository } from "../../support/PhraseRepository";
 import { PhraseKey } from "../../support/PhraseKey";
 import { isMentionedTo } from "../../support/DiscordHelper";
 import { InvalidInteractionError } from "../../support/InvalidInteractionError";
 import { firstOrNull } from "../../support/ArrayHelper";
-import { GetClanParamter } from "../../backend/GetClanParameter";
-import { hasClanBattleStatus, isCompleted } from "../../entities/Member";
+import { deleteButtonIdentifer } from "../../input-ui/CarryOverUI";
+import { fixToPromptDelete, isConfirmButton, sendConfirmMessage, toConfirmButton } from "./Confirmation";
+import { detachRole } from "../../entities/UncompleteMemberRole";
 
 export class DeleteCarryOverCommand extends ButtonInteractionCommand {
     constructor(private apiClient: ApiClient, private phraseRepository: PhraseRepository) {
         super();
     }
 
-    protected async executeInteraction(key: ButtonInteractionKey, interaction: ButtonInteraction): Promise<void> {
-        if (key !== "deleteCarryOver" && key !== "confirmedDeleteCarryOver") return;
+    protected async executeInteraction(interaction: ButtonInteraction): Promise<void> {
+        const customId = interaction.customId
+        if (customId !== deleteButtonIdentifer && !isConfirmButton(customId, deleteButtonIdentifer)) return;
 
         if (!(interaction.message instanceof Message))
             throw new InvalidInteractionError("interaction.message should be Message", interaction);
@@ -24,29 +26,18 @@ export class DeleteCarryOverCommand extends ButtonInteractionCommand {
 
         console.log("carry over delete button clicked");
 
-        switch (key) {
-            case "deleteCarryOver":
+        switch (customId) {
+            case deleteButtonIdentifer:
                 if (isMentionedTo(interaction.message, interaction.user)) {
                     await this.deleteCarryOver(interaction.channel, interaction.message);
                 } else {
-                    await interaction.reply({
-                        content: this.phraseRepository.get(PhraseKey.confirmDeleteCarryOverMessage()),
-                        components: [
-                            new MessageActionRow().addComponents(
-                                confirmedDeleteCarryOverReportButton(this.phraseRepository)
-                            )
-                        ],
-                        ephemeral: true
-                    });
+                    await sendConfirmMessage(interaction, this.phraseRepository.get(PhraseKey.confirmDeleteCarryOverMessage()), this.phraseRepository)
                 }
                 break;
 
-            case "confirmedDeleteCarryOver":
+            case toConfirmButton(deleteButtonIdentifer):
                 const reference = await interaction.message.fetchReference();
-                await interaction.update({
-                    content: this.phraseRepository.get(PhraseKey.interactionDeletePrompt()),
-                    components: []
-                });
+                await fixToPromptDelete(interaction, this.phraseRepository)
                 await this.deleteCarryOver(interaction.channel, reference);
                 break;
         }
@@ -60,29 +51,8 @@ export class DeleteCarryOverCommand extends ButtonInteractionCommand {
 
         await this.apiClient.deleteCarryOver(channel.id, message.id);
 
-        const clan = firstOrNull(await this.apiClient.getClans(new GetClanParamter(undefined, undefined, channel.id)));
-        if (!clan) return;
-
-        const member = await this.apiClient.getMember(clan.id, carryOver.discordUserId);
-        if (!member || !hasClanBattleStatus(member)) return;
-
-        if (!isCompleted(member)) return;
-
-        const role = await this.apiClient.getUncompleteMemberRole(clan.id);
-        if (!role) return;
-        const discordRole = await message.guild?.roles.fetch(role.role.discordRoleId);
-        if (!discordRole) return;
-        const discordMember = await message.guild?.members.fetch(member.discordUserId);
-        if (!discordMember) return;
-
-        await discordMember.roles.remove(discordRole);
+        const guild = message.guild
+        if (!guild) return
+        await detachRole(channel.id, carryOver.discordUserId)(this.apiClient, guild)
     }
-}
-
-export function deleteCarryOverButton(phraseRepository: PhraseRepository) {
-    return button("deleteCarryOver", phraseRepository.get(PhraseKey.deleteLabel()), "DANGER");
-}
-
-export function confirmedDeleteCarryOverReportButton(phraseRepository: PhraseRepository) {
-    return button("confirmedDeleteCarryOver", phraseRepository.get(PhraseKey.deleteLabel()), "DANGER");
 }

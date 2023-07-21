@@ -1,10 +1,10 @@
-import { Interaction, ButtonInteraction } from "discord.js";
+import { Interaction, ModalSubmitInteraction } from "discord.js";
 import { InteractionCommand } from "./InteractionCommand";
 import { ValidationError } from "../../support/ValidationError";
 
-export abstract class ButtonInteractionCommand implements InteractionCommand {
+export abstract class ModalSubmitInteractionCommand implements InteractionCommand {
     public async execute(interaction: Interaction): Promise<void> {
-        if (interaction.isButton()) {
+        if (interaction.isModalSubmit()) {
             try {
                 await this.executeInteraction(interaction);
             } catch (error) {
@@ -18,5 +18,5 @@ export abstract class ButtonInteractionCommand implements InteractionCommand {
         }
     }
 
-    protected abstract executeInteraction(interaction: ButtonInteraction): Promise<void>;
+    protected abstract executeInteraction(interaction: ModalSubmitInteraction): Promise<void>;
 }

@@ -6,7 +6,7 @@ import { pipe } from "fp-ts/lib/function";
 import { ValidationError } from "../../support/ValidationError";
 import { collectMessagesUntil, isTextChannel, isMentionedToMe } from '../../support/DiscordHelper';
 import { PhraseKey } from "../../support/PhraseKey";
-import { toBossNumber } from "../../entities/BossNumber";
+import { isBossNumberString, toBossNumber } from "../../entities/BossNumber";
 import { userMension } from "../../support/DiscordHelper";
 import { matchContent } from "../../support/RegexHelper";
 import { parseForCommand } from '../../support/MessageParser';
@@ -38,6 +38,7 @@ export class BossNotificationCommand implements MessageCommand {
             TaskOption.fromNullable(this.commandPattern.exec(cleanContent)),
             TaskOption.chainNullableK((m) => m.groups),
             TaskOption.map((g) => g["bossNumber"]),
+            TaskOption.chain(bossNumber => isBossNumberString(bossNumber) ? TaskOption.some(bossNumber) : TaskOption.none),
             TaskOption.chain((bossNumber) =>
                 pipe(
                     TaskOption.fromTask(

@@ -1,34 +1,49 @@
 import { ButtonInteraction, Message } from "discord.js";
-import { ButtonInteractionCommand, ButtonInteractionKey, button } from "./ButtonInteractionCommand";
+import { ButtonInteractionCommand } from "./ButtonInteractionCommand";
 import { ApiClient } from "../../backend/ApiClient";
 import { PhraseRepository } from "../../support/PhraseRepository";
 import { PhraseKey } from "../../support/PhraseKey";
 import { InvalidInteractionError } from "../../support/InvalidInteractionError";
+import { requestRescueButtonIdentifer } from "../../input-ui/DamageReportUI";
+import { fixToPromptDelete, isConfirmButton, sendConfirmMessage, toConfirmButton } from "./Confirmation";
+import { isMentionedTo } from "../../support/DiscordHelper";
 
 export class RequestRescueCommand extends ButtonInteractionCommand {
     constructor(private apiClient: ApiClient, private phraseRepository: PhraseRepository) {
         super();
     }
 
-    protected async executeInteraction(key: ButtonInteractionKey, interaction: ButtonInteraction): Promise<void> {
-        if (key !== "requestRescue") return;
+    protected async executeInteraction(interaction: ButtonInteraction): Promise<void> {
+        const customId = interaction.customId
+        if (customId !== requestRescueButtonIdentifer && !isConfirmButton(customId,requestRescueButtonIdentifer)) return;
 
         console.log("request rescue button clicked");
 
+        switch (customId) {
+            case requestRescueButtonIdentifer:
+                if (isMentionedTo(interaction.message, interaction.user)) {
+                    await this.updateToRequestRescue(interaction, interaction.message)
+                } else {
+                    await sendConfirmMessage(interaction, this.phraseRepository.get(PhraseKey.confirmEditDamageReportMessage()), this.phraseRepository)
+                }
+                break;
+
+            case toConfirmButton(requestRescueButtonIdentifer):
+                await fixToPromptDelete(interaction, this.phraseRepository)
+                await this.updateToRequestRescue(interaction, await interaction.message.fetchReference())
+                break;
+        }
+    }
+
+    protected async updateToRequestRescue(interaction: ButtonInteraction, message: Message) {
         const channel = interaction.channel;
         if (!channel) throw new InvalidInteractionError("interaction.channel should not be null", interaction);
 
-        const message = interaction.message;
-        if (!(message instanceof Message))
-            throw new InvalidInteractionError("interaction.message should be instance of Message", interaction);
-
-        await interaction.deferUpdate();
-
         const report = (
             await this.apiClient.getDamageReports(channel.id, {
-                messageid: interaction.message.id
+                messageid: message.id
             })
-        ).find((report) => report.messageId === interaction.message.id);
+        ).find((report) => report.messageId === message.id);
 
         if (report) {
             const updatedReport = await this.apiClient.postDamageReport(
@@ -39,8 +54,4 @@ export class RequestRescueCommand extends ButtonInteractionCommand {
             await message.delete();
         }
     }
-}
-
-export function requestRescueButton(phraseRepository: PhraseRepository) {
-    return button("requestRescue", phraseRepository.get(PhraseKey.requestRescueLabel()), "SECONDARY");
 }

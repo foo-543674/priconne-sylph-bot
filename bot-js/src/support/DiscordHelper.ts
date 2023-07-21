@@ -59,7 +59,7 @@ export function removeMentionsFromContent(message: Message) {
 }
 
 export function isTextChannel(channel: TextBasedChannel): channel is TextChannel {
-    return channel.type === "GUILD_TEXT";
+    return channel.isTextBased() && !channel.isDMBased();
 }
 
 export function isMentionedTo(message: Message, user: User): boolean {
@@ -124,7 +124,7 @@ export async function getMessageFromLink(client: Client, url: string): Promise<M
     }
 
     const channel = await client.channels.fetch(channelId);
-    if (!channel || (!channel.isText() && !channel.isThread())) {
+    if (!channel || (!channel.isTextBased() && !channel.isThread())) {
         throw new DiscordHelperError("channel not found");
     }
 

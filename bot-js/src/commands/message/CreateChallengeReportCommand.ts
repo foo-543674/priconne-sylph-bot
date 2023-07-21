@@ -1,19 +1,19 @@
-import { Client, Message, MessageActionRow } from "discord.js";
+import { Client, Message } from "discord.js";
 import { MessageCommand } from "./MessageCommand";
 import { PhraseRepository } from "../../support/PhraseRepository";
 import { ApiClient } from "../../backend/ApiClient";
 import { ValidationError } from "../../support/ValidationError";
 import { PhraseKey } from "../../support/PhraseKey";
 import { isMentionedToMe } from "../../support/DiscordHelper";
-import { openCreateCarryOverFormButton } from "../interaction/OpenCreateCarryOverFormCommand";
 import { matchContent } from "../../support/RegexHelper";
 import { parseForCommand } from "../../support/MessageParser";
+import { startRegisterCarryOverButton } from "../../input-ui/CarryOverUI";
 
 export class CreateChallengeReportCommand implements MessageCommand {
     constructor(
         private phraseRepository: PhraseRepository,
         private discordClient: Client,
-        private apiClient: ApiClient
+        private apiClient: ApiClient,
     ) {
         this.commandPattern = new RegExp(this.phraseRepository.get(PhraseKey.createChallengeReport()));
     }
@@ -36,7 +36,7 @@ export class CreateChallengeReportCommand implements MessageCommand {
 
             await message.channel.send({
                 content: this.phraseRepository.get(PhraseKey.challengeReportGuide()),
-                components: [new MessageActionRow().addComponents(openCreateCarryOverFormButton(this.phraseRepository))]
+                components: startRegisterCarryOverButton(this.phraseRepository).getResult()
             });
 
             const messageIds = await Promise.all(
