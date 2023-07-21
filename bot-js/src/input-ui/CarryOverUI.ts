@@ -52,7 +52,7 @@ export function carryOverMessageUi(phraseRepository: PhraseRepository) {
     return MessageComponentBuilder.createNew()
         .addButton({
             customId: editCarryOverButtonIdentifer,
-            label: phraseRepository.get(PhraseKey.noteInputLabel()),
+            label: phraseRepository.get(PhraseKey.editCarryOverLabel()),
             style: ButtonStyle.Secondary
         })
         .addButton({

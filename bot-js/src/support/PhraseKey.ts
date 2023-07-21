@@ -376,8 +376,8 @@ export class PhraseKey {
         return new PhraseKey("carry_over_note_input_placeholder");
     }
 
-    public static updateNoteLabel(): PhraseKey {
-        return new PhraseKey("update_note_label");
+    public static editCarryOverLabel(): PhraseKey {
+        return new PhraseKey("edit_caryy_over_label");
     }
 
     public static reportDamageInputLabel(): PhraseKey {
