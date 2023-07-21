@@ -29,6 +29,7 @@ export class RetryChallengeCommand extends ButtonInteractionCommand {
                 break;
 
             case toConfirmButton(retryChallengeButtonIdentifer):
+                await interaction.deferUpdate()
                 await fixToPromptDelete(interaction, this.phraseRepository)
                 await this.resetMessage(interaction, await interaction.message.fetchReference())
                 break;
@@ -39,7 +40,6 @@ export class RetryChallengeCommand extends ButtonInteractionCommand {
         const channel = interaction.channel;
         if (!channel) throw new InvalidInteractionError("interaction.channel should not be null", interaction);
 
-        await interaction.deferUpdate()
         const report = (
             await this.apiClient.getDamageReports(channel.id, {
                 messageid: message.id
