@@ -22,6 +22,7 @@ export class RequestRescueCommand extends ButtonInteractionCommand {
         switch (customId) {
             case requestRescueButtonIdentifer:
                 if (isMentionedTo(interaction.message, interaction.user)) {
+                    await interaction.deferUpdate()
                     await this.updateToRequestRescue(interaction, interaction.message)
                 } else {
                     await sendConfirmMessage(interaction, this.phraseRepository.get(PhraseKey.confirmEditDamageReportMessage()), this.phraseRepository)
@@ -29,7 +30,6 @@ export class RequestRescueCommand extends ButtonInteractionCommand {
                 break;
 
             case toConfirmButton(requestRescueButtonIdentifer):
-                await interaction.deferUpdate()
                 await fixToPromptDelete(interaction, this.phraseRepository)
                 await this.updateToRequestRescue(interaction, await interaction.message.fetchReference())
                 break;
