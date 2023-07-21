@@ -1,17 +1,17 @@
-import { Client, Message, MessageActionRow } from "discord.js";
+import { Client, Message } from "discord.js";
 import { MessageCommand } from "./MessageCommand";
 import { PhraseRepository } from "../../support/PhraseRepository";
 import { ApiClient } from "../../backend/ApiClient";
 import { PhraseKey } from "../../support/PhraseKey";
 import { isMentionedToMe } from "../../support/DiscordHelper";
-import { challengingBossSelectButton } from "../interaction/BossSelectButtonCommand";
 import { parseForCommand } from "../../support/MessageParser";
+import { selectChallengeBossButtonsRow } from "../../input-ui/DamageReportUI";
 
 export class PrepareDamageReportCommand implements MessageCommand {
     constructor(
-        private phraseRepository: PhraseRepository,
-        private discordClient: Client,
-        private apiClient: ApiClient
+        private readonly phraseRepository: PhraseRepository,
+        private readonly discordClient: Client,
+        private readonly apiClient: ApiClient,
     ) {
         this.commandPattern = new RegExp(this.phraseRepository.get(PhraseKey.createDamageReport()));
     }
@@ -32,14 +32,7 @@ export class PrepareDamageReportCommand implements MessageCommand {
 
         await message.channel.send({
             content: this.phraseRepository.get(PhraseKey.createDamageReportMessage()),
-            components: [
-                new MessageActionRow()
-                    .addComponents(challengingBossSelectButton(1, this.phraseRepository))
-                    .addComponents(challengingBossSelectButton(2, this.phraseRepository))
-                    .addComponents(challengingBossSelectButton(3, this.phraseRepository))
-                    .addComponents(challengingBossSelectButton(4, this.phraseRepository))
-                    .addComponents(challengingBossSelectButton(5, this.phraseRepository))
-            ]
+            components: selectChallengeBossButtonsRow(this.phraseRepository).getResult()
         });
     }
 }

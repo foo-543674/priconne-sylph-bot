@@ -1,83 +1,56 @@
-import { ButtonInteractionKey, button } from "./ButtonInteractionCommand";
-import { ButtonInteraction, Message } from "discord.js";
+import { ButtonInteraction, Message } from 'discord.js';
 import { PhraseRepository } from "../../support/PhraseRepository";
 import { PhraseKey } from "../../support/PhraseKey";
 import { ApiClient } from "../../backend/ApiClient";
 import { ButtonInteractionCommand } from "./ButtonInteractionCommand";
-import { NumberInput, numberInputForm, NumberInputFormSet } from "./NumberInputCommand";
-import { NumberChar, NumericString } from "../../support/NumberString";
-import { HasReferenceMessageInteraction } from "../../support/DiscordHelper";
+import { isMentionedTo } from "../../support/DiscordHelper";
 import { InvalidInteractionError } from "../../support/InvalidInteractionError";
+import { damageInputForm, reportDamageButtonIdentifer } from "../../input-ui/DamageReportUI";
+import { fixToPromptDelete, isConfirmButton, sendConfirmMessage, toConfirmButton } from "./Confirmation";
 
 export class OpenDamageInputFormCommand extends ButtonInteractionCommand {
     constructor(
         private phraseRepository: PhraseRepository,
         private apiClient: ApiClient,
-        private numberInputFormSet: NumberInputFormSet
     ) {
         super();
     }
 
-    protected async executeInteraction(key: ButtonInteractionKey, interaction: ButtonInteraction): Promise<void> {
-        if (key !== "openInputDamageForm") return;
+    protected async executeInteraction(interaction: ButtonInteraction): Promise<void> {
+        const customId = interaction.customId
+        if (customId !== reportDamageButtonIdentifer && !isConfirmButton(customId, reportDamageButtonIdentifer)) return;
 
         console.log("open input damage button clicked");
 
-        const input = new DamageInput(this.phraseRepository, this.apiClient);
+        switch (customId) {
+            case reportDamageButtonIdentifer:
+                if (isMentionedTo(interaction.message, interaction.user)) {
+                    await this.openForm(interaction, interaction.message)
+                } else {
+                    await sendConfirmMessage(interaction, this.phraseRepository.get(PhraseKey.confirmEditDamageReportMessage()), this.phraseRepository)
+                }
+                break;
 
-        await interaction.reply({
-            content: input.content,
-            components: numberInputForm(this.phraseRepository),
-            ephemeral: true
-        });
-
-        const replyMessage = (await interaction.fetchReply()) as Message;
-        this.numberInputFormSet.addNew(replyMessage, input);
-    }
-}
-
-export function openDamageInputFormButton(phraseRepository: PhraseRepository) {
-    return button("openInputDamageForm", phraseRepository.get(PhraseKey.openDamageInputFormLabel()), "SUCCESS");
-}
-
-export class DamageInput implements NumberInput {
-    constructor(private phraseRepository: PhraseRepository, private apiClient: ApiClient) {}
-
-    private current: NumericString = new NumericString();
-
-    public get hasInput(): boolean {
-        return !this.current.isEmpty;
+            case toConfirmButton(reportDamageButtonIdentifer):
+                await this.openForm(interaction, await interaction.message.fetchReference())
+                await fixToPromptDelete(interaction, this.phraseRepository)
+                break;
+        }
     }
 
-    public get content(): string {
-        return this.hasInput ? `${this.current}` : this.phraseRepository.get(PhraseKey.damageInputFormMessage());
-    }
-
-    public addInput(input: NumberChar): void {
-        this.current = this.current.append(input);
-    }
-
-    public backward(): void {
-        this.current = this.current.backward();
-    }
-
-    public async apply(interaction: HasReferenceMessageInteraction, referenceMessage: Message): Promise<void> {
-        if (!this.hasInput) return;
-        await interaction.update({
-            content: this.phraseRepository.get(PhraseKey.interactionDeletePrompt()),
-            components: []
-        });
+    protected async openForm(interaction: ButtonInteraction, message: Message) {
         const channel = interaction.channel;
         if (!channel) throw new InvalidInteractionError("interaction.channel should not be null", interaction);
-
         const report = (
             await this.apiClient.getDamageReports(channel.id, {
-                messageid: referenceMessage.id
+                messageid: message.id
             })
-        ).find((report) => report.messageId === referenceMessage.id);
+        ).find((report) => report.messageId === message.id);
+
         if (report) {
-            const updatedReport = await this.apiClient.postDamageReport(report.setDamage(this.current.toNumber()));
-            await referenceMessage.edit(updatedReport.generateMessage(this.phraseRepository));
+            return await interaction.showModal(damageInputForm(this.phraseRepository, { damage: report.damage ?? undefined, note: report.comment }).getResult())
+        } else {
+            await message.delete();
         }
     }
 }
