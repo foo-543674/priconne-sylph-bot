@@ -27,6 +27,7 @@ export class DeleteDamageReportCommand extends ButtonInteractionCommand {
         switch (customId) {
             case deleteDamageReportButtonIdentifer:
                 if (isMentionedTo(interaction.message, interaction.user)) {
+                    await interaction.deferUpdate()
                     await this.deleteReport(interaction.channel, interaction.message);
                 } else {
                     await sendConfirmMessage(interaction,this.phraseRepository.get(PhraseKey.confirmDeleteDamageReportMessage()),this.phraseRepository)
@@ -34,7 +35,6 @@ export class DeleteDamageReportCommand extends ButtonInteractionCommand {
                 break;
 
             case toConfirmButton(deleteDamageReportButtonIdentifer):
-                await interaction.deferUpdate()
                 const reference = await interaction.message.fetchReference();
                 await fixToPromptDelete(interaction, this.phraseRepository)
                 await this.deleteReport(interaction.channel, reference);

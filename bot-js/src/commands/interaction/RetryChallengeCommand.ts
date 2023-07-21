@@ -22,6 +22,7 @@ export class RetryChallengeCommand extends ButtonInteractionCommand {
         switch (customId) {
             case retryChallengeButtonIdentifer:
                 if (isMentionedTo(interaction.message, interaction.user)) {
+                    await interaction.deferUpdate()
                     await this.resetMessage(interaction, interaction.message)
                 } else {
                     await sendConfirmMessage(interaction, this.phraseRepository.get(PhraseKey.confirmEditDamageReportMessage()), this.phraseRepository)
@@ -29,7 +30,6 @@ export class RetryChallengeCommand extends ButtonInteractionCommand {
                 break;
 
             case toConfirmButton(retryChallengeButtonIdentifer):
-                await interaction.deferUpdate()
                 await fixToPromptDelete(interaction, this.phraseRepository)
                 await this.resetMessage(interaction, await interaction.message.fetchReference())
                 break;

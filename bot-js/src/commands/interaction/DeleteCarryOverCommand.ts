@@ -29,6 +29,7 @@ export class DeleteCarryOverCommand extends ButtonInteractionCommand {
         switch (customId) {
             case deleteButtonIdentifer:
                 if (isMentionedTo(interaction.message, interaction.user)) {
+                    await interaction.deferUpdate()
                     await this.deleteCarryOver(interaction.channel, interaction.message);
                 } else {
                     await sendConfirmMessage(interaction, this.phraseRepository.get(PhraseKey.confirmDeleteCarryOverMessage()), this.phraseRepository)
@@ -36,7 +37,6 @@ export class DeleteCarryOverCommand extends ButtonInteractionCommand {
                 break;
 
             case toConfirmButton(deleteButtonIdentifer):
-                await interaction.deferUpdate()
                 const reference = await interaction.message.fetchReference();
                 await fixToPromptDelete(interaction, this.phraseRepository)
                 await this.deleteCarryOver(interaction.channel, reference);
