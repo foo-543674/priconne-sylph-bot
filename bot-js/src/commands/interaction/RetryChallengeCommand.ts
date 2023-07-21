@@ -39,6 +39,7 @@ export class RetryChallengeCommand extends ButtonInteractionCommand {
         const channel = interaction.channel;
         if (!channel) throw new InvalidInteractionError("interaction.channel should not be null", interaction);
 
+        await interaction.deferUpdate()
         const report = (
             await this.apiClient.getDamageReports(channel.id, {
                 messageid: message.id

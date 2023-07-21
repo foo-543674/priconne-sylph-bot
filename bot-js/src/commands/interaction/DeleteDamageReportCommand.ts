@@ -24,6 +24,7 @@ export class DeleteDamageReportCommand extends ButtonInteractionCommand {
 
         console.log("damage report delete button clicked");
 
+        await interaction.deferUpdate()
         switch (customId) {
             case deleteDamageReportButtonIdentifer:
                 if (isMentionedTo(interaction.message, interaction.user)) {
