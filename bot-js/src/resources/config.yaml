@@ -149,7 +149,7 @@ phrases:
   request_rescue_label: 救援要請
   request_rescue_message: 救援求
   no_challenger_message: 希望者なし
-  select_challenged_type_select_message: ボスと物理or魔法を選んでね
+  select_challenged_type_select_message: 本凸で凸したボスと、使用した編成を物理or魔法から選んでね
   input_carry_over_ui_label: 持ち越し入力
   1b_label: 1ボス-物理
   1m_label: 1ボス-魔法
