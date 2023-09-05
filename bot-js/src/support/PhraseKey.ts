@@ -448,6 +448,38 @@ export class PhraseKey {
         return new PhraseKey("setup_timeline_channel")
     }
 
+    public static excellentLuck(): PhraseKey {
+        return new PhraseKey("excellent_luck");
+    }
+
+    public static goodLuck(): PhraseKey {
+        return new PhraseKey("good_luck");
+    }
+
+    public static fairLuck(): PhraseKey {
+        return new PhraseKey("fair_luck");
+    }
+
+    public static smallLuck(): PhraseKey {
+        return new PhraseKey("small_luck");
+    }
+
+    public static futureLuck(): PhraseKey {
+        return new PhraseKey("future_luck");
+    }
+
+    public static badLuck(): PhraseKey {
+        return new PhraseKey("bad_luck");
+    }
+
+    public static greatMisfortune(): PhraseKey {
+        return new PhraseKey("great_misfortune");
+    }
+
+    public static omikujiResult(): PhraseKey {
+        return new PhraseKey("omikuji_result");
+    }
+
     public toString(): string {
         return this.value;
     }

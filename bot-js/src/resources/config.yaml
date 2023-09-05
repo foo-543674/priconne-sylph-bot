@@ -192,4 +192,11 @@ phrases:
   create_timeline_thread_source_input_label: ソース
   create_timeline_thread_source_input_placeholder: 動画やメッセージのリンクなど
   setup_timeline_channel: ここをTL投稿チャンネルにするよ
-
+  excellent_luck: 大吉
+  good_luck: 吉
+  fair_luck: 中吉
+  small_luck: 小吉
+  future_luck: 末吉
+  bad_luck: 凶
+  great_misfortune: 大凶
+  omikuji_result: 今日の{user}の運勢は{fortune}だよ。
