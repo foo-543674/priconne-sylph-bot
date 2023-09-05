@@ -25,6 +25,7 @@
     "group-items": "^2.1.0",
     "js-yaml": "^4.1.0",
     "node-cron": "^3.0.0",
+    "random": "^4.1.0",
     "typed-signals": "^2.3.0",
     "typescript-string-operations": "^1.4.1"
   },
