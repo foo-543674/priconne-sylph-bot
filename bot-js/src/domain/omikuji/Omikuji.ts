@@ -1,19 +1,20 @@
-import { fortunes } from "./Fortune";
-import { LocalDateTimeProvider } from "../../support/LocalDateProvider";
-import { RandomProvider } from "../../support/RandomProvider";
+import { Fortune } from "./Fortune";
 import { PhraseRepository } from "../../support/PhraseRepository";
+import { PhraseKey } from "../../support/PhraseKey";
+import { String } from "typescript-string-operations";
 
 export class Omikuji {
     constructor(
-        private dateProvider: LocalDateTimeProvider,
-        private randomProvider: RandomProvider,
-        private phraseRepository: PhraseRepository,
+        private username: string,
+        private fortune: Fortune,
     ) { }
 
-    draw(username: string): string {
-        const dateString = this.dateProvider.today().toDateString()
-        const seed = `${username}${dateString}`
+    public print(phraseRepository: PhraseRepository): string {
+        const base = phraseRepository.get(PhraseKey.omikujiResult());
 
-        return this.randomProvider.choice(fortunes, seed).printResult(username, this.phraseRepository);
+        return String.format(base, {
+            user: this.username,
+            fortune: phraseRepository.get(this.fortune.phraseKey)
+        })
     }
 }

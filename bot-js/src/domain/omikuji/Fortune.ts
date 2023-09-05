@@ -1,40 +1,29 @@
 import { PhraseKey } from "../../support/PhraseKey";
-import { PhraseRepository } from "../../support/PhraseRepository";
-import { String } from "typescript-string-operations";
 
-export abstract class Fortune {
-    protected abstract get fortunePhraseKey(): PhraseKey;
-
-    printResult(username: string, phraseRepository: PhraseRepository) {
-        const base = phraseRepository.get(PhraseKey.omikujiResult());
-
-        return String.format(base, {
-            user: username,
-            fortune: phraseRepository.get(this.fortunePhraseKey)
-        })
-    }
+export interface Fortune {
+    get phraseKey(): PhraseKey;
 }
 
-class ExcellentLuck extends Fortune {
-    readonly fortunePhraseKey: PhraseKey = PhraseKey.excellentLuck()
+class ExcellentLuck implements Fortune {
+    readonly phraseKey: PhraseKey = PhraseKey.excellentLuck()
 }
-class GoodLuck extends Fortune {
-    readonly fortunePhraseKey: PhraseKey = PhraseKey.goodLuck()
+class GoodLuck implements Fortune {
+    readonly phraseKey: PhraseKey = PhraseKey.goodLuck()
 }
-class FairLuck extends Fortune {
-    readonly fortunePhraseKey: PhraseKey = PhraseKey.fairLuck()
+class FairLuck implements Fortune {
+    readonly phraseKey: PhraseKey = PhraseKey.fairLuck()
 }
-class SmallLuck extends Fortune {
-    readonly fortunePhraseKey: PhraseKey = PhraseKey.smallLuck()
+class SmallLuck implements Fortune {
+    readonly phraseKey: PhraseKey = PhraseKey.smallLuck()
 }
-class FutureLuck extends Fortune {
-    readonly fortunePhraseKey: PhraseKey = PhraseKey.futureLuck()
+class FutureLuck implements Fortune {
+    readonly phraseKey: PhraseKey = PhraseKey.futureLuck()
 }
-class BadLuck extends Fortune {
-    readonly fortunePhraseKey: PhraseKey = PhraseKey.badLuck()
+class BadLuck implements Fortune {
+    readonly phraseKey: PhraseKey = PhraseKey.badLuck()
 }
-class GreatMisfortune extends Fortune {
-    readonly fortunePhraseKey: PhraseKey = PhraseKey.greatMisfortune()
+class GreatMisfortune implements Fortune {
+    readonly phraseKey: PhraseKey = PhraseKey.greatMisfortune()
 }
 
 export const fortunes: Fortune[] = [
