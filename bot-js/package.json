@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node ./dist/index.js",
     "start:dev": "ts-node ./src/index.ts",
-    "compile": "tsc -p .",
+    "compile": "tsc --build tsconfig.build.json",
     "compile:test": "tsc -p . --noEmit",
     "lint": "eslint --ext .ts --ignore-path .gitignore .",
     "lint:fix": "eslint --ext .ts --ignore-path .gitignore . --fix",
@@ -25,7 +25,7 @@
     "group-items": "^2.1.0",
     "js-yaml": "^4.1.0",
     "node-cron": "^3.0.0",
-    "random": "^4.1.0",
+    "rand-seed": "^1.0.2",
     "typed-signals": "^2.3.0",
     "typescript-string-operations": "^1.4.1"
   },
