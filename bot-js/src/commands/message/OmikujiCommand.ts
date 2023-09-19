@@ -25,8 +25,8 @@ export class OmikujiCommand implements MessageCommand {
         if (!(channel instanceof TextChannel)) return
         console.log("start omikuji command");
 
-        const result = this.lotteryBox.draw(message.author.displayName)
-
+        const name = message.member?.displayName ?? message.author.displayName
+        const result = this.lotteryBox.draw(name)
 
         await message.reply({
             embeds: [
