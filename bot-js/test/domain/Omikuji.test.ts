@@ -10,6 +10,7 @@ describe("Omikuji", () => {
             new FixedRandomProvider(),
         )
 
+        // NOTE: to rebuild
         const username = "foo"
         const result = sut.draw(username)
         expect(result.print(createPhraseRepository())).toBe("今日のfooの運勢は大吉だよ。");
