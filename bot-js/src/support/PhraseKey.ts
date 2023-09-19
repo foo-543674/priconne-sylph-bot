@@ -404,6 +404,50 @@ export class PhraseKey {
         return new PhraseKey("damage_is_invalid_message");
     }
 
+    public static createTimelineThreadUIMessage(): PhraseKey {
+        return new PhraseKey("create_timeline_thread_ui_message")
+    }
+
+    public static createTimelineThreadButtonLabel(): PhraseKey {
+        return new PhraseKey("create_timeline_thread_button_label")
+    }
+
+    public static createTimelineThreadAuthorInputLabel(): PhraseKey {
+        return new PhraseKey("create_timeline_thread_author_input_label")
+    }
+
+    public static createTimelineThreadAuthorInputPlaceholder(): PhraseKey {
+        return new PhraseKey("create_timeline_thread_author_input_placeholder")
+    }
+
+    public static createTimelineThreadDamageInputLabel(): PhraseKey {
+        return new PhraseKey("create_timeline_thread_damage_input_label")
+    }
+
+    public static createTimelineThreadDamageInputPlaceholder(): PhraseKey {
+        return new PhraseKey("create_timeline_thread_damage_input_placeholder")
+    }
+
+    public static createTimelineThreadDescriptionInputLabel(): PhraseKey {
+        return new PhraseKey("create_timeline_thread_description_input_label")
+    }
+
+    public static createTimelineThreadDescriptionInputPlaceholder(): PhraseKey {
+        return new PhraseKey("create_timeline_thread_description_input_placeholder")
+    }
+
+    public static createTimelineThreadSourceInputLabel(): PhraseKey {
+        return new PhraseKey("create_timeline_thread_source_input_label")
+    }
+
+    public static createTimelineThreadSourceInputPlaceholder(): PhraseKey {
+        return new PhraseKey("create_timeline_thread_source_input_placeholder")
+    }
+
+    public static setupTimelineChannel(): PhraseKey {
+        return new PhraseKey("setup_timeline_channel")
+    }
+
     public toString(): string {
         return this.value;
     }

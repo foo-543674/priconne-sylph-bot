@@ -1,5 +1,5 @@
 import { ButtonInteraction, ButtonStyle } from "discord.js"
-import { MessageComponentBuilder } from "../../input-ui/MessageComponentBuilder";
+import { MessageComponentBuilder } from "../../libraries/discordjs/MessageComponentBuilder";
 import { PhraseRepository } from '../../support/PhraseRepository';
 import { PhraseKey } from "../../support/PhraseKey";
 

@@ -16,6 +16,6 @@ export class TimelineThread {
     }
 
     public get content() {
-        return `${this.caption}¥n${this.source}`
+        return `${this.caption}\r${this.source}`
     }
 }

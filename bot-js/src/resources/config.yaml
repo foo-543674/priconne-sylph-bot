@@ -181,3 +181,15 @@ phrases:
   damage_report_note_input_placeholder: どれくらい伸びるか、上振れ下振れや活限などを入力してね。
   confirm_button_label: 実行
   damage_is_invalid_message: ダメージが読み取れないよ。数字で入力してね。
+  create_timeline_thread_ui_message: 新規TLを投稿するときは、投稿ボタンを押してね
+  create_timeline_thread_button_label: 投稿
+  create_timeline_thread_author_input_label: 投稿者
+  create_timeline_thread_author_input_placeholder: TL製作者の名前
+  create_timeline_thread_damage_input_label: ダメージ
+  create_timeline_thread_damage_input_placeholder: ダメージ幅
+  create_timeline_thread_description_input_label: 補足
+  create_timeline_thread_description_input_placeholder: 目押し個数や運ゲなど
+  create_timeline_thread_source_input_label: ソース
+  create_timeline_thread_source_input_placeholder: 動画やメッセージのリンクなど
+  setup_timeline_channel: ここをTL投稿チャンネルにするよ
+
