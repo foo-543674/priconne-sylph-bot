@@ -200,3 +200,4 @@ phrases:
   bad_luck: 凶
   great_misfortune: 大凶
   omikuji_result: 今日の{user}の運勢は{fortune}だよ。
+  omikuji_command: おみくじ

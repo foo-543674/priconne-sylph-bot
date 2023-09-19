@@ -480,6 +480,10 @@ export class PhraseKey {
         return new PhraseKey("omikuji_result");
     }
 
+    public static omikujiCommand(): PhraseKey {
+        return new PhraseKey("omikuji_command");
+    }
+
     public toString(): string {
         return this.value;
     }

@@ -7,7 +7,7 @@ export class SeedRandomProvider implements RandomProvider {
     choice<T>(items: T[], seed = ""): T {
         const rand = new Rand(seed)
 
-        const index = rand.next() % items.length;
+        const index = Math.floor(rand.next() * items.length);
 
         return items[index]
     }

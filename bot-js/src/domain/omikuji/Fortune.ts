@@ -26,7 +26,7 @@ class GreatMisfortune implements Fortune {
     readonly phraseKey: PhraseKey = PhraseKey.greatMisfortune()
 }
 
-export const fortunes: Fortune[] = [
+export const fortunes = (): Fortune[] => [
     new ExcellentLuck(),
     new GoodLuck(),
     new FairLuck(),

@@ -10,9 +10,10 @@ export class LotteryBox {
     ) { }
 
     draw(username: string): Omikuji {
-        const dateString = this.dateProvider.today().toDateString()
-        const seed = `${username}${dateString}`
+        const today = this.dateProvider.todayText()
+        const seed = `${username}${today}`
 
-        return new Omikuji(username, this.randomProvider.choice(fortunes, seed))
+        const choiced = this.randomProvider.choice(fortunes(), seed)
+        return new Omikuji(username, choiced)
     }
 }
