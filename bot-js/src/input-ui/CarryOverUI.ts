@@ -1,7 +1,7 @@
 import { ButtonStyle, TextInputStyle } from 'discord.js';
 import { PhraseRepository } from '../support/PhraseRepository';
 import { PhraseKey } from "../support/PhraseKey";
-import { MessageComponentBuilder } from './MessageComponentBuilder';
+import { MessageComponentBuilder } from '../libraries/discordjs/MessageComponentBuilder';
 import { ChallengedType, isChallengedType } from '../entities/ChallengedType';
 import { ModalComponentBuilder } from './ModalComponentBuilder';
 import { getGroupOf } from '../support/RegexHelper';

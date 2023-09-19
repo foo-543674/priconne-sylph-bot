@@ -44,6 +44,11 @@ import { OpenEditCarryOverCommand } from "./commands/interaction/OpenEditCarryOv
 import { SubmitReportDamageCommand } from "./commands/interaction/SubmitReportDamageCommand";
 import { SubmitRegisterCarryOverCommand } from "./commands/interaction/SubmitRegisterCarryOverCommand";
 import { SubmitEditCarryOverCommand } from "./commands/interaction/SubmitEditCarryOverCommand";
+import { SubmitCreateTimelineThreadCommand } from "./commands/interaction/SubmitCreateTimelineThreadCommand";
+import { CreateTimelineThreadUsecase } from "./domain/timeline-thread/CreateTimelineThreadUsecase";
+import { OpenCreateTimelineThreadFormCommand } from "./commands/interaction/OpenCreateTimelineThreadFormCommand";
+import { SetupTimelineChannelCommand } from "./commands/message/SetupTimelineChannelCommand";
+import { SetupTimelineThreadChannelUsecase } from "./domain/timeline-thread/SetupTimelineThreadChannelUsecase";
 
 const phraseConfig = yaml.load(fs.readFileSync("src/resources/config.yaml", "utf8"));
 const phraseRepository = new YamlPhraseRepository(phraseConfig as PhraseConfig);
@@ -95,7 +100,8 @@ const messaegEventHandler = new MessageEventHandler(
         new RequestPinCommand(phraseRepository, client),
         new RequestUnpinCommand(phraseRepository, client),
         new DiceCommand(client, new BCDice()),
-        new CalculateCarryOverTlCommand(phraseRepository, client)
+        new CalculateCarryOverTlCommand(phraseRepository, client),
+        new SetupTimelineChannelCommand(phraseRepository, client, new SetupTimelineThreadChannelUsecase())
     ],
     phraseRepository
 );
@@ -122,6 +128,8 @@ const interactionEventHandler = new InteractionEventHandler([
     new SubmitReportDamageCommand(phraseRepository, apiClient),
     new SubmitRegisterCarryOverCommand(phraseRepository, apiClient),
     new SubmitEditCarryOverCommand(phraseRepository, apiClient),
+    new OpenCreateTimelineThreadFormCommand(phraseRepository),
+    new SubmitCreateTimelineThreadCommand(phraseRepository, new CreateTimelineThreadUsecase()),
 ]);
 interactionEventHandler.listen(client);
 
