@@ -2,6 +2,10 @@
   "name": "sylph-bot",
   "version": "0.1.0",
   "description": "Princess connect Re:Dive clan battle support bot",
+  "engines": {
+    "node": "v20.3.1",
+    "npm": "9.6.7"
+  },
   "scripts": {
     "start": "node ./dist/index.js",
     "start:dev": "ts-node ./src/index.ts",
