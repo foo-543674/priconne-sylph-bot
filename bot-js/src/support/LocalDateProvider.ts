@@ -1,3 +1,4 @@
 export interface LocalDateTimeProvider {
-    getLocalDateTime(): Date;
+    nowText(): string;
+    todayText(): string;
 }
