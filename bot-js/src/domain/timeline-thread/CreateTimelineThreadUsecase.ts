@@ -6,6 +6,7 @@ import { DiscordThreadAutoArchiveDuration } from "../discord/DiscordThreadAutoAr
 import { DiscordMessageRequest } from "../discord/DiscordMessageRequest";
 import { DiscordTask } from "../discord/DiscordTask";
 import { DiscordMessage } from "../discord/DiscordMessage";
+import { ThreadSafeKeyCounter } from "../../support/ThreadSafeKeyCounter";
 
 export interface CreateTimelineThreadRequest {
     getChannel(): DiscordTextChannel;
@@ -17,14 +18,14 @@ export interface CreateTimelineThreadRequest {
     getCurrentUIMessage(): DiscordTask<DiscordMessage>
 }
 
-export interface CreateTimelineThreadResponse {
-    createThread(): DiscordTask<void>
-    resetUI(): DiscordTask<void>
-}
-
 export class CreateTimelineThreadUsecase {
 
-    public apply(request: CreateTimelineThreadRequest): CreateTimelineThreadResponse {
+    private readonly taskCounter = new ThreadSafeKeyCounter()
+
+    public apply(request: CreateTimelineThreadRequest): DiscordTask<void> {
+        const channel = request.getChannel();
+        this.taskCounter.increment(channel.id)
+
         const thread = new TimelineThread(
             request.getChannel().name,
             request.getAuthor(),
@@ -33,23 +34,31 @@ export class CreateTimelineThreadUsecase {
             request.getSource(),
         )
 
-        const channel = request.getChannel();
+        const createThreadTask = pipe(
+            channel.sendMessage(thread.content),
+            TaskEither.chain(m => m.startThread({
+                name: thread.title,
+                autoArchiveDuration: DiscordThreadAutoArchiveDuration.OneWeek
+            })),
+        )
 
-        return {
-            createThread: () => pipe(
-                channel.sendMessage(thread.content),
-                TaskEither.chain(m => m.startThread({
-                    name: thread.title,
-                    autoArchiveDuration: DiscordThreadAutoArchiveDuration.OneWeek
-                })),
-                TaskEither.map(() => { })
-            ),
-            resetUI: () => pipe(
-                request.createUIMessageRequest(),
-                TaskEither.chain(r => channel.sendMessage(r)),
-                TaskEither.chain(() => request.getCurrentUIMessage()),
-                TaskEither.chain(m => m.delete())
-            )
-        }
+        const resetUITask = pipe(
+            request.createUIMessageRequest(),
+            TaskEither.chain(r => channel.sendMessage(r)),
+            TaskEither.chain(() => request.getCurrentUIMessage()),
+            TaskEither.chain(m => m.delete())
+        )
+
+        return pipe(
+            createThreadTask,
+            TaskEither.chain(() => TaskEither.fromTask(async () => {
+                await this.taskCounter.decrement(channel.id)
+                const current = await this.taskCounter.get(channel.id)
+                if (current <= 0) {
+                    console.log(`reset ui for ${channel.name}`)
+                    await resetUITask()
+                }
+            }))
+        )
     }
 }
