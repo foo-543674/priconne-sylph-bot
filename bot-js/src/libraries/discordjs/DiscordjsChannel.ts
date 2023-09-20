@@ -13,6 +13,9 @@ export class DiscordjsTextChannel implements DiscordTextChannel {
     constructor(
         private readonly base: TextChannel
     ) { }
+    get id(): string {
+        return this.base.id
+    }
     get name(): string {
         return this.base.name
     }
