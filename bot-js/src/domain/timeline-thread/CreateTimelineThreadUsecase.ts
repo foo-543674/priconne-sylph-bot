@@ -4,7 +4,7 @@ import { TimelineThread } from "./TimelineThread";
 import * as TaskEither from "fp-ts/TaskEither";
 import { DiscordThreadAutoArchiveDuration } from "../discord/DiscordThreadAutoArchiveDuration";
 import { DiscordMessageRequest } from "../discord/DiscordMessageRequest";
-import { DiscordTask } from "../discord/DiscordTask";
+import { DiscordTask, doNothing } from "../discord/DiscordTask";
 import { DiscordMessage } from "../discord/DiscordMessage";
 import { ThreadSafeKeyCounter } from "../../support/ThreadSafeKeyCounter";
 
@@ -53,12 +53,10 @@ export class CreateTimelineThreadUsecase {
             createThreadTask,
             TaskEither.chain(() => TaskEither.fromTask(async () => {
                 await this.taskCounter.decrement(channel.id)
-                const current = await this.taskCounter.get(channel.id)
-                if (current <= 0) {
-                    console.log(`reset ui for ${channel.name}`)
-                    await resetUITask()
-                }
-            }))
+                const needReset = await this.taskCounter.get(channel.id) <= 0
+                return needReset
+            })),
+            TaskEither.chain(needReset => needReset ? resetUITask : doNothing)
         )
     }
 }
