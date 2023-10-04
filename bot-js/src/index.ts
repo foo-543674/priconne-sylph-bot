@@ -53,6 +53,7 @@ import { OmikujiCommand } from "./commands/message/OmikujiCommand";
 import { LotteryBox } from "./domain/omikuji/LotteryBox";
 import { SeedRandomProvider } from "./libraries/random/SeedRandomProvider";
 import { CDateLocalDateProvider } from "./libraries/cdate/CDateLocalDateProvider";
+import { RandomSortedFortuneTable } from "./domain/omikuji/FortuneTable";
 
 const phraseConfig = yaml.load(fs.readFileSync("src/resources/config.yaml", "utf8"));
 const phraseRepository = new YamlPhraseRepository(phraseConfig as PhraseConfig);
@@ -87,6 +88,7 @@ const apiClient = new ApiClient(process.env.API_URI, process.env.API_KEY);
 
 const bossQuestionnaireCache = new ThreadSafeCache<BossQuestionnaire>();
 
+const random = new SeedRandomProvider()
 const messaegEventHandler = new MessageEventHandler(
     [
         new HelpCommand(phraseRepository, client),
@@ -106,7 +108,7 @@ const messaegEventHandler = new MessageEventHandler(
         new DiceCommand(client, new BCDice()),
         new CalculateCarryOverTlCommand(phraseRepository, client),
         new SetupTimelineChannelCommand(phraseRepository, client, new SetupTimelineThreadChannelUsecase()),
-        new OmikujiCommand(client, new LotteryBox(new CDateLocalDateProvider("Asia/Tokyo"), new SeedRandomProvider()), phraseRepository)
+        new OmikujiCommand(client, new LotteryBox(new CDateLocalDateProvider("Asia/Tokyo"), random, new RandomSortedFortuneTable(random)), phraseRepository)
     ],
     phraseRepository
 );
