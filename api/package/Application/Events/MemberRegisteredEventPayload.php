@@ -34,7 +34,7 @@ class MemberRegisteredEventPayload implements JsonSerializable
                 ->select(fn (Member $member) => [
                     "id" => $member->getId()->__toString(),
                     "name" => $member->getName(),
-                    "discord_user_id" => $member->getDiscordUserId(),
+                    "discord_user_id" => $member->getDiscordUserId()->__toString(),
                 ])
                 ->toList(),
         ];
