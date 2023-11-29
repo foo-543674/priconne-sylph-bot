@@ -8,7 +8,7 @@ phrases:
   create_challenge_report: (?<clanName>[\s\S]+)の凸報告場所を作って
   register_webhook: (?<clanName>[\s\S]+)の状況が変化したら \[(?<url>https?://[\w!\?/\+\-_~=;\.,\*&@#\$%\(\)'\[\]]+)\] に通知して
   create_boss_questionnaire: ボスアンケ(ート)?を?作って
-  boss_notification: (?<bossNumber>[1-5])(ボス)?に?行きたい人に通知して
+  boss_notification: ^(?<bossNumber>[1-5１-５](?:,[1-5１-５])*)(ボス)?開始$
   get_boss_questionnaire_result: アンケ(ート)?結果見せて
   create_damage_report: ここを(?<clanName>[\s\S]+)のダメージ報告場所にするよ
   register_cooperate_channel: ここを(?<clanName>[\s\S]+)の連携チャンネルにするよ
@@ -87,7 +87,8 @@ phrases:
     ---------------------------------------------------------------------------
   days_unit: '{day}日目'
   boss_questionnaire_message: "行きたいボスのスタンプ押してね。持ち越しだけ残ってる人は:asterisk:を押してね。"
-  boss_notify_message: ボスの凸を開始するよ
+  boss_notify_message_boss_list: '{bossNumber}ボス:{mention}'
+  boss_notify_message: '{bossNumbers}ボスの凸を開始するよ。'
   cannot_find_boss_questionnaire_message: ボスアンケートのメッセージが見つからないよ。500個以上前のメッセージは見れないから、新しくアンケートを作ってね。
   cannot_find_boss_number_message: 通知したいボスの番号が見つからないよ。
   no_in_session_clan_battle_message: 開催中のクランバトルがないよ。

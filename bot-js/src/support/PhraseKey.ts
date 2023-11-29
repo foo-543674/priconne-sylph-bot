@@ -36,6 +36,10 @@ export class PhraseKey {
         return new PhraseKey("get_boss_questionnaire_result");
     }
 
+    public static bossNotificationBossList() {
+        return new PhraseKey("boss_notify_message_boss_list");
+    }
+
     public static bossNotification() {
         return new PhraseKey("boss_notification");
     }

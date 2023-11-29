@@ -6,10 +6,12 @@ import { pipe } from "fp-ts/lib/function";
 import { ValidationError } from "../../support/ValidationError";
 import { collectMessagesUntil, isTextChannel, isMentionedToMe } from '../../support/DiscordHelper';
 import { PhraseKey } from "../../support/PhraseKey";
-import { isBossNumberString, toBossNumber } from "../../entities/BossNumber";
+import { BossNumber, isBossNumberString, toBossNumber } from '../../entities/BossNumber';
 import { userMension } from "../../support/DiscordHelper";
 import { matchContent } from "../../support/RegexHelper";
 import { parseForCommand } from '../../support/MessageParser';
+import { String } from "typescript-string-operations";
+import { notNull } from "../../support/ArrayHelper";
 
 export class BossNotificationCommand implements MessageCommand {
     constructor(private phraseRepository: PhraseRepository, private discordClient: Client) {
@@ -38,8 +40,12 @@ export class BossNotificationCommand implements MessageCommand {
             TaskOption.fromNullable(this.commandPattern.exec(cleanContent)),
             TaskOption.chainNullableK((m) => m.groups),
             TaskOption.map((g) => g["bossNumber"]),
-            TaskOption.chain(bossNumber => isBossNumberString(bossNumber) ? TaskOption.some(bossNumber) : TaskOption.none),
-            TaskOption.chain((bossNumber) =>
+            TaskOption.map(bossNumberGroupText =>
+                bossNumberGroupText.split(",")
+                    .flatMap(text => isBossNumberString(text) ? toBossNumber(text) : [])
+            ),
+            TaskOption.chain(bossNumbers => bossNumbers.length > 0 ? TaskOption.some(bossNumbers) : TaskOption.none),
+            TaskOption.chain((bossNumbers) =>
                 pipe(
                     TaskOption.fromTask(
                         async () =>
@@ -56,27 +62,33 @@ export class BossNotificationCommand implements MessageCommand {
                                 this.phraseRepository.get(PhraseKey.cannotFindBossQuestionnaireMessage())
                             );
                         },
-                        (targetMessage) =>
-                            TaskOption.fromNullable(
-                                targetMessage.reactions.resolve(
-                                    this.phraseRepository.get(PhraseKey.bossStamp(toBossNumber(bossNumber)))
-                                )
-                            )
+                        (targetMessage) => TaskOption.fromTask(() => this.generateMessage(bossNumbers, targetMessage))
                     ),
-                    TaskOption.chainTaskK((targetReaction) => async () => await targetReaction.users.fetch()),
-                    TaskOption.map((users) =>
-                        users
-                            .filter((user) => user.id !== this.discordClient.user?.id)
-                            .map((user) => userMension(user.id))
-                    ),
-                    TaskOption.map((userIds) => userIds.join(",")),
-                    TaskOption.map(
-                        (mentionText) =>
-                            `${mentionText}${bossNumber}${this.phraseRepository.get(PhraseKey.bossNotifyMessage())}`
-                    )
                 )
             ),
             TaskOption.chainTaskK((messageText) => async () => await message.channel.send(messageText))
         )();
+    }
+
+    protected async generateMessage(bossNumbers: BossNumber[], targetMessage: Message) {
+        let usedUsers = [] as string[]
+
+        const assigningMessage = await Promise.all(bossNumbers.flatMap(async bossNumber => {
+            const reaction = targetMessage.reactions.resolve(this.phraseRepository.get(PhraseKey.bossStamp(bossNumber)))
+            if (!reaction) return null
+
+            const users = await reaction.users.fetch()
+            const userIds = users.map(user => user.id)
+            const mentioningUserIds = userIds.filter(userId => userId !== this.discordClient.user?.id && !usedUsers.includes(userId))
+            usedUsers = usedUsers.concat(mentioningUserIds)
+
+            return String.format(this.phraseRepository.get(PhraseKey.bossNotificationBossList()),
+                {
+                    bossNumber,
+                    mention: mentioningUserIds.map(userId => userMension(userId)).join(",")
+                })
+        }))
+
+        return `${String.format(this.phraseRepository.get(PhraseKey.bossNotifyMessage()), {bossNumbers: bossNumbers.join(",")})}\n${assigningMessage.filter(notNull).join("\n")}`
     }
 }
