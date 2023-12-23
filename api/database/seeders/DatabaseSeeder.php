@@ -13,5 +13,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        if(config('app.env') === 'local') {
+            $this->call([
+                DefaultApiKeySeeder::class
+            ]);
+        }
     }
 }
