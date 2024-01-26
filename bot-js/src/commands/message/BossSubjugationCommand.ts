@@ -59,9 +59,14 @@ export class BossSubjugationCommand implements MessageCommand {
             );
 
             for (const report of damageReports) {
-                const targetMessage = await channel.messages.fetch(report.messageId);
-                await targetMessage.delete();
-                await this.apiClient.deleteDamageReport(channel.id, targetMessage.id);
+                await this.apiClient.deleteDamageReport(channel.id, report.messageId);
+                try {
+                    const targetMessage = await channel.messages.fetch(report.messageId);
+                    await targetMessage.delete()
+                } catch (error) {
+                    console.log("Failed delete report message. May be it was deleted by Discord.")
+                    console.log(error);
+                }
             }
         }
     }
